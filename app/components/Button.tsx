@@ -1,25 +1,30 @@
+
+"use client";
 import React from 'react';
+import { FaAngleRight } from "react-icons/fa6";
 type ButtonProps = {
     text?: string;
     onClick?: () => void;
     className?: string;
+    width?: string;
     type?: "button" | "submit" | "reset";
-    icon?: React.ReactNode;
+    icon?: true | false;
 }
 
 
 const Button = ({
-text,
-onClick,
-className="bg-primaryC",
-type = "button",
-icon,
-}:ButtonProps) => {
+    text,
+    onClick,
+    width = "auto",
+    className = "btn-primary",
+    type = "button",
+    icon,
+}: ButtonProps) => {
     return (
-        <div className={`${icon ? 'flex items-center gap-2' : ''}`}>
-            {icon && icon}
-            <button onClick={onClick} className={`  ${className}`} type={type}>{text}</button>
-        </div>
+        <button style={{width: width}} onClick={onClick} type={type} className={`flex justify-center items-center gap-3 px-6 py-3 rounded-md  transition-colors duration-300 active:scale-95 cursor-pointer ${className}`}>
+            {text}
+            {icon && <FaAngleRight className='text-white' />}
+        </button>
     );
 };
 
