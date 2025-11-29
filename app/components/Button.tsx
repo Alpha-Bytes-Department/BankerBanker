@@ -21,7 +21,7 @@ const Button = ({
     icon,
 }: ButtonProps) => {
     return (
-        <button style={{width: width}} onClick={onClick} type={type} className={`flex justify-center items-center gap-3 px-6 py-3 rounded-md  transition-colors duration-300 active:scale-95 cursor-pointer ${className}`}>
+        <button style={{width: width}} onClick={onClick} type={type} className={`flex justify-center items-center gap-3 px-6 py-3 rounded-full  transition-colors duration-300 active:scale-95 cursor-pointer ${className}`}>
             {text}
             {icon && <FaAngleRight className='text-white' />}
         </button>
