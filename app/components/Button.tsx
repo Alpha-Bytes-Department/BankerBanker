@@ -1,6 +1,5 @@
 
 "use client";
-import React from 'react';
 import { FaAngleRight } from "react-icons/fa6";
 export type ButtonProps = {
     text?: string;

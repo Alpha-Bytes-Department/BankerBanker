@@ -72,7 +72,7 @@ const Features = () => {
                 <Description text="BANCre leverages technology to revolutionize the origination and closing process of commercial real estate loans." />
             </div>
             {/* Feature cards would go here */}
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10 '>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10 justify-items-center'>
                 {/* feature cards 1  */}
                 {features.map((feature, idx)=><FeaturesCard
                     key={idx}
