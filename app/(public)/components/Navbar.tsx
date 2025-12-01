@@ -80,8 +80,8 @@ const Navbar = ({
                     {Links && Links.map((link, idx) => <Link key={idx} href={link.href}>{link.text}</Link>)}
                 </div>
                 <div className='flex gap-5 items-center'>
-                    <Button text='Get Started Free' className='btn-primary' />
-                    {userData ? (<></>) : <Button text='Sign in' className='btn-primary hidden lg:flex' />}
+                    {userData ? (<></>) : <Button text='Sign in' className='button-none hidden lg:flex' />}
+                    <Button text='Get Started Free' className='button-primary' />
                 </div>
             </nav>
             {/* navbar for mobile */}
@@ -105,7 +105,7 @@ const Navbar = ({
                         {/* Mobile Navigation Links */}
                         <nav className="grow p-4">
                             <div className="flex flex-col space-y-2">
-                            {Links && Links.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg ${link.href === "#home"? "btn-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>)}
+                            {Links && Links.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg ${link.href === "#home"? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>)}
                             </div>
                         </nav>
                         {/* Mobile Footer */}
@@ -113,7 +113,7 @@ const Navbar = ({
                             {userData ? <><Link href="#" className="rounded-full shadow-sm">
                                 <FaCircleUser title={userData?.first_name} className="h-10 w-10" />   
                             </Link> 
-                            <Button text='Log out' className='btn-primary w-full ' /></> : <><Button text='Log in' className='btn-primary w-full ' /> <Button text='Sign up' className='btn-primary w-full ' /></>}
+                            <Button text='Log out' className='button-primary w-full ' /></> : <><Button text='Log in' className='button-primary w-full ' /> <Button text='Sign up' className='button-primary w-full ' /></>}
                         </div>
                     </div>
                 </div>
