@@ -2,13 +2,13 @@
 "use client";
 import React from 'react';
 import { FaAngleRight } from "react-icons/fa6";
-type ButtonProps = {
+export type ButtonProps = {
     text?: string;
     onClick?: () => void;
     className?: string;
     width?: string;
     type?: "button" | "submit" | "reset";
-    icon?: true | false;
+    icon?: boolean;
 }
 
 
