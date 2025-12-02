@@ -1,16 +1,21 @@
-// Fahim
-import Headline from '../components/Headline';
-import Description from '../components/Description';
+import Banner from './_components/Banner';
+import Features from './components/Features';
+import Navbar from './components/Navbar';
 import HowItWorksOne from './components/HowItWorksOne';
 import HowItWorksTwo from './components/HowItWorksTwo';
 import BlackButtonRightIcon from '../components/BlackButtonRightIcon';
 import { FaArrowRight } from 'react-icons/fa6';
 import Footer from './components/Footer';
 import Carousel from './components/Carousel';
+import Headline from '@/components/Headline';
+import Description from '@/components/Description';
 
 const page = () => {
     return (
         <div>
+            <Navbar />
+            <Banner />
+            <Features />
             <div className='text-center'>
                 <Headline text="How It Works" />
             </div>

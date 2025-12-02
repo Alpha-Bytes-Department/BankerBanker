@@ -15,10 +15,13 @@
 
 @layer components{
   /* buttons  */
-  .btn-primary {
+  .button-primary {
     @apply bg-primary text-white hover:bg-blue-700;
   }
-  .btn-secondary {
+  .button-secondary {
     @apply bg-secondary text-white hover:bg-gray-700;
+  }
+  .button-none {
+    @apply bg-transparent text-black hover:bg-gray-200;
   }
 }
