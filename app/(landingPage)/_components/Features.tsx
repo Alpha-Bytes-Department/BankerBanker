@@ -1,13 +1,14 @@
 
+import FeaturesCard from './FeaturesCard';
 import { FaRobot } from "react-icons/fa6";
 import { SiGoogledocs } from "react-icons/si";
 import { FaHandshake } from "react-icons/fa";
 import { GoGraph } from "react-icons/go";
 import { FaShieldAlt } from "react-icons/fa";
-import Button from '@/app/components/Button';
-import Headline from "@/components/Headline";
-import Description from "@/components/Description";
-import FeaturesCard from "../_components/FeaturesCard";
+import Headline from '@/components/Headline';
+import Description from '@/components/Description';
+import Button from '@/components/Button';
+
 
 type Feature = {
     id: number;

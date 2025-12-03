@@ -1,5 +1,4 @@
 "use client";
-import Button from '@/app/components/Button';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import { FaCircleUser, FaHandshakeSimple } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
 import { BsBank, BsGraphUpArrow } from "react-icons/bs";
 import { BiSolidContact } from "react-icons/bi";
+import Button from '@/components/Button';
 
 
 type NavbarProps = {

@@ -1,14 +1,14 @@
 import Banner from './_components/Banner';
-import Features from './components/Features';
-import Navbar from './components/Navbar';
-import HowItWorksOne from './components/HowItWorksOne';
-import HowItWorksTwo from './components/HowItWorksTwo';
-import BlackButtonRightIcon from '../components/BlackButtonRightIcon';
+import HowItWorksOne from './_components/HowItWorksOne';
+import HowItWorksTwo from './_components/HowItWorksTwo';
+import BlackButtonRightIcon from '../../components/BlackButtonRightIcon';
 import { FaArrowRight } from 'react-icons/fa6';
-import Footer from './components/Footer';
-import Carousel from './components/Carousel';
+import Footer from './_components/Footer';
 import Headline from '@/components/Headline';
 import Description from '@/components/Description';
+import Navbar from './_components/Navbar';
+import Features from './_components/Features';
+import Carousel from './_components/Carousel';
 
 const page = () => {
     return (
