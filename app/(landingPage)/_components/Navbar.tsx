@@ -76,8 +76,8 @@ const Navbar = ({
                     <Image src={"/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
                     <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                 </div>
-                <div className='hidden lg:flex gap-5 '>
-                    {Links && Links.map((link, idx) => <Link key={idx} href={link.href}>{link.text}</Link>)}
+                <div className='hidden lg:flex items-center gap-5 bg-[#315DF60F] text-[#000000B2] px-4 py-2 rounded-full'>
+                    {Links && Links.map((link, idx) => <Link key={idx} className={` ${link.href === "#home" ? "bg-[#0D4DA5] px-3 py-2 rounded-full text-white" : ""}`} href={link.href}>{link.text}</Link>)}
                 </div>
                 <div className='flex gap-5 items-center'>
                     {userData ? (<></>) : <Button text='Sign in' className='button-none hidden lg:flex' />}
