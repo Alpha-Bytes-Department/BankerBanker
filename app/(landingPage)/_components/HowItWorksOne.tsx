@@ -27,7 +27,7 @@ export default function HowItWorksOne() {
                 howItWorksOneData.map(item => (
                     // Card
                     <div key={item.id} className="flex flex-col items-center justify-center gap-6 
-                    max-w-[362px] h-[420px] bg-[#FFFFFF] shadow-2xl rounded-lg p-6">
+                    max-w-[362px] h-[420px] bg-[#FFFFFF] shadow-2xl rounded-2xl p-6">
                         <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 
                             bg-[#000000] text-[#FFFFFF] font-semibold">{item.id}</div>
                         <div className="text-[#111827] font-semibold">{item.title}</div>
