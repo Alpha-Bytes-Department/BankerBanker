@@ -1,5 +1,5 @@
-
-import Button from "@/components/Button";
+// Fahim
+import BlackButtonRightIcon from "@/components/BlackButtonRightIcon";
 import { FaAngleRight, FaBuilding, FaBuildingColumns, FaCheck } from "react-icons/fa6";
 
 const howItWorksTwoData = [{
@@ -38,7 +38,7 @@ export default function HowItWorksTwo() {
         <div className="flex flex-col xl:flex-row items-center justify-center gap-20 px-4 py-16">
             {howItWorksTwoData.map(item => (
                 // Card
-                <div key={item.id} className="bg-[#F3F3F3] max-w-[550px] h-[544px] rounded-lg p-12">
+                <div key={item.id} className="bg-[#F3F3F3] max-w-[550px] h-[544px] rounded-3xl p-12">
                     <div className="w-16 h-16 flex items-center justify-center bg-[#818181] rounded-lg">
                         <item.logo className="w-7 h-7 text-white" />
                     </div>
@@ -54,7 +54,8 @@ export default function HowItWorksTwo() {
                             ))
                         }
                     </div>
-                    <Button text="Contact Us" icon={true} className="button-secondary" />
+                    <BlackButtonRightIcon buttonName={item.buttonName} iconName={item.iconName} width="w-full"
+                        rounded="rounded-full" />
                 </div>
             ))}
         </div>

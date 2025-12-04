@@ -30,10 +30,10 @@ const page = () => {
             <div className='flex items-center justify-center'>
                 <BlackButtonRightIcon buttonName='Contact Us' iconName={FaArrowRight} width="w-[200px]" rounded="rounded-lg" />
             </div>
+            <Carousel />
             <div className='mt-12'>
-                <Footer/>
+                <Footer />
             </div>
-            <Carousel/>
         </div>
     );
 };
