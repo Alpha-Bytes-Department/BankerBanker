@@ -15,7 +15,7 @@ const FeaturesCard = ({
 
 }: FeaturesCardProps) => {
     return (
-        <div className='bg-[#E5E7EB] p-8 rounded-xl flex flex-col gap-4 w-[363px]'>
+        <div className='bg-[#E5E7EB] p-8 rounded-xl flex flex-col gap-4 w-[363px] h-'>
             <div>
                 <div style={{ backgroundColor: iconBgColor }} className='p-4 rounded-lg inline-block'>
                     {icon}

@@ -9,6 +9,7 @@ import { FaHome } from "react-icons/fa";
 import { BsBank, BsGraphUpArrow } from "react-icons/bs";
 import { BiSolidContact } from "react-icons/bi";
 import Button from '@/components/Button';
+import { usePathname } from 'next/navigation';
 
 
 type NavbarProps = {
@@ -32,28 +33,28 @@ type UserData = {
 const Links: LinkProps = [
         {
             text: 'Home',
-            href: '#home',
+            href: '/',
             icon: <FaHome className='text-lg' />
         },
         {
             text: 'Sponsor',
-            href: '#sonsor',
+            href: '/sponsor',
             icon: <FaHandshakeSimple className='text-lg' />
         },
         {
             text: 'Lender',
-            href: '#lender',
+            href: '/lender',
             icon: <BsBank className='text-lg' />
 
         },
         {
             text: 'Broker',
-            href: '#broker',
+            href: '/broker',
             icon: <BsGraphUpArrow className='text-lg' />
         },
         {
             text: 'Contact',
-            href: '#contact',
+            href: '/contact',
             icon: <BiSolidContact className='text-lg' />
         },
     ];
@@ -64,6 +65,7 @@ const Navbar = ({
 }: NavbarProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(true);
     const [userData, setUserData] = useState<UserData | null>(null);
+    const pathName = usePathname();
 
 
 
@@ -76,8 +78,9 @@ const Navbar = ({
                     <Image src={"/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
                     <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                 </div>
+                {/* maping Links for desktop */}
                 <div className='hidden lg:flex items-center gap-5 bg-[#315DF60F] text-[#000000B2] px-4 py-2 rounded-full'>
-                    {Links && Links.map((link, idx) => <Link key={idx} className={` ${link.href === "#home" ? "bg-[#0D4DA5] px-3 py-2 rounded-full text-white" : ""}`} href={link.href}>{link.text}</Link>)}
+                    {Links && Links.map((link, idx) => <Link key={idx} className={` ${link.href === pathName ? "bg-[#0D4DA5] px-3 py-2 rounded-full text-white" : ""}`} href={link.href}>{link.text}</Link>)}
                 </div>
                 <div className='flex gap-5 items-center'>
                     {userData ? (<></>) : <Button text='Sign in' className='button-none hidden lg:flex' />}
