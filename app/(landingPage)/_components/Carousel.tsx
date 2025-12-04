@@ -9,7 +9,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import Headline from "@/components/Headline";
 import Description from "@/components/Description";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const reviews = [
