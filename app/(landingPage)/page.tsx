@@ -22,15 +22,18 @@ const page = () => {
             <Description text="Simple 3-step process to transform your CRE financing" />
             <HowItWorksOne />
             <HowItWorksTwo />
-            <div className='text-center'>
-                <Headline text="Join the BANCre Capital Markets Network" />
-            </div>
-            <Description text="Become a BANCre broker and leverage technology to build your own capital markets 
-            origination business." />
-            <div className='flex items-center justify-center'>
-                <BlackButtonRightIcon buttonName='Contact Us' iconName={FaArrowRight} width="w-[200px]" rounded="rounded-lg" />
-            </div>
             <Carousel />
+
+            <div className='my-16'>
+                <div className='text-center'>
+                    <Headline text="Join the BANCre Capital Markets Network" />
+                </div>
+                <Description text="Become a BANCre broker and leverage technology to build your own capital markets 
+                origination business." />
+                <div className='flex items-center justify-center'>
+                    <BlackButtonRightIcon buttonName='Contact Us' iconName={FaArrowRight} width="w-[200px]" rounded="rounded-lg" />
+                </div>
+            </div>
             <div className='mt-12'>
                 <Footer />
             </div>
