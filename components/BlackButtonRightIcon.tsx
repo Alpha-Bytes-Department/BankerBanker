@@ -4,8 +4,8 @@ import { IconType } from "react-icons";
 interface BlackButtonRightIconProps {
     buttonName: string;
     iconName: IconType; // react-icons component type
-    width: string;
-    rounded: string;
+    width?: string;
+    rounded?: string;
 }
 
 export default function BlackButtonRightIcon({ buttonName, iconName: Icon, width, rounded }: BlackButtonRightIconProps) {

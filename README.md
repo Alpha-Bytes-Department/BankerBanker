@@ -34,17 +34,23 @@ function App() {
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `text` | `string` | **Required**. Your API key |
+| `text` | `string` | Pass the headline text  |
+| `className` | `string` | There have default text size `text-4xl` you can pass any styles. If you pass you have to send text size also |
 
 ### Description
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
+| `text` | `string` | Pass the headline text  |
+| `className` | `string` | There have default  `className="text-xl text-center"` you can pass any styles. Default will replaced if you pass any className |
+| `position` | "left" | "right" | "center" | "justify" | set positon accoding to need
 
 
 ### BlackButonRightIcon
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
+| `buttonName` | `string` | **Required**. Must have to pass buttonName |
+| `iconName` | `iconType` | **Required**. ForExample  `IconType` from react-icon or React.ReactNode |
+| `width` | `string` | width of the button.|
+| `rounded` | `string` | border radius of the button |
