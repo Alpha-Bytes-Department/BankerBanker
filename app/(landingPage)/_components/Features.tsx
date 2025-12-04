@@ -61,7 +61,7 @@ const Features = () => {
         {
             id: 6,
             title: "Save Time & Costs",
-            description: "AI and BANCre partnerships will enable time and cost savings in origination and closing including, due diligence, KYC, third-party reports and legal.",
+            description: "AI technologies combined with actual CRE experience accelerate going to market for the optimal financing. BANCre's network includes thousands of real lender relationships developed over years of closing deals.",
             icon: <FaHandshake className='text-[#9333EA]' size={40} />,
             iconBgColor: '#F3E8FF',
         },
