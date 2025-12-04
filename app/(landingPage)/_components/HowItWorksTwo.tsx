@@ -1,5 +1,5 @@
-
-import Button from "@/components/Button";
+// Fahim
+import BlackButtonRightIcon from "@/components/BlackButtonRightIcon";
 import { FaAngleRight, FaBuilding, FaBuildingColumns, FaCheck } from "react-icons/fa6";
 
 const howItWorksTwoData = [{
@@ -54,7 +54,8 @@ export default function HowItWorksTwo() {
                             ))
                         }
                     </div>
-                    <Button text="Contact Us" icon={true} className="button-secondary" />
+                    <BlackButtonRightIcon buttonName={item.buttonName} iconName={item.iconName} width="w-full"
+                        rounded="rounded-full" />
                 </div>
             ))}
         </div>
