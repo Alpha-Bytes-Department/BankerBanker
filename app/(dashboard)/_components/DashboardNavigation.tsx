@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
-import { FaCircleUser } from "react-icons/fa6";
-import { BiSolidContact } from "react-icons/bi";
-import Button from '@/components/Button';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CiGrid42, CiSearch, CiSettings } from "react-icons/ci";
+import { CiBellOn, CiGrid42, CiSearch, CiSettings } from "react-icons/ci";
 import { FiFileText, FiLogOut, FiUpload } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
+import { IoBagHandleOutline } from "react-icons/io5";
+
 
 
 
@@ -67,6 +66,7 @@ const DashboardNavigation = ({
     children
 }: NavbarProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(true);
+    const [notifications, setNotifications] = useState<number>(3);
     const [userData, setUserData] = useState<UserData | null>({
         id: '1',
         email: 'john@example.com',
@@ -81,7 +81,7 @@ const DashboardNavigation = ({
     return (
         <nav className='flex items-start'>
             <div className={`fixed top-0 left-0 h-screen w-72 z-50 bg-black shadow-xl transform transition-transform duration-300 ease-in-out  ${isMenuOpen ? "translate-x-0" : "-translate-x-full"}`} >
-                <div className="flex flex-col h-full">
+                <div className="flex justify-center  flex-col h-full">
                     {/* Menu Header */}
                     <div className="flex items-center justify-between p-4">
                         {/* Logo Section */}
@@ -110,7 +110,7 @@ const DashboardNavigation = ({
                             {Links && Links.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>)}
                         </div>
                     </nav>
-                    {/* Mobile Footer */}
+                    {/* bottom */}
                     <div className="p-4 border border-[#314158] flex flex-col gap-2  text-white">
                         <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${pathName === "/settings" ? "button-primary" : ""}`}><CiSettings className='text-lg'/><Link href={"/settings"}>Settings</Link></div>
                         <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer `}><FiLogOut className='text-lg'/><span >Logout</span></div>
@@ -126,11 +126,12 @@ const DashboardNavigation = ({
                         </div>
                         <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                     </div>
-                    <div className='flex items-center gap-5 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full'>
-                        Sponsor
+                    <div className='flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer'>
+                        <IoBagHandleOutline className='text-lg'/> <span>Sponsor</span>
                     </div>
-                    <div className='flex gap-5 items-center'>
-                        notifications
+                    <div className='flex gap-5 items-center relative cursor-pointer'>
+                        <CiBellOn className='text-2xl' />
+                        {notifications && <p className='h-5 w-5 rounded-lg bg-[#E7000B] absolute -top-2 -right-2  flex justify-center items-center'><span className='text-white p-1 text-sm'>3</span></p>}
                     </div>
                 </div>
                 {/* main content  */}
