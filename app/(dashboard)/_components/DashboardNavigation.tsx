@@ -129,6 +129,7 @@ const DashboardNavigation = ({
                     <div className='flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer'>
                         <IoBagHandleOutline className='text-lg'/> <span>Sponsor</span>
                     </div>
+                    {/*----------- notification -------- */}
                     <div className='flex gap-5 items-center relative cursor-pointer'>
                         <CiBellOn className='text-2xl' />
                         {notifications && <p className='h-5 w-5 rounded-lg bg-[#E7000B] absolute -top-2 -right-2  flex justify-center items-center'><span className='text-white p-1 text-sm'>3</span></p>}
