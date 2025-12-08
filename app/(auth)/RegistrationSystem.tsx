@@ -95,11 +95,10 @@ export default function RegistrationSystem() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Only proceed if form is valid
     if (validateForm()) {
-      // Navigate based on customer type
+      
       if (formData.customerType === 'Sponsor') {
-        router.push('/verify-email');
+        router.push('/verify_email');
       } else {
         router.push('/register/upload');
       }
