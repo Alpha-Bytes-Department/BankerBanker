@@ -5,7 +5,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
+import Button from "@/components/Button";
 
 const VerifyEmailForm: React.FC = () => {
   const [otp, setOtp] = useState("");
@@ -30,10 +30,9 @@ const VerifyEmailForm: React.FC = () => {
       return;
     }
 
-      
     setIsVerifying(true);
     try {
-      console.log(otp)
+      console.log(otp);
       const res = await fetch(`#################`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,14 +45,11 @@ const VerifyEmailForm: React.FC = () => {
       console.log("Verify Response:", data);
 
       if (data.status === "success" && data.status_code === 200) {
-        alert("Successfully sent otp")
+        alert("Successfully sent otp");
 
         //  It may be used next.
-
         // localStorage.setItem("access_token", data.data?.access_token || "");
         // localStorage.setItem("refresh_token", data.data?.refresh_token || "");
-
-
       } else {
         alert(data.detail || "Invalid OTP");
       }
@@ -98,20 +94,16 @@ const VerifyEmailForm: React.FC = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900">
-
-      <div className="px-6 md:px-20 py-16 space-y-6 dark:text-gray-300">
-    
+      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 dark:text-gray-300">
         <h1 className="text-3xl font-bold">BANCre</h1>
 
-     
-        <h2 className="text-3xl font-semibold">Verify email</h2>
+        <h2 className="text-3xl font-semibold">Verify </h2>
 
-        
         <p className="text-sm">
           Please check your email for next steps to reset your password
         </p>
 
-        <div className="flex flex-col justify-center items-center gap-4">
+        <div className="flex flex-col justify-center items-center gap-4 mt-8">
           <InputOTP
             maxLength={6}
             pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
@@ -128,12 +120,15 @@ const VerifyEmailForm: React.FC = () => {
             </InputOTPGroup>
           </InputOTP>
 
-          <button onClick={handleOtpVerify} disabled={isVerifying} className="mt-20">
-            {isVerifying && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin cursor-pointer" />
-            )}
-            Verify
-          </button>
+          {/* Updated Verify Button */}
+          <div className="w-full flex justify-center mt-8">
+            <Button
+              type="button"
+              text={isVerifying ? "Verifying..." : "Verify Email"}
+              onClick={handleOtpVerify}
+              className="button-primary w-full md:w-[593px] h-14"
+            />
+          </div>
         </div>
 
         {showAlert && (
@@ -153,11 +148,15 @@ const VerifyEmailForm: React.FC = () => {
         <div className="mt-8 text-center">
           <span className="text-lg">Not receive a code? </span>
           <button
-            className="cursor-pointer text-blue-600"
+            className={`cursor-pointer text-blue-600 inline-flex items-center gap-2 ${
+              isResending || resendCooldown > 0
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
             onClick={handleResend}
-            disabled={isResending || resendCooldown > 0} 
+            disabled={isResending || resendCooldown > 0}
           >
-            {isResending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isResending && <Loader2 className="h-4 w-4 animate-spin" />}
             {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend"}
           </button>
         </div>
@@ -165,7 +164,7 @@ const VerifyEmailForm: React.FC = () => {
 
       <div className="relative w-full h-full hidden md:block">
         <Image
-          src="/images/authImage/verify.jpg"
+          src="/Auth_Images/verify_email.jpg"
           alt="buildings"
           fill
           className="object-cover"

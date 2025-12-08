@@ -11,16 +11,16 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { Eye, EyeOff } from "lucide-react";
-import { FcGoogle } from "react-icons/fc";
-import Link from "next/link";
-import { Checkbox } from "../ui/checkbox";
-import { Label } from "../ui/label";
+} from "@/components/ui/form";
 import { MdSupportAgent } from "react-icons/md";
+import { FcGoogle } from "react-icons/fc";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Eye, EyeOff } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import Button from "@/components/Button";
 
 const formSchema = z.object({
   email: z
@@ -45,7 +45,7 @@ type SignInFormValues = z.infer<typeof formSchema>;
 
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(formSchema),
@@ -58,7 +58,7 @@ const SignInForm: React.FC = () => {
 
   const handleSign = (data: SignInFormValues) => {
     console.log(data);
-    router.push('/verify')
+    router.push("/signin/verify_email");
   };
 
   return (
@@ -114,7 +114,6 @@ const SignInForm: React.FC = () => {
                         {...field}
                       />
 
-                      {/* Vertical separator */}
                       <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300 dark:bg-gray-600" />
 
                       {/* Eye Icon */}
@@ -170,10 +169,9 @@ const SignInForm: React.FC = () => {
             {/* Login Button */}
             <Button
               type="submit"
-              className="w-full md:w-[593px] cursor-pointer"
-            >
-              Login
-            </Button>
+              text="Sign Up"
+              className="button-primary w-full md:w-[593px] h-14"
+            />
 
             {/* Divider */}
             <div className="flex items-center gap-4 my-4 w-full md:w-[593px] justify-center">
@@ -197,7 +195,7 @@ const SignInForm: React.FC = () => {
       {/* RIGHT SIDE */}
       <div className="relative w-full h-full hidden md:block">
         <Image
-          src="/images/authImage/signin.jpg"
+          src="/Auth_Images/login.jpg"
           alt="buildings"
           fill
           className="object-cover"

@@ -13,14 +13,17 @@ export type ButtonProps = {
 const Button = ({
   text,
   onClick,
-  width = "auto",
+  width,
   className = "button-primary",
   type = "button",
   icon,
 }: ButtonProps) => {
+  // Only use inline style if width prop is explicitly provided
+  const buttonStyle = width ? { width } : {};
+  
   return (
     <button
-      style={{ width: width }}
+      style={buttonStyle}
       onClick={onClick}
       type={type}
       className={`flex justify-center items-center gap-3 px-6 py-3 rounded-full transition-colors duration-300 
