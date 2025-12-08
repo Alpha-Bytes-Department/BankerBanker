@@ -119,7 +119,7 @@ const DashboardNavigation = ({
             </div>
             {/* top section with children*/}
             <div className='flex-1 flex flex-col md:ml-72 min-h-screen'>
-                <div className={` flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white border-b border-[#314158] text-black `}>
+                <div className={` flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white border-b border-[#E5E7EB] text-black `}>
                     <div>
                         <div className='hidden lg:flex' >
                             Sponsor Dashboard
