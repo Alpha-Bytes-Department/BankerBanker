@@ -6,6 +6,10 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 
 type StatusCardProps = {
     type: 'Properties' | 'quotes' | 'documents' | 'value';
+    data?: {
+        status?: number | string;
+        value?: number;
+    };
 };
 
 const CardTypes = {
@@ -17,7 +21,7 @@ const CardTypes = {
     },
     quotes: {
         title: 'Total Quotes',
-        status: '12 pending review',
+        status: 'pending review',
         icon: <FaDollarSign className="text-xl" />,
         statusIcon: <FaRegClock />
     },
@@ -36,7 +40,8 @@ const CardTypes = {
 }
 
 const StatusCard = ({
-    type
+    type,
+    data
 }:StatusCardProps) => {
     return (
         <div className="flex flex-col gap-5 p-5 border border-[#0000001A] w-[344px] rounded-lg">
@@ -45,11 +50,11 @@ const StatusCard = ({
                 <span>{CardTypes[type].icon}</span>
             </div>
             <div className="text-3xl">
-                3
+                {data?.value}
             </div>
             <div className="flex items-center gap-2">
                 <span>{CardTypes[type].statusIcon}</span>
-                <span className="text-sm">{CardTypes[type].status}</span>
+                <span className="text-sm">{data?.status} {CardTypes[type].status}</span>
             </div>
         </div>
     );
