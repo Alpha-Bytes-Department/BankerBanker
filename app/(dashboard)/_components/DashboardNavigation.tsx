@@ -10,6 +10,7 @@ import { CiBellOn, CiGrid42, CiSearch, CiSettings } from "react-icons/ci";
 import { FiFileText, FiLogOut, FiUpload } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
 import { IoBagHandleOutline } from "react-icons/io5";
+import Notifications from '../(sponsor)/notifications/page';
 
 
 
@@ -130,10 +131,7 @@ const DashboardNavigation = ({
                         <IoBagHandleOutline className='text-lg'/> <span>Sponsor</span>
                     </div>
                     {/*----------- notification -------- */}
-                    <div className='flex gap-5 items-center relative cursor-pointer'>
-                        <CiBellOn className='text-2xl' />
-                        {notifications && <p className='h-5 w-5 rounded-lg bg-[#E7000B] absolute -top-2 -right-2  flex justify-center items-center'><span className='text-white p-1 text-sm'>3</span></p>}
-                    </div>
+                    <Notifications/>
                 </div>
                 {/* main content  */}
                 <div className='flex-1 overflow-y-auto px-5 py-2'>
