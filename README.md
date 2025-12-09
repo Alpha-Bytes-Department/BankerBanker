@@ -1,5 +1,9 @@
 # Project instruction
 
+## Folder guide
+- keep all shared component in component folder
+- keep all single used component in _component folder
+
 ## Color Reference
 
 | Color             | Hex                                                                |
@@ -54,3 +58,4 @@ function App() {
 | `iconName` | `iconType` | **Required**. ForExample  `IconType` from react-icon or React.ReactNode |
 | `width` | `string` | width of the button.|
 | `rounded` | `string` | border radius of the button |
+
