@@ -2,6 +2,8 @@ import PropertyCard from "@/components/PropertyCard";
 import StatusCard from "@/components/StatusCard";
 import { PropertyProps } from "@/types/sponsor";
 import { FaPlus } from "react-icons/fa6";
+import GMAP from "../../_components/GMAP";
+import ChatCard from "@/components/ChatCard";
 
 const propertyData: PropertyProps[] = [
     {
@@ -45,13 +47,18 @@ const page = () => {
         <div>
             <h1 className="text-2xl my-2">Sponsor Dashboard</h1>
             <p className="text-[#4A5565] my-2">Manage your commercial real estate portfolio and generate professional offering memorandums</p>
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 lg:gap-7 xl:gap-10 my-5">
+            {/* google map  */}
+            <div className="my-5">
+                <GMAP />
+            </div>
+            {/* status card  */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
                 <StatusCard type="Properties" data={{value: 3, status: 2}} />
                 <StatusCard type="quotes" data={{value: 20, status: 12}}/>
                 <StatusCard type="documents" data={{value: 156}} />
                 <StatusCard type="value" data={{value: 3, }}/>
             </div>
-            <div className="grid grid-cols-[60%_40%] gap-5">
+            <div className="grid 2xl:grid-cols-[60%_40%] gap-5">
                 <div className=" rounded-xl bg-white p-5 border border-[#0000001A]">
                     <div className="flex justify-between">
                         <div>
@@ -63,13 +70,18 @@ const page = () => {
                             <button className="">Add property</button>
                         </div>
                     </div>
+                    {/* property block  */}
                     <div className="my-10 flex flex-col gap-5">
                         {propertyData.map((property, index) => (
                             <PropertyCard key={index} data={property}/>
                         ))}
                     </div>
                 </div>
-                <div className=""></div>
+                {/* notification block  */}
+                <div className="flex flex-col gap-10 mx-auto">
+                    <ChatCard type="message" />
+                    <ChatCard type="aiChat" />
+                </div>
             </div>
         </div>
     );
