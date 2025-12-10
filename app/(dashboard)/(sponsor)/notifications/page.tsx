@@ -53,7 +53,7 @@ export default function Notifications() {
     const [messages, setMessages] = useState(false);
     const [dollar, setDollar] = useState(false);
     return (
-        <div className='flex gap-5 items-center relative cursor-pointer'>
+        <div className='flex items-center relative cursor-pointer'>
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <button>
@@ -62,7 +62,8 @@ export default function Notifications() {
                         flex justify-center items-center'><span className='text-white p-1 text-sm'>3</span></p>}
                     </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='max-w-[350px] h-[500px] border border-[#0000001A] bg-[#FFFFFF]'>
+                <DropdownMenuContent className='max-w-[350px] h-[500px] border border-[#0000001A] bg-[#FFFFFF]
+                -right-3'>
                     <div className="sticky top-0 z-10 bg-[#FFFFFF] py-2">
                         <div className='flex justify-between mt-2 px-4'>
                             <p className="text-[#101828]">Notifications</p>
