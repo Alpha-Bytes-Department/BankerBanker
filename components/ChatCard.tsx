@@ -26,7 +26,7 @@ const ChatCard = ({
     type = "message"
 }:ChatCardProps) => {
     return (
-        <div className='flex flex-col gap-10 justify-between p-5 border border-[#0000001A] bg-[#F6FAFD] w-[450px] rounded-xl'>
+        <div className='flex flex-col gap-10 justify-between p-5 border border-[#0000001A] bg-[#F6FAFD] w-[344px] lg:w-[450px] rounded-xl'>
             <div className='flex gap-5'>
                 <span>{CardTypes[type].icon}</span>
                 <p className='text-lg'>{CardTypes[type].title}</p>

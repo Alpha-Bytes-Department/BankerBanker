@@ -14,7 +14,7 @@ type PropertyCardProps = {
 
 const sizeStyles = {
     small: "w-[438px] h-auto",
-    large: "w-[893px] h-auto"
+    large: "w-full md: xl:w-[893px] h-auto"
 }
 
 
@@ -26,14 +26,14 @@ const PropertyCard = ({
 
     
     return (
-        <div className={`border border-[#E5E7EB] rounded-lg flex flex-col gap-10 ${sizeStyles[size]}`}>
+        <div className={`border border-[#E5E7EB] rounded-lg flex flex-col gap-5 lg:gap-10 ${sizeStyles[size]}`}>
             {/* image */}
             <div className="w-full h-48 relative">
                 <Image src={data?.url || "/images/SponsorDashboard.png"} alt="property image" fill className="rounded-t-lg object-cover object-center"/>
             </div>
             {/* details  */}
-            <div className="p-5">
-                <div className="flex justify-between items-center">
+            <div className="p-2 lg:p-5">
+                <div className="flex justify-between items-center my-2">
                     <h1 className="text-lg">{data?.title}</h1>
                     <span className="bg-[#00A63E] text-white py-2 px-3 rounded-full">{data?.status}</span>
                 </div>
