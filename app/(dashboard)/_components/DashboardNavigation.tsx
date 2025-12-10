@@ -7,10 +7,13 @@ import { MdClose } from "react-icons/md";
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { CiGrid42, CiSearch, CiSettings } from "react-icons/ci";
-import { FiFileText, FiLogOut, FiUpload } from "react-icons/fi";
+import { FiFileText, FiLogOut, FiMessageCircle, FiUpload } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
 import { IoBagHandleOutline } from "react-icons/io5";
 import Notifications from '../(sponsor)/notifications/page';
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import ProfilePopUp from './ProfilePopUp';
+
 
 
 
@@ -37,7 +40,7 @@ const Links: LinkProps = [
     {
         text: 'Sponsor Dashboard',
         href: '/sponsor',
-        icon: <CiGrid42  className='text-lg' />
+        icon: <CiGrid42 className='text-lg' />
     },
     {
         text: 'Docview & AI Analytics',
@@ -47,19 +50,24 @@ const Links: LinkProps = [
     {
         text: 'Offering Memorandum',
         href: '/memorandum',
-        icon: <FiFileText  className='text-lg' />
+        icon: <FiFileText className='text-lg' />
 
     },
     {
         text: 'Document Processing',
         href: '/processing',
-        icon: <FiUpload  className='text-lg' />
+        icon: <FiUpload className='text-lg' />
     },
     {
         text: 'Loan Quotes',
         href: '/loan',
         icon: <FaRegChartBar className='text-lg' />
     },
+    {
+        text: 'Message',
+        href: '/message',
+        icon: <FiMessageCircle className='text-lg' />
+    }
 ];
 
 
@@ -68,6 +76,7 @@ const DashboardNavigation = ({
 }: NavbarProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(true);
     const [notifications, setNotifications] = useState<number>(3);
+    const [showProfile, setShowProfile] = useState<boolean>(false)
     const [userData, setUserData] = useState<UserData | null>({
         id: '1',
         email: 'john@example.com',
@@ -95,11 +104,19 @@ const DashboardNavigation = ({
                             <MdClose className="h-6 w-6" />
                         </button>
                     </div>
-                    <div className='text-white flex gap-5 px-8 py-3 items-center border-y border-[#314158]'>
-                        <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" />
-                            <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
+                    {/*---------- profile pop up -------------*/}
+                    <div className='text-white flex gap-5 px-8 py-3 items-center border-y border-[#314158] '>
+                        <div className='cursor-pointer'>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Avatar >
+                                        <AvatarImage src="https://github.com/shadcn.png" />
+                                        <AvatarFallback>CN</AvatarFallback>
+                                    </Avatar>
+                                </DialogTrigger>
+                                <ProfilePopUp/>
+                            </Dialog>
+                        </div>
                         <div>
                             <p className='overflow-y-hidden' title={userData?.first_name + " " + userData?.last_name}>{userData?.first_name + " " + userData?.last_name}</p>
                             <p className='overflow-y-hidden' title={userData?.email}>{userData?.email}</p>
@@ -113,8 +130,8 @@ const DashboardNavigation = ({
                     </nav>
                     {/* bottom */}
                     <div className="p-4 border border-[#314158] flex flex-col gap-2  text-white">
-                        <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${pathName === "/settings" ? "button-primary" : ""}`}><CiSettings className='text-lg'/><Link href={"/settings"}>Settings</Link></div>
-                        <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer `}><FiLogOut className='text-lg'/><span >Logout</span></div>
+                        <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${pathName === "/settings" ? "button-primary" : ""}`}><CiSettings className='text-lg' /><Link href={"/settings"}>Settings</Link></div>
+                        <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer `}><FiLogOut className='text-lg' /><span >Logout</span></div>
                     </div>
                 </div>
             </div>
@@ -128,10 +145,10 @@ const DashboardNavigation = ({
                         <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                     </div>
                     <div className='flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer'>
-                        <IoBagHandleOutline className='text-lg'/> <span>Sponsor</span>
+                        <IoBagHandleOutline className='text-lg' /> <span>Sponsor</span>
                     </div>
                     {/*----------- notification -------- */}
-                    <Notifications/>
+                    <Notifications />
                 </div>
                 {/* main content  */}
                 <div className='flex-1 overflow-y-auto px-3 md:px-5 py-2'>
