@@ -4,6 +4,7 @@ import { PropertyProps } from "@/types/sponsor";
 import { FaPlus } from "react-icons/fa6";
 import GMAP from "../../_components/GMAP";
 import ChatCard from "@/components/ChatCard";
+import RecentActivity from "../recent-activity/page";
 
 const propertyData: PropertyProps[] = [
     {
@@ -81,6 +82,7 @@ const page = () => {
                 <div className="flex flex-col gap-10 mx-auto">
                     <ChatCard type="message" />
                     <ChatCard type="aiChat" />
+                    <RecentActivity/>
                 </div>
             </div>
         </div>
