@@ -26,7 +26,7 @@ const Button = ({
       style={buttonStyle}
       onClick={onClick}
       type={type}
-      className={`flex justify-center items-center gap-3 px-6 py-3 rounded-full transition-colors duration-300 
+      className={`flex justify-center items-center gap-3 text-xs sm:text-sm lg:text-base px-3 lg:px-6 py-3 rounded-full transition-colors duration-300 
         active:scale-95 cursor-pointer ${className}`}
     >
       {text}

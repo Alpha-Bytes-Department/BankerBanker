@@ -45,7 +45,7 @@ const recentActivityData = [
 
 export default function RecentActivity() {
     return (
-        <div className="bg-[#FFFFFF] border border-[#0000001A] rounded-lg max-w-[450px] px-8 py-6">
+        <div className="bg-[#FFFFFF] border border-[#0000001A] rounded-lg max-w-[450px] p-5 lg:px-8 py-6">
             <h1 className="text-[#101828] text-2xl font-semibold">Recent Activity</h1>
             {
                 recentActivityData.map(item => (

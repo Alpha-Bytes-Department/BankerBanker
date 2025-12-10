@@ -6,7 +6,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CiBellOn, CiGrid42, CiSearch, CiSettings } from "react-icons/ci";
+import { CiGrid42, CiSearch, CiSettings } from "react-icons/ci";
 import { FiFileText, FiLogOut, FiUpload } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
 import { IoBagHandleOutline } from "react-icons/io5";
@@ -134,7 +134,7 @@ const DashboardNavigation = ({
                     <Notifications/>
                 </div>
                 {/* main content  */}
-                <div className='flex-1 overflow-y-auto px-5 py-2'>
+                <div className='flex-1 overflow-y-auto px-3 md:px-5 py-2'>
                     {children}
                 </div>
             </div>
