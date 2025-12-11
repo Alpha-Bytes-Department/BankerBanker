@@ -97,7 +97,7 @@ const DashboardNavigation = ({
                         {/* Logo Section */}
                         <div className="shrink-0 px-7 py-1">
                             <a href="#">
-                                <Image src={"/White_BANCre.png"} alt="logo" width={120} height={50} />
+                                <Image src={"/logo/White_BANCre.png"} alt="logo" width={120} height={50} />
                             </a>
                         </div>
                         <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500  rounded-md hover:bg-gray-100 md:hidden" aria-label="Close menu">

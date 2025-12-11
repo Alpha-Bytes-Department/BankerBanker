@@ -5,19 +5,19 @@ const howItWorksOneData = [{
     id: 1,
     title: "Upload Documents",
     subtitle: "Upload rent rolls, leases, financials and property documents to our secure platform.",
-    imagePath: "/Landing_Page/1.png"
+    imagePath: "/images/Landing_Page/HowItWorksOne/1.png"
 },
 {
     id: 2,
     title: "AI Analysis",
     subtitle: "Our AI structures data, creates Excel models and generates offering memorandums instantly.",
-    imagePath: "/Landing_Page/2.png"
+    imagePath: "/images/Landing_Page/HowItWorksOne/2.png"
 },
 {
     id: 3,
     title: "Connect with Lenders",
     subtitle: "Receive, compare and choose the best loan quotes from our network of lenders.",
-    imagePath: "/Landing_Page/3.png"
+    imagePath: "/images/Landing_Page/HowItWorksOne/3.png"
 }];
 
 export default function HowItWorksOne() {
@@ -33,7 +33,7 @@ export default function HowItWorksOne() {
                         <div className="text-[#111827] font-semibold">{item.title}</div>
                         <div className="text-[#4B5563]">{item.subtitle}</div>
                         <div className="relative w-[300px] h-[150px]">
-                            <Image src={item.imagePath} alt={item.imagePath} fill className="rounded-lg" />
+                            <Image src={item.imagePath} alt={item.imagePath} fill className="rounded-lg object-cover object-center" />
                         </div>
                     </div>
                 ))
