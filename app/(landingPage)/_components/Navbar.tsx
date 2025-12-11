@@ -75,7 +75,7 @@ const Navbar = ({
             {/* nav for desktop  */}
             <nav className={`flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white ${className}`}>
                 <div>
-                    <Image src={"/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
+                    <Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
                     <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                 </div>
                 {/* maping Links for desktop */}
@@ -98,7 +98,7 @@ const Navbar = ({
                             {/* Logo Section */}
                             <div className="shrink-0">
                                 <a href="#">
-                                    <Image src={"/BANCre.png"} alt="logo" width={150} height={50} />
+                                    <Image src={"/logo/BANCre.png"} alt="logo" width={150} height={50} />
                                 </a>
                             </div>
                             <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500  rounded-md hover:bg-gray-100 " aria-label="Close menu">
