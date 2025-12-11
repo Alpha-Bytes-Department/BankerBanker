@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import Button from "@/components/Button";
 import {
     DialogClose,
     DialogContent,
@@ -23,9 +23,9 @@ const ProfilePopUp = () => {
             </div>
             <DialogFooter>
                 <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button text="Cancel" className="button-outline"/>
                 </DialogClose>
-                <Button type="submit">Save changes</Button>
+                <Button text="Save Changes" type="submit" className="button-primary"/>
             </DialogFooter>
         </DialogContent>
 
