@@ -13,6 +13,8 @@ import { BsBuildings } from "react-icons/bs";
 import { FiShield } from "react-icons/fi";
 import { useState } from "react";
 import ProfileInfo from "./ProfileInfo";
+import ChangePassword from "./ChangePassword";
+import CompanyInfo from "./CompanyInfo";
 
 const options = [
     {
@@ -30,7 +32,22 @@ const options = [
 ]
 
 const ProfilePopUp = () => {
-    const [selectedOption, setSelectedOption] = useState("Profile")
+    const [selectedOption, setSelectedOption] = useState("Profile");
+    let subsection;
+     switch(selectedOption){
+        case "Profile":
+            subsection = <ProfileInfo/>
+            break;
+        case "Company":
+            subsection = <CompanyInfo/>
+            break;
+        case "Security":
+            subsection = <ChangePassword/>
+            break;
+        default:
+            subsection = <ProfileInfo/>
+    }
+
     return (
         <DialogContent className="sm:max-w-[425px] lg:max-w-[550px] xl:max-w-[750px] bg-white rounded-xl border-0 outline-0 p-0">
             <DialogHeader className="bg-[#0D4DA5] text-white p-5 rounded-xl flex lg:flex-row items-center">
@@ -47,8 +64,9 @@ const ProfilePopUp = () => {
                     <span>{option.icon}</span>
                     {option.title}
                 </div>)}</div>
+                {/* option are rander here  */}
                 <div>
-                    <ProfileInfo/>
+                    {subsection}
                 </div>
             </div>
             <DialogFooter className="p-5">

@@ -1,10 +1,12 @@
 import Image from 'next/image';
 import {  useRef, useState } from 'react';
+import { CiMail } from 'react-icons/ci';
+import { FiPhone } from 'react-icons/fi';
 import { MdOutlineFileUpload } from 'react-icons/md';
 
 const ProfileInfo = () => {
     const [preview, setPreview] = useState<string | null>(null)
-    const [isEdit, setEdit] = useState<boolean>(true);
+    const [isEdit, setEdit] = useState<boolean>(false);
     const inputRef = useRef<HTMLInputElement | null>(null)
 
 
@@ -31,20 +33,20 @@ const ProfileInfo = () => {
                 <div className='flex flex-col'>
                     <label htmlFor="firstName">
                         First Name</label>
-                    <input type="text" id='firstName' placeholder='John' disabled={isEdit} className='border border-[#00000000] bg-[#F3F3F5] py-2 px-3 rounded-full' />
+                    <input type="text" id='firstName' placeholder='John' disabled={isEdit} className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl' />
                 </div>
                 <div className='flex flex-col'>
                     <label htmlFor="lastName">
                         Last Name</label>
-                    <input type="text" id='lastName' placeholder='Doe' disabled={isEdit} className='border border-[#00000000] bg-[#F3F3F5] py-2 px-3 rounded-full' />
+                    <input type="text" id='lastName' placeholder='Doe' disabled={isEdit} className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl' />
                 </div>
                 <div className='flex flex-col'>
                     <label htmlFor="email"> Email Address </label>
-                    <input type="text" id='email' placeholder='John' disabled={isEdit} className='border border-[#00000000] bg-[#F3F3F5] py-2 px-3 rounded-full' />
+                    <span className='flex items-center gap-2 bg-[#F3F3F5] py-2 px-3 rounded-xl'><CiMail className='text-lg text-[#99A1AF]' /><input type="text" id='email' placeholder='john.doe@example.com' disabled={isEdit} className='border-0 focus:outline-0' /></span>
                 </div>
                 <div className='flex flex-col'>
                     <label htmlFor="phone">Phone Number </label>
-                    <input type="text" id='phone' placeholder='John' disabled={isEdit} className='border border-[#00000000] bg-[#F3F3F5] py-2 px-3 rounded-full' />
+                    <span className='flex items-center gap-2 bg-[#F3F3F5] py-2 px-3 rounded-xl'><FiPhone className='text-lg text-[#99A1AF]' /><input type="text" id='email' placeholder='+1 (555) 123-4567' disabled={isEdit} className='border-0 focus:outline-0' /></span>
                 </div>
                 {/* image  */}
                 <div className='flex w-full items-center gap-3'>
