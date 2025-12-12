@@ -1,9 +1,10 @@
 import React from 'react';
+import MemorandamPage from './_components/MemorandamPage';
 
 const page = () => {
     return (
         <div>
-            Memorandum page
+           <MemorandamPage />
         </div>
     );
 };
