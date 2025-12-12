@@ -1,7 +1,7 @@
 import React from 'react';
 import { BsChat } from "react-icons/bs";
-import { RiGeminiLine } from "react-icons/ri";
 import Button from './Button';
+import { Sparkles } from 'lucide-react';
 
 type ChatCardProps = {
     type: "aiChat" | "message",
@@ -18,7 +18,7 @@ const CardTypes = {
     aiChat: {
         title: "Assistant",
         description: "Whenever you need help, simply reach out—I am here for you.",
-        icon: <RiGeminiLine className='text-2xl'/>
+        icon: <Sparkles className='text-2xl'/>
     }
 }
 

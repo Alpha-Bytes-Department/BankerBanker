@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { BsBuildings } from 'react-icons/bs';
 import { CiLocationOn } from 'react-icons/ci';
 

@@ -13,6 +13,7 @@ import { IoBagHandleOutline } from "react-icons/io5";
 import Notifications from '../(sponsor)/notifications/page';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import ProfilePopUp from './ProfilePopUp';
+import ChatWidget from './ChatWidget';
 
 
 
@@ -76,7 +77,7 @@ const DashboardNavigation = ({
 }: NavbarProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(true);
     const [notifications, setNotifications] = useState<number>(3);
-    const [showProfile, setShowProfile] = useState<boolean>(false)
+    const [showProfile, setShowProfile] = useState<boolean>(false);
     const [userData, setUserData] = useState<UserData | null>({
         id: '1',
         email: 'john@example.com',
@@ -151,8 +152,9 @@ const DashboardNavigation = ({
                     <Notifications />
                 </div>
                 {/* main content  */}
-                <div className='flex-1 overflow-y-auto px-3 md:px-5 py-2'>
+                <div className='flex-1 overflow-y-auto px-3 md:px-5 py-2 relative'>
                     {children}
+                    <ChatWidget />
                 </div>
             </div>
         </nav>
