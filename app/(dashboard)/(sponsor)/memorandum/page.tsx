@@ -1,11 +1,11 @@
 import React from 'react';
 
-const memorandum = () => {
+const page = () => {
     return (
         <div>
-            memorandum page
+            Memorandum page
         </div>
     );
 };
 
-export default memorandum;
+export default page;
