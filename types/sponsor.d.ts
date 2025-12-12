@@ -9,4 +9,6 @@ export type PropertyProps = {
     loan_type?: string;
     units?: string;
     quotes?: string;
+    link?: string;
+    link2?: string;
 };

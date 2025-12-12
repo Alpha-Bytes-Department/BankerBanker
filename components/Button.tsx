@@ -19,6 +19,7 @@ const Button = ({
   icon,
 }: ButtonProps) => {
   // Only use inline style if width prop is explicitly provided
+  
   const buttonStyle = width ? { width } : {};
   
   return (
