@@ -67,7 +67,7 @@ const ChatWidget = () => {
 
             {open && (
                 <Card
-                    className="fixed bottom-24 right-6 w-99 h-[450px] shadow-2xl rounded-xl border-[#E5E7EB] py-0 flex flex-col bg-white"
+                    className="fixed bottom-24 right-6 w-99 h-[450px] shadow-2xl rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white"
                 >
                     {/* Header */}
                     <div className="p-4 text-white bg-primary rounded-xl flex justify-between items-center">
