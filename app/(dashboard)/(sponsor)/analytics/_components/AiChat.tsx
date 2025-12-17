@@ -9,7 +9,6 @@ interface Message {
 }
 
 const AiChat = () => {
-    const [open, setOpen] = useState(false);
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Message[]>([
         { role: "assistant", content: "Hi! How can I help?" }
@@ -58,20 +57,9 @@ const AiChat = () => {
 
     return (
         <>
-            <button
-                onClick={() => setOpen(true)}
-                className='button-primary fixed bottom-3 right-3 lg:bottom-5 lg:right-5 p-3 lg:p-4 rounded-full'
-                title='chat'
-            >
-                <Sparkles className='lg:w-8 lg:h-8 text-white' />
-            </button>
-
-            {open && (
-                <Card
-                    className="shadow-2xl rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white"
-                >
+            {<Card className="shadow-2xl h-[480px] md:h-[580px] min-w-[400px] rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white">
                     {/* Header */}
-                    <div className="p-4 text-white bg-primary rounded-xl flex justify-between items-center">
+                    <div className="p-4 rounded-xl flex justify-between items-center">
                         <div className='flex items-center gap-2'>
                             <span className='bg-[#FFFFFF33] p-2 rounded-full'>
                                 <Sparkles className='text-2xl' />
@@ -81,13 +69,9 @@ const AiChat = () => {
                                 <p className='text-sm'>Always here to help</p>
                             </div>
                         </div>
-                        <button onClick={() => setOpen(false)}>
-                            <X className="text-white" />
-                        </button>
                     </div>
-
                     {/* Chat Body */}
-                    <div className="flex-1 p-4 overflow-y-auto space-y-3">
+                    <div className="flex-1 p-4 m-2 rounded-xl border border-[#E5E7EB] overflow-y-auto space-y-3">
                         {messages.map((msg, i) => (
                             <div
                                 key={i}
@@ -108,7 +92,7 @@ const AiChat = () => {
 
                     {/* Input Box */}
                     <form
-                        className="p-3 border-t border-[#E5E7EB] flex gap-2"
+                        className="p-3 border-t flex flex-col border-[#E5E7EB] flex gap-2"
                         onSubmit={handleSubmit}
                     >
                         <input
@@ -118,12 +102,13 @@ const AiChat = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                         />
-                        <button type="submit" className='button-primary p-2 rounded-lg cursor-pointer'>
+                        <button type="submit" className='button-secondary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
                             <Send className='text-white' />
+                            <span>Ask AI</span>
                         </button>
                     </form>
                 </Card>
-            )}
+            }
         </>
     );
 };
