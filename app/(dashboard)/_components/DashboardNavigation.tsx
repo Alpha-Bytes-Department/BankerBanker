@@ -6,7 +6,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { CiGrid42, CiSearch, CiSettings } from "react-icons/ci";
+import { CiGrid42, CiSearch } from "react-icons/ci";
 import { FiFileText, FiLogOut, FiMessageCircle, FiUpload } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
 import { IoBagHandleOutline } from "react-icons/io5";
@@ -129,7 +129,7 @@ const DashboardNavigation = ({
                     </nav>
                     {/* bottom */}
                     <div className="p-4 border border-[#314158] flex flex-col gap-2  text-white">
-                        <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${pathName === "/settings" ? "button-primary" : ""}`}><CiSettings className='text-lg' /><Link href={"/settings"}>Settings</Link></div>
+                        {/* <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${pathName === "/settings" ? "button-primary" : ""}`}><CiSettings className='text-lg' /><Link href={"/settings"}>Settings</Link></div> */}
                         <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer `}><FiLogOut className='text-lg' /><span >Logout</span></div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@ const DashboardNavigation = ({
                 {/* main content  */}
                 <div className='flex-1 overflow-y-auto px-3 md:px-5 py-2 relative'>
                     {children}
-                    {pathName === "/message" ? <></> : <ChatWidget />}
+                    {pathName === "/message" || pathName === "/analytics" ? <></> : <ChatWidget />}
                 </div>
             </div>
         </nav>

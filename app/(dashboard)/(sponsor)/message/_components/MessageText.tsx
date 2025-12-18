@@ -1,17 +1,71 @@
 "use client"
-import { Send, Sparkles, X } from 'lucide-react';
-import { useRef, useState, useEffect } from 'react';
+import { Send, Sparkles, Download, FileText } from 'lucide-react';
+import { useRef, useState, useEffect, Dispatch, SetStateAction, startTransition } from 'react';
 import { Card } from "@/components/ui/card";
 
 interface Message {
-    role: "user" | "assistant" | "typing";
+    role: "sender" | "receiver" | "typing";
     content: string;
 }
 
-const MessageText = () => {
+interface MesssageTextProps {
+    selectedMessageId?: string | number | null;
+    setSelectedMessageId?: Dispatch<SetStateAction<string | number | null>>
+}
+
+
+const chats = [
+    {
+        id: 1,
+        name: "Argentic Capita",
+        message: "We've prepared the final loan documents for your review.",
+        time: "1h ago",
+        unread: 2,
+        starred: true,
+        initials: "AR",
+    },
+    {
+        id: 2,
+        name: "Capital Bank",
+        message: "Thank you for accepting our quote. Let me know when you're ready to proceed.",
+        time: "6h ago",
+        unread: 0,
+        starred: false,
+        initials: "CA",
+    },
+    {
+        id: 3,
+        name: "Prime Commercial",
+        message: "I'll need updated financials before we can finalize.",
+        time: "1d ago",
+        unread: 1,
+        starred: true,
+        initials: "PR",
+    },
+    {
+        id: 4,
+        name: "Metro Lending",
+        message: "I have some questions about your property specifications.",
+        time: "Just now",
+        unread: 1,
+        starred: false,
+        initials: "ME",
+    },
+];
+
+//look up table
+const chatById = Object.fromEntries(
+    chats.map(chat => [chat.id, chat])
+);
+
+
+
+const MessageText = ({
+    selectedMessageId,
+}: MesssageTextProps) => {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Message[]>([
-        { role: "assistant", content: "Hi! How can I help?" }
+        { role: "receiver", content: "Hi! How can I help?" }
     ]);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -20,6 +74,16 @@ const MessageText = () => {
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
+
+    // selected messge setted in id 
+    useEffect(() => {
+        if (selectedMessageId == null) return;
+        const id = Number(selectedMessageId) || 0;
+        const point: Message[] = [
+            { role: "receiver", content: chatById[id]?.message || "" }
+        ];
+        startTransition(() => setMessages(point));
+    }, [selectedMessageId]);
 
     // AI response generator
     const AIResponse = (text: string) => {
@@ -34,7 +98,7 @@ const MessageText = () => {
                 return [
                     ...removeTyping,
                     {
-                        role: "assistant",
+                        role: "receiver",
                         content: `You said: "${text}". How else can I help you?`
                     }
                 ];
@@ -48,7 +112,7 @@ const MessageText = () => {
 
         // Add user message
         const userText = input;
-        setMessages(prev => [...prev, { role: "user", content: userText }]);
+        setMessages(prev => [...prev, { role: "sender", content: userText }]);
         setInput("");
 
         // Trigger AI simulation
@@ -56,60 +120,57 @@ const MessageText = () => {
     };
 
     return (
-        <>
-            {<Card className="shadow-xl flex-1 rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white">
-                    {/* Header */}
-                    <div className="p-4 rounded-xl flex justify-between items-center">
-                        <div className='flex items-center gap-2'>
-                            <span className='bg-[#FFFFFF33] p-2 rounded-full'>
-                                <Sparkles className='text-2xl' />
-                            </span>
-                            <div>
-                                <h2>AI Assistant</h2>
-                                <p className='text-sm'>Always here to help</p>
-                            </div>
-                        </div>
+        <Card className="shadow-md flex-1 rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white">
+            {/* Header */}
+            <div className="p-4 rounded-xl flex justify-between items-center">
+                <div className='flex items-center gap-2'>
+                    <span className='bg-[#FFFFFF33] p-2 rounded-full'>
+                        <Sparkles className='text-2xl' />
+                    </span>
+                    <div>
+                        <h2>AI Assistant</h2>
+                        <p className='text-sm'>Always here to help</p>
                     </div>
-                    {/* Chat Body */}
-                    <div className="flex-1 p-4 m-2 rounded-xl border border-[#E5E7EB] overflow-y-auto space-y-3">
-                        {messages.map((msg, i) => (
-                            <div
-                                key={i}
-                                className={
-                                    msg.role === "user"
-                                        ? "bg-primary text-white p-2 rounded-md w-fit ml-auto max-w-[80%]"
-                                        : msg.role === "typing"
-                                            ? "bg-gray-200 text-gray-700 p-2 rounded-md w-fit italic"
-                                            : "bg-gray-100 p-2 rounded-md w-fit max-w-[80%]"
-                                }
-                            >
-                                {msg.content}
-                            </div>
-                        ))}
-
-                        <div ref={messagesEndRef} />
-                    </div>
-
-                    {/* Input Box */}
-                    <form
-                        className="p-3 border-t flex border-[#E5E7EB] gap-2"
-                        onSubmit={handleSubmit}
+                </div>
+            </div>
+            {/* Chat Body */}
+            <div className="flex-1 p-4 m-2 rounded-xl border border-[#E5E7EB] overflow-y-auto space-y-3">
+                {messages.map((msg, i) => (
+                    <div
+                        key={i}
+                        className={
+                            msg.role === "sender"
+                                ? "bg-primary text-white p-2 rounded-md w-fit ml-auto max-w-[80%]"
+                                : msg.role === "typing"
+                                    ? "bg-gray-200 text-gray-700 p-2 rounded-md w-fit italic"
+                                    : "bg-gray-100 p-2 rounded-md w-fit max-w-[80%]"
+                        }
                     >
-                        <input
-                            type="text"
-                            placeholder="Type a message..."
-                            className="flex-1 border border-[#00000000] focus:outline-[#00000000] bg-[#F3F3F5] rounded-md px-2 py-1"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                        />
-                        <button type="submit" className='button-secondary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
-                            <Send className='text-white' />
-                            <span>Ask AI</span>
-                        </button>
-                    </form>
-                </Card>
-            }
-        </>
+                        {msg.content}
+                    </div>
+                ))}
+
+                <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Box */}
+            <form
+                className="p-3 border-t flex border-[#E5E7EB] gap-2"
+                onSubmit={handleSubmit}
+            >
+                <input
+                    type="text"
+                    placeholder="Type a message..."
+                    className="flex-1 border border-[#00000000] focus:outline-[#00000000] bg-[#F3F3F5] rounded-md px-2 py-1"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                />
+                <button type="submit" className='button-secondary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
+                    <Send className='text-white' />
+                    <span>Ask AI</span>
+                </button>
+            </form>
+        </Card>
     );
 };
 

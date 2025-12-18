@@ -1,4 +1,6 @@
+"use client"
 import { Star } from "lucide-react";
+import { useState } from "react";
 
 
 const chats = [
@@ -9,7 +11,6 @@ const chats = [
         time: "1h ago",
         unread: 2,
         starred: true,
-        active: true,
         initials: "AR",
     },
     {
@@ -41,7 +42,18 @@ const chats = [
     },
 ];
 
-const MessageList = () => {
+interface MesssageListProps {
+  selectedMessageId ?: string | number | null;
+  setSelectedMessageId ?: (value: string | number | null) => void
+}
+
+const MessageList = ({
+    selectedMessageId,
+    setSelectedMessageId
+}:MesssageListProps) => {
+    const [filter, setFilter] = useState<"all" | "unread" | "stared">("all");
+    
+
     return (
         <div className="w-full max-w-md h-[90vh] rounded-xl bg-white shadow-sm border border-[#0000001A]">
             {/* Search */}
@@ -51,26 +63,25 @@ const MessageList = () => {
                     className="w-full rounded-md bg-gray-100 px-4 py-2 text-sm outline-none"
                 />
             </div>
-
             {/* Filters */}
-            <div className="flex gap-2 px-4 py-3 border-b border-[#0000001A]">
-                <button className="flex-1 rounded-md bg-black text-white py-1.5 text-sm">
+            <div className="flex gap-2 px-4 py-3 border-b border-[rgba(0,0,0,0.1)]">
+                <button onClick={()=>setFilter("all")} className={`flex-1 rounded-md py-1.5 text-sm ${filter === "all" ? "bg-black text-white" : "border border-[#0000001A]"}`}>
                     All
                 </button>
-                <button className="flex-1 rounded-md border border-[#0000001A] py-1.5 text-sm">
+                <button onClick={()=>setFilter("unread")} className={`flex-1 rounded-md py-1.5 text-sm ${filter === "unread" ? "bg-black text-white" : "border border-[#0000001A]"}`}>
                     Unread
                 </button>
-                <button className="flex-1 rounded-md border border-[#0000001A] flex items-center justify-center">
+                <button onClick={()=>setFilter("stared")} className={`flex-1 rounded-md py-1.5 text-sm flex justify-center items-center ${filter === "stared" ? "bg-black text-white" : "border border-[#0000001A]"}`}>
                     <Star/>
                 </button>
             </div>
-
             {/* Chat List */}
             <div>
                 {chats.map(chat => (
                     <div
                         key={chat.id}
-                        className={`flex gap-3 px-4 py-4 border-b border-[#0000001A] cursor-pointer ${chat.active ? "bg-blue-50" : "hover:bg-gray-50"
+                        onClick={()=>setSelectedMessageId?.(chat.id)}
+                        className={`flex gap-3 px-4 py-4 border-b border-[#0000001A] cursor-pointer ${chat.id === selectedMessageId ? "bg-blue-50" : "hover:bg-gray-50"
                             }`}
                     >
                         {/* Avatar */}
