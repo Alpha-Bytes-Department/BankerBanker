@@ -21,7 +21,7 @@ const AiChat = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    // Fake AI response generator
+    // AI response generator
     const AIResponse = (text: string) => {
         // Add typing indicator
         setMessages(prev => [...prev, { role: "typing", content: "..." }]);

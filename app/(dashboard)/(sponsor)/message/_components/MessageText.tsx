@@ -1,3 +1,4 @@
+"use client"
 import { Send, Sparkles, X } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
@@ -7,8 +8,7 @@ interface Message {
     content: string;
 }
 
-const ChatWidget = () => {
-    const [open, setOpen] = useState(false);
+const MessageText = () => {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Message[]>([
         { role: "assistant", content: "Hi! How can I help?" }
@@ -57,20 +57,9 @@ const ChatWidget = () => {
 
     return (
         <>
-            <button
-                onClick={() => setOpen(true)}
-                className='button-primary fixed bottom-3 right-3 lg:bottom-5 lg:right-5 p-3 lg:p-4 rounded-full'
-                title='chat'
-            >
-                <Sparkles className='lg:w-8 lg:h-8 text-white' />
-            </button>
-
-            {open && (
-                <Card
-                    className="fixed bottom-24 right-6 w-99 h-[450px] shadow-2xl rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white"
-                >
+            {<Card className="shadow-xl flex-1 rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white">
                     {/* Header */}
-                    <div className="p-4 text-white bg-primary rounded-xl flex justify-between items-center">
+                    <div className="p-4 rounded-xl flex justify-between items-center">
                         <div className='flex items-center gap-2'>
                             <span className='bg-[#FFFFFF33] p-2 rounded-full'>
                                 <Sparkles className='text-2xl' />
@@ -80,13 +69,9 @@ const ChatWidget = () => {
                                 <p className='text-sm'>Always here to help</p>
                             </div>
                         </div>
-                        <button onClick={() => setOpen(false)}>
-                            <X className="text-white" />
-                        </button>
                     </div>
-
                     {/* Chat Body */}
-                    <div className="flex-1 p-4 overflow-y-auto space-y-3">
+                    <div className="flex-1 p-4 m-2 rounded-xl border border-[#E5E7EB] overflow-y-auto space-y-3">
                         {messages.map((msg, i) => (
                             <div
                                 key={i}
@@ -107,24 +92,25 @@ const ChatWidget = () => {
 
                     {/* Input Box */}
                     <form
-                        className="p-3 border-t border-[#E5E7EB] flex gap-2"
+                        className="p-3 border-t flex border-[#E5E7EB] gap-2"
                         onSubmit={handleSubmit}
                     >
                         <input
                             type="text"
                             placeholder="Type a message..."
-                            className="w-full border border-[#00000000] focus:outline-[#00000000] bg-[#F3F3F5] rounded-md px-2 py-1"
+                            className="flex-1 border border-[#00000000] focus:outline-[#00000000] bg-[#F3F3F5] rounded-md px-2 py-1"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                         />
-                        <button type="submit" className='button-primary p-2 rounded-lg cursor-pointer'>
+                        <button type="submit" className='button-secondary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
                             <Send className='text-white' />
+                            <span>Ask AI</span>
                         </button>
                     </form>
                 </Card>
-            )}
+            }
         </>
     );
 };
 
-export default ChatWidget;
+export default MessageText;

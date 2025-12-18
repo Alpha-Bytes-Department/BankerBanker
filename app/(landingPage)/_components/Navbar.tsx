@@ -48,11 +48,6 @@ const Links: LinkProps = [
 
         },
         {
-            text: 'Broker',
-            href: '/broker',
-            icon: <BsGraphUpArrow className='text-lg' />
-        },
-        {
             text: 'Contact',
             href: '/contact',
             icon: <BiSolidContact className='text-lg' />

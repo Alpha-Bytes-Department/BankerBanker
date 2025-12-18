@@ -156,7 +156,7 @@ const DashboardNavigation = ({
                 {/* main content  */}
                 <div className='flex-1 overflow-y-auto px-3 md:px-5 py-2 relative'>
                     {children}
-                    <ChatWidget />
+                    {pathName === "/message" ? <></> : <ChatWidget />}
                 </div>
             </div>
         </nav>
