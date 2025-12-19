@@ -7,7 +7,8 @@ export type ButtonProps = {
   className?: string;
   width?: string;
   type?: "button" | "submit" | "reset";
-  icon?: boolean;
+  icon?: React.ReactNode;
+  arrow?: boolean;
 };
 
 const Button = ({
@@ -17,6 +18,7 @@ const Button = ({
   className = "button-primary",
   type = "button",
   icon,
+  arrow,
 }: ButtonProps) => {
   // Only use inline style if width prop is explicitly provided
   
@@ -30,8 +32,9 @@ const Button = ({
       className={`flex justify-center items-center gap-3 text-xs sm:text-sm lg:text-base px-3 lg:px-6 py-3 rounded-full transition-colors duration-300 
         active:scale-95 cursor-pointer ${className}`}
     >
+      {icon}
       {text}
-      {icon && <FaAngleRight className="text-white" />}
+      {arrow && <FaAngleRight className="text-white" />}
     </button>
   );
 };
