@@ -1,5 +1,5 @@
 "use client"
-import { Send, Sparkles, X } from 'lucide-react';
+import { Send, Sparkles } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import { Card } from "@/components/ui/card";
 
@@ -21,7 +21,7 @@ const AiChat = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    // Fake AI response generator
+    // AI response generator
     const AIResponse = (text: string) => {
         // Add typing indicator
         setMessages(prev => [...prev, { role: "typing", content: "..." }]);
@@ -57,7 +57,7 @@ const AiChat = () => {
 
     return (
         <>
-            {<Card className="shadow-2xl h-[480px] md:h-[580px] min-w-[400px] rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white">
+            {<Card className="shadow-2xl  min-w-[400px] rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white">
                     {/* Header */}
                     <div className="p-4 rounded-xl flex justify-between items-center">
                         <div className='flex items-center gap-2'>
