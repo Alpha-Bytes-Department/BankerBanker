@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Loan } from "../page";
 import Button from "@/components/Button";
 import { FaStar } from "react-icons/fa6";
+import { CircleCheckBig, CircleX, Eye } from "lucide-react";
 
 type LoanCardProps = {
   loan: Loan;
@@ -61,8 +62,9 @@ const LoanCard = ({ loan }: LoanCardProps) => {
           Quote expires in: <span className="font-medium">{loan.expiresIn}</span>
         </p>
         <div className="mt-3 flex gap-3">
-          <Button onClick={()=>setStatus("Accepted")}  text="Accept" className="button-primary flex-1" />
-          <Button onClick={()=>setStatus("Decline")}  text="Decline" className="button-outline flex-1" />
+          <Button icon={<CircleCheckBig/>} onClick={()=>setStatus("Accepted")}  text="Accept" className="button-primary flex-1" />
+          <Button icon={<CircleX/>} onClick={()=>setStatus("Decline")}  text="Decline" className="button-outline flex-1" />
+          <Button icon={<Eye/>}  text="View" className="button-outline flex-1" />
         </div>
       </div>
     </div>

@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import LoanCard from './_components/LoanCard';
 import StatusCard from '@/components/StatusCard';
+import Comparison from './_components/Comparison';
 
 
 export type Loan = {
@@ -141,11 +142,11 @@ const Page = () => {
         </button>
       </div>
       {/* view randaring  */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 ">
+      {view==="Card View" ? <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 ">
         {loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />
         ))}
-      </div>
+      </div> : <Comparison/>}
     </div>
   );
 };
