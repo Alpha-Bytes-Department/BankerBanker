@@ -1,6 +1,10 @@
+import { Loan } from "../page";
 
+type LoanCardProps = {
+  loan: Loan;
+};
 
-const LoanCard = ({ loan }: any) => {
+const LoanCard = ({ loan }: LoanCardProps) => {
   return (
     <div className="w-full max-w-xl rounded-xl border border-blue-300  p-5">
       {/* Header */}

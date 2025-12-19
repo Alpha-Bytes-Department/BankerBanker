@@ -3,6 +3,23 @@ import LoanCard from './_components/LoanCard';
 import StatusCard from '@/components/StatusCard';
 
 
+export type Loan = {
+  id: number;
+  name: string;
+  rating: number;
+  amount: string;
+  interest: string;
+  fee: string;
+  ltv: string;
+  term: string;
+  dscr: string;
+  document: string;
+  expiresIn: string;
+  active: boolean;
+  highlighted: boolean;
+};
+
+
 const loans: Loan[] = [
   {
     id: 1,
