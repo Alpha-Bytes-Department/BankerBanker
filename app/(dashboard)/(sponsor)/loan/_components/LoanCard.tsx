@@ -1,10 +1,15 @@
+"use client"
+import { useState } from "react";
 import { Loan } from "../page";
+import Button from "@/components/Button";
+import { FaStar } from "react-icons/fa6";
 
 type LoanCardProps = {
   loan: Loan;
 };
 
 const LoanCard = ({ loan }: LoanCardProps) => {
+  const [status, setStatus] = useState<"Active" | "Pending" | "Accepted" | "Decline">("Pending")
   return (
     <div className="w-full max-w-xl rounded-xl border border-blue-300  p-5">
       {/* Header */}
@@ -13,24 +18,24 @@ const LoanCard = ({ loan }: LoanCardProps) => {
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
             AR
           </div>
-          <div>
+          <div className="flex flex-col gap-1">
             <h3 className="font-semibold">{loan.name}</h3>
-            <div className="flex items-center gap-2 text-xs text-gray-600">
-              <span>⭐ {loan.rating}</span>
-              {loan.active && (
-                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-600">
-                  Active
+            <div className="flex items-center gap-1 text-gray-600"><FaStar className="text-yellow-500"/><span>{loan.rating}</span></div>
+            <div className="flex items-center gap-2 text-xs ">
+              {status && (
+                <span className={`rounded-full px-2 py-0.5 ${status === 'Pending' && "bg-yellow-100 text-yellow-600"} ${status === "Active" && "bg-blue-100 text-blue-600 "} ${status === "Accepted" && "bg-green-100 text-green-600"} ${status === "Decline" && "bg-red-100 text-red-600"}`}>
+                  {status}
                 </span>
               )}
               {loan.highlighted && (
-                <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-yellow-700">
+                <span className="rounded-full bg-yellow-100 px-2 py-0.5 text-yellow-600">
                   Highlighted
                 </span>
               )}
             </div>
           </div>
         </div>
-        <span className="text-yellow-500">★</span>
+        <span className="text-yellow-500"><FaStar /></span>
       </div>
 
       {/* Info grid */}
@@ -56,12 +61,8 @@ const LoanCard = ({ loan }: LoanCardProps) => {
           Quote expires in: <span className="font-medium">{loan.expiresIn}</span>
         </p>
         <div className="mt-3 flex gap-3">
-          <button className="flex-1 rounded-full bg-blue-600 py-2 text-sm text-white">
-            Accept
-          </button>
-          <button className="flex-1 rounded-full border py-2 text-sm">
-            Decline
-          </button>
+          <Button onClick={()=>setStatus("Accepted")}  text="Accept" className="button-primary flex-1" />
+          <Button onClick={()=>setStatus("Decline")}  text="Decline" className="button-outline flex-1" />
         </div>
       </div>
     </div>

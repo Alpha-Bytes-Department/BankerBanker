@@ -1,4 +1,5 @@
-import React from 'react';
+"use client"
+import { useState } from 'react';
 import LoanCard from './_components/LoanCard';
 import StatusCard from '@/components/StatusCard';
 
@@ -115,22 +116,38 @@ const loans: Loan[] = [
 
 
 
-const page = () => {
-    return (
-        <div>
-            <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
-                <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
-                <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
-                <StatusCard type="documents" data={{ value: 156 }} />
-                <StatusCard type="value" data={{ value: 3, }} />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 ">
-                {loans.map((loan) => (
-                    <LoanCard key={loan.id} loan={loan} />
-                ))}
-            </div>
-        </div>
-    );
+const Page = () => {
+  const [view, setView] = useState<"Card View" | "Comparison">("Card View")
+  return (
+    <div>
+      {/* status card  */}
+      <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
+        <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
+        <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
+        <StatusCard type="documents" data={{ value: 156 }} />
+        <StatusCard type="value" data={{ value: 3, }} />
+      </div>
+      {/* viwe selection  */}
+      <div className="relative inline-flex rounded-full bg-[#ECECF0] p-1 mb-5">
+        <span className={`absolute top-1 bottom-1 w-1/2 rounded-full bg-primary transition-all duration-300 ease-in-out ${view === "Card View" ? "left-1" : "left-1/2"}`} />
+        <button
+          onClick={() => setView("Card View")}
+          className={`relative z-10 px-4 py-2 rounded-full transition-colors duration-300 ${view === "Card View" ? "text-white" : "text-gray-600"}`}>
+          Card View
+        </button>
+        <button
+          onClick={() => setView("Comparison")} className={`relative z-10 px-4 py-2 rounded-full transition-colors duration-300 ${view === "Comparison" ? "text-white" : "text-gray-600"}`}>
+          Comparison
+        </button>
+      </div>
+      {/* view randaring  */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 ">
+        {loans.map((loan) => (
+          <LoanCard key={loan.id} loan={loan} />
+        ))}
+      </div>
+    </div>
+  );
 };
 
-export default page;
+export default Page;
