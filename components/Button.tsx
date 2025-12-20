@@ -3,7 +3,7 @@ import { FaAngleRight } from "react-icons/fa6";
 
 export type ButtonProps = {
   text?: string;
-  onClick?: () => void;
+  onClick?: () => void | React.Dispatch<React.SetStateAction<number>>;
   className?: string;
   width?: string;
   type?: "button" | "submit" | "reset";
