@@ -14,8 +14,8 @@ type StepperProps = {
 
 export const Step = ({ steps, value, loading, onChange }: StepperProps) => {
   return (
-    <div className="w-full">
-      <div className="flex items-center">
+    <div className="hidden md:block w-full my-5">
+      <div className="flex justify-center items-center">
         {steps.map((step, index) => {
           const isActive = step.id === value;
           const isCompleted = step.id < value;
@@ -29,10 +29,9 @@ export const Step = ({ steps, value, loading, onChange }: StepperProps) => {
                 className={`
                   relative z-10 flex h-9 w-9 items-center justify-center rounded-full border
                   transition-all duration-300
-                  ${
-                    isCompleted
-                      ? "bg-primary border-primary text-white"
-                      : isActive
+                  ${isCompleted
+                    ? "bg-primary border-primary text-white"
+                    : isActive
                       ? "border-primary text-primary"
                       : "border-gray-300 text-gray-400"
                   }
@@ -40,34 +39,17 @@ export const Step = ({ steps, value, loading, onChange }: StepperProps) => {
               >
                 {isCompleted ? <Check size={16} /> : step.id}
               </button>
-
+              {/* Title */}
+              <span className={`w-20 text-center transition-colors ${isCompleted ? "text-primary font-medium" : "text-[#6A7282]"}`}>
+                {step.title}
+              </span>
               {/* Separator */}
               {index < steps.length - 1 && (
-                <div
-                  className={`
-                    mx-2 h-[2px] flex-1 transition-colors duration-300
-                    ${step.id < value ? "bg-primary" : "bg-gray-300"}
-                  `}
-                />
+                <div className={`mx-2 h-0.5 flex-1 transition-colors duration-300 ${step.id < value ? "bg-primary" : "bg-gray-300"} `}/>
               )}
             </div>
           );
         })}
-      </div>
-
-      {/* Titles */}
-      <div className="mt-3 flex justify-between text-xs">
-        {steps.map((step) => (
-          <span
-            key={step.id}
-            className={`
-              w-20 text-center transition-colors
-              ${step.id === value ? "text-primary font-medium" : "text-muted-foreground"}
-            `}
-          >
-            {step.title}
-          </span>
-        ))}
       </div>
     </div>
   );
