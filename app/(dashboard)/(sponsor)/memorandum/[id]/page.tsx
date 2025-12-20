@@ -1,8 +1,11 @@
 import React from 'react'
+import MemorandumDetailPage from '../_components/DetailPageComponent/MemorandumDetailPage'
 
 const page = () => {
   return (
-    <div>Memorandam details</div>
+    <div>
+        <MemorandumDetailPage />
+    </div>
   )
 }
 
