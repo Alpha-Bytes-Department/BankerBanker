@@ -3,7 +3,7 @@ import { FaAngleRight } from "react-icons/fa6";
 
 export type ButtonProps = {
   text?: string;
-  onClick?: () => void | React.Dispatch<React.SetStateAction<number>>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | (() => void | Promise<void>);
   className?: string;
   width?: string;
   type?: "button" | "submit" | "reset";
@@ -20,8 +20,7 @@ const Button = ({
   icon,
   arrow,
 }: ButtonProps) => {
-  // Only use inline style if width prop is explicitly provided
-  
+
   const buttonStyle = width ? { width } : {};
   
   return (
