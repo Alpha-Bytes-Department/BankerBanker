@@ -52,4 +52,5 @@ class OriButton {
     );
 }
 
-export { buttonVariants, OriButton, OriButtonSize, OriButtonVariant };
+export { buttonVariants, OriButton };
+export type {OriButtonSize,OriButtonVariant};

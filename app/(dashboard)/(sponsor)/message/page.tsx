@@ -1,7 +1,7 @@
 "use client"
 import { MessageSquare } from "lucide-react";
 import { useState } from "react";
-import MessageList from "./_components/MessageList";
+import MessageList from "./_components/messageList";
 import MessageText from "./_components/MessageText";
 
 
