@@ -83,6 +83,373 @@ const MemorandumDetailPage = () => {
     },
     financingSummary:
       "Financing details and charts will be added based on lender quotes and financial analysis.",
+    financialAnalysis: {
+      loanQuotes: [
+        {
+          lender: "Agency SWF/ Max Leverage",
+          leverage: "93.00%",
+          dscr: "1.30x",
+          amortization: "30 Years",
+          loanType: "5 Year Treasury",
+          rate: "8.00%",
+          indexSpread: "3.42%",
+          originationFee: "0.80%",
+          prepayment: "4-5",
+        },
+        {
+          lender: "Agency SWF/ Moderate Leverage",
+          leverage: "81.13%",
+          dscr: "1.30x",
+          amortization: "30 Years",
+          loanType: "5 Year Treasury",
+          rate: "8.00%",
+          indexSpread: "3.30%",
+          originationFee: "0.80%",
+          prepayment: "4-5",
+        },
+        {
+          lender: "Bank",
+          leverage: "75.00%",
+          dscr: "1.30x",
+          amortization: "30 Years",
+          loanType: "5 Year Treasury",
+          rate: "8.00%",
+          indexSpread: "3.47%",
+          originationFee: "0.50%",
+          prepayment: "N/A",
+        },
+        {
+          lender: "CMBS",
+          leverage: "81.13%",
+          dscr: "1.30x",
+          amortization: "30 Years",
+          loanType: "5 Year Treasury",
+          rate: "8.00%",
+          indexSpread: "3.42%",
+          originationFee: "1.25%",
+          prepayment: "Def",
+        },
+        {
+          lender: "Life Co 1",
+          leverage: "60.00%",
+          dscr: "1.25x",
+          amortization: "30 Years",
+          loanType: "5 Year Treasury",
+          rate: "8.00%",
+          indexSpread: "3.32%",
+          originationFee: "0.75%",
+          prepayment: "Yet",
+        },
+        {
+          lender: "Life Co 2",
+          leverage: "70.00%",
+          dscr: "1.30x",
+          amortization: "30 Years",
+          loanType: "5 Year Treasury",
+          rate: "8.00%",
+          indexSpread: "3.37%",
+          originationFee: "0.80%",
+          prepayment: "Yet",
+        },
+      ],
+      loanRatingNote:
+        "Loan Rating (Still in progress, best performance Fannie Mae score is based on 5-year rates as modeled): Tier 1 vs Tier 2 (Great! 1-2 carries lower (5-10 cost savings across similar lenders) DSCR is 1.30x vs 1.25x for certain lenders).",
+      loanRequest: {
+        loanAmount: "$145.56 per unit / $19,000,000",
+        estimatedValue: "$211.11 per unit / $27,000,000",
+        ltv: "70.4%",
+        financingType: "Fixed to Floating",
+        term: "5-10 years",
+        interestRate: "Best Available",
+        amortization: "Max Interest Only Available",
+        prepayment: "Best Available",
+        dscrIoi: "1.58",
+        dyNoi: "9.64%",
+      },
+      propertyDetails: {
+        propertyName: "One Civic Plaza",
+        address: "One Civic Plaza",
+        cityState: "Carson, CA 90745",
+        yearBuilt: "",
+        yearRenovated: "1985",
+        rentableArea: "127,890 SF",
+        occupancy: "93.3%",
+      },
+      sources: [
+        { source: "Senior Loan", amount: "$19,000,000", psf: "$148" },
+        { source: "Mezz Loan", amount: "$0", psf: "$0" },
+        { source: "Other 1", amount: "$0", psf: "$0" },
+        { source: "Other 2", amount: "$0", psf: "$0" },
+        { source: "Other 3", amount: "$0", psf: "$0" },
+        { source: "Other 4", amount: "$0", psf: "$0" },
+        { source: "Other 5", amount: "$0", psf: "$0" },
+        { source: "Cash In", amount: "$0", psf: "$0" },
+      ],
+      uses: [
+        { use: "Purchase/Payoff", amount: "$18,500,000", psf: "$145" },
+        { use: "Closing Costs", amount: "$500,000", psf: "$4" },
+        { use: "Tax Escrow", amount: "$0", psf: "$0" },
+        { use: "Ins Escrow", amount: "$0", psf: "$0" },
+        { use: "Immediate Repairs", amount: "$0", psf: "$0" },
+        { use: "Remaining as Reserve", amount: "$0", psf: "$0" },
+        { use: "HVLC Reserve", amount: "$0", psf: "$0" },
+        { use: "Cash Out", amount: "$0", psf: "$0" },
+      ],
+      totalSources: "$19,000,000",
+      totalUses: "$19,000,000",
+      financialPerformance: [
+        {
+          category: "NRA",
+          trailing12: "127,890",
+          date: "",
+          percentage: "",
+          underwriting: "",
+          inPlace: "",
+          psf: "",
+        },
+        {
+          category: "Physical Occupancy",
+          trailing12: "93.3%",
+          date: "",
+          percentage: "93.3%",
+          underwriting: "",
+          inPlace: "",
+          psf: "",
+        },
+        {
+          category: "Economic Occupancy",
+          trailing12: "-",
+          date: "",
+          percentage: "",
+          underwriting: "",
+          inPlace: "",
+          psf: "",
+        },
+        {
+          category: "Revenue",
+          trailing12: "",
+          date: "",
+          percentage: "",
+          underwriting: "",
+          inPlace: "",
+          psf: "",
+        },
+        {
+          category: "Base Rent",
+          trailing12: "24.65",
+          date: "3,161,745",
+          percentage: "99.4%",
+          underwriting: "28.18",
+          inPlace: "3,216,605",
+          psf: "99.7% $ PSF",
+        },
+        {
+          category: "Percentage/Overage Rent",
+          trailing12: "0.15",
+          date: "18,781",
+          percentage: "0.6%",
+          underwriting: "0.77",
+          inPlace: "98,254",
+          psf: "2.8%",
+        },
+        {
+          category: "Rent Steps",
+          trailing12: "",
+          date: "",
+          percentage: "",
+          underwriting: "",
+          inPlace: "",
+          psf: "",
+        },
+        {
+          category: "Recovery Income",
+          trailing12: "-",
+          date: "-",
+          percentage: "-",
+          underwriting: "-",
+          inPlace: "18,142",
+          psf: "0.0%",
+        },
+        {
+          category: "Other Income",
+          trailing12: "",
+          date: "",
+          percentage: "",
+          underwriting: "",
+          inPlace: "",
+          psf: "",
+        },
+        {
+          category: "Gross Potential Income",
+          trailing12: "25.02",
+          date: "3,200,526",
+          percentage: "100.0%",
+          underwriting: "27.74",
+          inPlace: "3,347,352",
+          psf: "100.0% $ PSF",
+        },
+      ],
+    },
+    salesComparables: {
+      mapImage:
+        "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200",
+      comparables: [
+        {
+          id: 1,
+          address: "3220 Gale Avenue, Long Beach, CA 90810",
+          saleDate: "12/15/2024",
+          salePrice: "$3,200,000",
+          priceUnit: "$200,000",
+          units: 16,
+          yearBuilt: 1965,
+          squareFeet: 10500,
+          capRate: "5.8%",
+        },
+        {
+          id: 2,
+          address: "1840 Linden Ave, Long Beach, CA 90813",
+          saleDate: "11/03/2024",
+          salePrice: "$4,100,000",
+          priceUnit: "$205,000",
+          units: 20,
+          yearBuilt: 1968,
+          squareFeet: 13200,
+          capRate: "6.1%",
+        },
+        {
+          id: 3,
+          address: "2156 Pacific Ave, Long Beach, CA 90806",
+          saleDate: "09/22/2024",
+          salePrice: "$2,800,000",
+          priceUnit: "$233,333",
+          units: 12,
+          yearBuilt: 1972,
+          squareFeet: 8500,
+          capRate: "5.5%",
+        },
+      ],
+    },
+    leaseComparables: {
+      comparables: [
+        {
+          id: 1,
+          address: "2245 Atlantic Ave, Long Beach, CA",
+          unitType: "1 BR / 1 BA",
+          squareFeet: 650,
+          monthlyRent: "$1,850",
+          rentPsf: "$2.85",
+          leaseDate: "01/2025",
+        },
+        {
+          id: 2,
+          address: "2245 Bellflower Blvd, Long Beach, CA",
+          unitType: "2 BR / 1 BA",
+          squareFeet: 850,
+          monthlyRent: "$2,650",
+          rentPsf: "$2.87",
+          leaseDate: "12/2024",
+        },
+        {
+          id: 3,
+          address: "1850 Orange Ave, Long Beach, CA",
+          unitType: "2 BR / 2 BA",
+          squareFeet: 1050,
+          monthlyRent: "$2,850",
+          rentPsf: "$2.71",
+          leaseDate: "11/2024",
+        },
+      ],
+      stats: {
+        averageRent: "$2,367",
+        avgRentPsf: "$2.74",
+        marketTrend: "+4.2%",
+      },
+    },
+    areaAmenities: {
+      heroImage:
+        "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200",
+      amenities: [
+        {
+          id: 1,
+          name: "Virginia Country Club",
+          category: "Recreation",
+          distance: "0.5 mi",
+          rating: 4.7,
+          icon: "golf",
+        },
+        {
+          id: 2,
+          name: "Longfellow Elementary School",
+          category: "Education",
+          distance: "0.3 mi",
+          rating: 8,
+          icon: "school",
+        },
+        {
+          id: 3,
+          name: "Whole Foods Market",
+          category: "Shopping",
+          distance: "0.8 mi",
+          rating: 4.5,
+          icon: "shopping",
+        },
+        {
+          id: 4,
+          name: "Memorial Medical Center",
+          category: "Healthcare",
+          distance: "1.2 mi",
+          rating: 4.6,
+          icon: "hospital",
+        },
+      ],
+    },
+    sponsorship: {
+      companyName: "Team Ari Capital Partners",
+      companyLogo: "",
+      description: "25+ years combined experience",
+      totalAssets: "$2.4B",
+      propertiesManaged: 48,
+      yearEstablished: 2015,
+    },
+    disclaimer: {
+      mainNotices: [
+        {
+          title: "CONFIDENTIALITY NOTICE:",
+          content:
+            "This Offering Memorandum and the information contained herein are confidential and intended solely for the use of the party to whom it is provided by the owner or its representatives. This Offering Memorandum has been prepared by or on behalf of the owner solely for use by prospective purchasers. The information contained in this Offering Memorandum is confidential and is intended only for the persons to whom it is transmitted by the owner or its representatives.",
+        },
+        {
+          title: "NO WARRANTY:",
+          content:
+            "The information contained herein is subject to change or withdrawal without notice. While the information presented is believed to be correct, it is not warranted or guaranteed. Prospective purchasers should make their own investigations and form their own opinions.",
+        },
+        {
+          title: "QUALIFIED INVESTORS:",
+          content:
+            "This investment opportunity is suitable only for sophisticated investors who can afford to lose their entire investment. Securities are offered only to accredited investors or qualified institutional buyers.",
+        },
+      ],
+      cards: [
+        {
+          id: 1,
+          icon: "lock",
+          title: "Confidential",
+          description: "Information is proprietary and confidential",
+        },
+        {
+          id: 2,
+          icon: "shield",
+          title: "Accredited Only",
+          description: "For accredited investors only",
+        },
+        {
+          id: 3,
+          icon: "file",
+          title: "Due Diligence",
+          description: "Independent verification recommended",
+        },
+      ],
+    },
     additionalSections: [
       { id: "financial-analysis", label: "Financial Analysis", icon: "" },
       { id: "sales-comps", label: "Sales Comps", icon: "" },
@@ -217,7 +584,7 @@ const MemorandumDetailPage = () => {
 
       {/* ====== Preview Tab Content ====== */}
       {activeTab === "preview" && (
-        <div>
+        <div className="shadow-xl rounded-lg p-3 md:p-6 lg:p-10 mb-10 ">
           {/* ====== Preview Cover Page ====== */}
           <PreviewCover
             presentedBy={memorandumData.presentedBy}
@@ -236,6 +603,17 @@ const MemorandumDetailPage = () => {
           <PreviewSections
             executiveSummary={memorandumData.executiveSummary}
             propertyOverview={memorandumData.propertyOverview}
+            propertyHighlights={memorandumData.propertyHighlights}
+            areaOverview={memorandumData.areaOverview}
+            areaHighlights={memorandumData.areaHighlights}
+            marketSummary={memorandumData.marketSummary}
+            financingSummary={memorandumData.financingSummary}
+            financialAnalysis={memorandumData.financialAnalysis}
+            salesComparables={memorandumData.salesComparables}
+            leaseComparables={memorandumData.leaseComparables}
+            areaAmenities={memorandumData.areaAmenities}
+            sponsorship={memorandumData.sponsorship}
+            disclaimer={memorandumData.disclaimer}
           />
         </div>
       )}

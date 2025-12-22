@@ -155,6 +155,167 @@ export interface SectionFormData {
   sectionType: string;
 }
 
+//========== Financial Analysis Types ===========
+
+export interface LoanQuote {
+  lender: string;
+  leverage: string;
+  dscr: string;
+  amortization: string;
+  loanType: string;
+  rate: string;
+  indexSpread: string;
+  originationFee: string;
+  prepayment: string;
+}
+
+export interface LoanRequest {
+  loanAmount: string;
+  estimatedValue: string;
+  ltv: string;
+  financingType: string;
+  term: string;
+  interestRate: string;
+  amortization: string;
+  prepayment: string;
+  dscrIoi: string;
+  dyNoi: string;
+}
+
+export interface PropertyDetails {
+  propertyName: string;
+  address: string;
+  cityState: string;
+  yearBuilt: string;
+  yearRenovated: string;
+  rentableArea: string;
+  occupancy: string;
+}
+
+export interface SourceItem {
+  source: string;
+  amount: string;
+  psf: string;
+}
+
+export interface UseItem {
+  use: string;
+  amount: string;
+  psf: string;
+}
+
+export interface FinancialPerformance {
+  category: string;
+  trailing12: string;
+  date: string;
+  percentage: string;
+  underwriting: string;
+  inPlace: string;
+  psf: string;
+}
+
+export interface FinancialAnalysisData {
+  loanQuotes: LoanQuote[];
+  loanRequest: LoanRequest;
+  propertyDetails: PropertyDetails;
+  sources: SourceItem[];
+  uses: UseItem[];
+  totalSources: string;
+  totalUses: string;
+  financialPerformance: FinancialPerformance[];
+  loanRatingNote: string;
+}
+
+//========== Sales Comparables Types ===========
+
+export interface SalesComparable {
+  id: number;
+  address: string;
+  saleDate: string;
+  salePrice: string;
+  priceUnit: string;
+  units: number;
+  yearBuilt: number;
+  squareFeet: number;
+  capRate: string;
+}
+
+export interface SalesComparablesData {
+  comparables: SalesComparable[];
+  mapImage: string;
+}
+
+//========== Lease Comparables Types ===========
+
+export interface LeaseComparable {
+  id: number;
+  address: string;
+  unitType: string;
+  squareFeet: number;
+  monthlyRent: string;
+  rentPsf: string;
+  leaseDate: string;
+}
+
+export interface LeaseStats {
+  averageRent: string;
+  avgRentPsf: string;
+  marketTrend: string;
+}
+
+export interface LeaseComparablesData {
+  comparables: LeaseComparable[];
+  stats: LeaseStats;
+}
+
+//========== Area Amenities Types ===========
+
+export interface Amenity {
+  id: number;
+  name: string;
+  category: string;
+  distance: string;
+  rating?: number;
+  icon: string;
+}
+
+export interface AreaAmenitiesData {
+  heroImage: string;
+  amenities: Amenity[];
+}
+
+//========== Sponsorship Types ===========
+
+export interface SponsorshipData {
+  companyName: string;
+  companyLogo: string;
+  description: string;
+  totalAssets: string;
+  propertiesManaged: number;
+  yearEstablished: number;
+}
+
+//========== Disclaimer Types ===========
+
+export interface DisclaimerNotice {
+  title: string;
+  content: string;
+}
+
+export interface DisclaimerCard {
+  id: number;
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface DisclaimerData {
+  mainNotices: DisclaimerNotice[];
+  cards: DisclaimerCard[];
+}
+
+//========== Preview Cover Types ===========
+
 export interface PreviewCoverProps {
   presentedBy: string;
   confidential: boolean;
