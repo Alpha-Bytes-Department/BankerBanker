@@ -1,5 +1,6 @@
 import PropertyCard from "@/components/PropertyCard";
 import StatusCard from "@/components/StatusCard";
+import { link } from "fs";
 
 const MemorandamPage = () => {
   const dataArray = [
@@ -13,6 +14,7 @@ const MemorandamPage = () => {
       units: "10",
       quotes: "5",
       link: "/memorandum/1",
+      link2: "/loan",
     },
     {
       url: "/images/SponsorDashboard.png",
@@ -24,6 +26,7 @@ const MemorandamPage = () => {
       units: "20",
       quotes: "8",
       link: "/memorandum/2",
+      link2: "/loan",
     },
     {
       url: "/images/SponsorDashboard.png",
@@ -35,6 +38,7 @@ const MemorandamPage = () => {
       units: "15",
       quotes: "10",
       link: "/memorandum/3",
+      link2: "/loan",
     },
     {
       url: "/images/SponsorDashboard.png",
@@ -46,6 +50,7 @@ const MemorandamPage = () => {
       units: "25",
       quotes: "12",
       link: "/memorandum/4",
+      link2: "/loan",
     },
   ];
   return (
