@@ -47,7 +47,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           priority
         />
         {/* ====== Hero Title Overlay ====== */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 md:p-8">
+        <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-6 md:p-8">
           <h2 className="text-white text-lg md:text-2xl">{title}</h2>
         </div>
       </div>
