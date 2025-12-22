@@ -14,6 +14,7 @@ import Notifications from '../(sponsor)/notifications/page';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import ProfilePopUp from './ProfilePopUp';
 import ChatWidget from './ChatWidget';
+import { MapPin, School } from 'lucide-react';
 
 
 
@@ -37,7 +38,7 @@ type UserData = {
     last_name: string;
 };
 
-const Links: LinkProps = [
+const sponsor: LinkProps = [
     {
         text: 'Sponsor Dashboard',
         href: '/sponsor',
@@ -72,6 +73,41 @@ const Links: LinkProps = [
 ];
 
 
+const lander:LinkProps = [
+    {
+        text: 'Lender Dashboard',
+        href: '/sponsor',
+        icon: <CiGrid42 className='text-lg' />
+    },
+    {
+        text: 'Loan Requests',
+        href: '/loan-requests',
+        icon: <FiFileText className='text-lg' />
+    },
+    {
+        text: 'My Quotes',
+        href: '/my-quotes',
+        icon: <FaRegChartBar className='text-lg' />
+
+    },
+    {
+        text: 'Property Map',
+        href: '/property-map',
+        icon: <MapPin size={18}  />
+    },
+    {
+        text: 'Market Analytics',
+        href: '/market-analytics',
+        icon: <FaRegChartBar className='text-lg' />
+    },
+    {
+        text: 'Message',
+        href: '/message',
+        icon: <FiMessageCircle className='text-lg' />
+    }
+]
+
+
 const DashboardNavigation = ({
     children
 }: NavbarProps) => {
@@ -83,6 +119,7 @@ const DashboardNavigation = ({
         last_name: 'Doe'
     });
     const pathName = usePathname();
+    const user = "Lender"
 
 
 
@@ -124,7 +161,7 @@ const DashboardNavigation = ({
                     {/* Navigation Links */}
                     <nav className="grow p-4">
                         <div className="flex flex-col space-y-2 text-white">
-                            {Links && Links.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>)}
+                            {user === "Lender" ? lander.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>) : sponsor.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>)}
                         </div>
                     </nav>
                     {/* bottom */}
@@ -139,7 +176,11 @@ const DashboardNavigation = ({
                 <div className={` flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white border-b border-[#E5E7EB] text-black `}>
                     <div>
                         <div className='hidden lg:flex' >
-                            {Links && Links.map((Link) => {
+                            {user === "Lender" ? lander.map((Link) => {
+                                if (Link.href === pathName) {
+                                    return Link.text
+                                }
+                            }) :  sponsor.map((Link) => {
                                 if (Link.href === pathName) {
                                     return Link.text
                                 }
@@ -148,7 +189,7 @@ const DashboardNavigation = ({
                         <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                     </div>
                     <div className='flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer'>
-                        <IoBagHandleOutline className='text-lg' /> <span>Sponsor</span>
+                        {user === "Lender" ? <><School size={18} /><span>Lender</span></> : <><IoBagHandleOutline className='text-lg' /><span>Sponsor</span></>}
                     </div>
                     {/*----------- notification -------- */}
                     <Notifications />
