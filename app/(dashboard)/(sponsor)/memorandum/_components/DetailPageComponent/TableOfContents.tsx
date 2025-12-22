@@ -32,7 +32,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ items }) => {
           >
             {/* ====== Item Number and Title ====== */}
             <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-blue-100 text-blue-600 rounded-full text-sm md:text-base flex-shrink-0">
+              <div className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-blue-100 text-blue-600 rounded-full text-sm md:text-base shrink-0">
                 {item.id}
               </div>
               <span className="text-gray-900 text-sm md:text-base">
