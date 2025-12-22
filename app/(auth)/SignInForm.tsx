@@ -71,7 +71,7 @@ const SignInForm: React.FC = () => {
 
         <p className="text-sm">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-blue-600">
+          <Link href="/register" className="text-blue-600">
             Create now
           </Link>
         </p>
@@ -158,7 +158,7 @@ const SignInForm: React.FC = () => {
                       />
                     </div>
 
-                    <Link href="#" className="text-blue-600 text-sm underline">
+                    <Link href="/reset_pass_one" className="text-blue-600 text-sm underline">
                       Forgot Password?
                     </Link>
                   </div>
@@ -169,7 +169,7 @@ const SignInForm: React.FC = () => {
             {/* Login Button */}
             <Button
               type="submit"
-              text="Sign Up"
+              text="Sign In"
               className="button-primary w-full md:w-[593px] h-14"
             />
 

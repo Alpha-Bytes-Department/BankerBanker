@@ -9,7 +9,7 @@ import { FaHome } from "react-icons/fa";
 import { BsBank, BsGraphUpArrow } from "react-icons/bs";
 import { BiSolidContact } from "react-icons/bi";
 import Button from '@/components/Button';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 
 type NavbarProps = {
@@ -68,6 +68,7 @@ const Navbar = ({
     const [userData, setUserData] = useState<UserData | null>(null);
     const pathName = usePathname();
 
+    const router = useRouter();
 
 
 
@@ -84,8 +85,8 @@ const Navbar = ({
                     {Links && Links.map((link, idx) => <Link key={idx} className={` ${link.href === pathName ? "bg-[#0D4DA5] px-3 py-2 rounded-full text-white" : ""}`} href={link.href}>{link.text}</Link>)}
                 </div>
                 <div className='flex gap-5 items-center'>
-                    {userData ? (<></>) : <Button text='Sign in' className='button-none hidden lg:flex' />}
-                    <Button text='Get Started Free' className='button-primary' />
+                    {userData ? (<></>) : <Button onClick={()=>router.push("/signin")} text='Sign in' className='button-none hidden lg:flex' />}
+                    <Button onClick={()=>router.push("/register")} text='Get Started Free' className='button-primary' />
                 </div>
             </nav>
             {/* navbar for mobile */}
@@ -127,3 +128,4 @@ const Navbar = ({
 };
 
 export default Navbar;
+
