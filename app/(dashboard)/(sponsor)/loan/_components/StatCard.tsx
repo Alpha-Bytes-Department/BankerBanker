@@ -34,7 +34,7 @@ const StatCard = ({ title, value, type }: StatCardProps) => {
   const styles = STAT_STYLE_MAP[type];
 
   return (
-    <div className={`rounded-lg border p-4 ${styles.bg}`}>
+    <div className={`rounded-lg border p-4 border-blue-400/40 ${styles.bg}`}>
       <p className={`text-xs ${styles.text}`}>{title}</p>
       <p className={`text-lg font-semibold ${styles.text}`}>
         {value}
