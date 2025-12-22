@@ -18,6 +18,9 @@
   .button-primary {
     @apply bg-primary text-white hover:bg-blue-700;
   }
+  .button-outline {
+    @apply bg-transparent border border-primary text-primary hover:bg-primary hover:text-white;
+  }
   .button-secondary {
     @apply bg-secondary text-white hover:bg-gray-700;
   }

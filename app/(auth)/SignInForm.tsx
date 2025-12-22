@@ -158,7 +158,7 @@ const SignInForm: React.FC = () => {
                       />
                     </div>
 
-                    <Link href="#" className="text-blue-600 text-sm underline">
+                    <Link href="/reset_pass_one" className="text-blue-600 text-sm underline">
                       Forgot Password?
                     </Link>
                   </div>

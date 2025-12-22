@@ -9,7 +9,7 @@ import { FaHome } from "react-icons/fa";
 import { BsBank, BsGraphUpArrow } from "react-icons/bs";
 import { BiSolidContact } from "react-icons/bi";
 import Button from '@/components/Button';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 
 type NavbarProps = {
@@ -67,6 +67,12 @@ const Navbar = ({
     const [userData, setUserData] = useState<UserData | null>(null);
     const pathName = usePathname();
 
+    const router = useRouter();
+
+    const handleNavigate = ()=>{
+        router.push('/register')
+    }
+
 
 
 
@@ -75,7 +81,7 @@ const Navbar = ({
             {/* nav for desktop  */}
             <nav className={`flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white ${className}`}>
                 <div>
-                    <Image src={"/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
+                    <Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
                     <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                 </div>
                 {/* maping Links for desktop */}
@@ -84,7 +90,7 @@ const Navbar = ({
                 </div>
                 <div className='flex gap-5 items-center'>
                     {userData ? (<></>) : <Button text='Sign in' className='button-none hidden lg:flex' />}
-                    <Button text='Get Started Free' className='button-primary' />
+                    <Button onClick={handleNavigate} text='Get Started Free' className='button-primary' />
                 </div>
             </nav>
             {/* navbar for mobile */}
@@ -98,7 +104,7 @@ const Navbar = ({
                             {/* Logo Section */}
                             <div className="shrink-0">
                                 <a href="#">
-                                    <Image src={"/BANCre.png"} alt="logo" width={150} height={50} />
+                                    <Image src={"/logo/BANCre.png"} alt="logo" width={150} height={50} />
                                 </a>
                             </div>
                             <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500  rounded-md hover:bg-gray-100 " aria-label="Close menu">
@@ -126,3 +132,4 @@ const Navbar = ({
 };
 
 export default Navbar;
+

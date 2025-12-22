@@ -98,7 +98,7 @@ export default function RegistrationSystem() {
     if (validateForm()) {
       
       if (formData.customerType === 'Sponsor') {
-        router.push('/verify_email');
+        router.push('/signin/verify_email');
       } else {
         router.push('/register/upload');
       }
