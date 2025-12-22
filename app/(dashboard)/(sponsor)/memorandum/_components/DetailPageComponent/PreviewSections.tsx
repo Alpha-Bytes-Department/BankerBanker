@@ -1,19 +1,62 @@
 "use client";
 
 import React from "react";
+import { FaArrowTrendUp } from "react-icons/fa6";
+import { LuBuilding2 } from "react-icons/lu";
 import PreviewSection from "./PreviewSection";
-import { PropertyOverviewData } from "@/types/memorandum-detail";
+import FinancialAnalysis from "./FinancialAnalysis";
+import SalesComparables from "./SalesComparables";
+import LeaseComparables from "./LeaseComparables";
+import AreaAmenities from "./AreaAmenities";
+import Sponsorship from "./Sponsorship";
+import Disclaimer from "./Disclaimer";
+import {
+  PropertyOverviewData,
+  FinancialAnalysisData,
+  SalesComparablesData,
+  LeaseComparablesData,
+  AreaAmenitiesData,
+  SponsorshipData,
+  DisclaimerData,
+  MarketSummaryData,
+} from "@/types/memorandum-detail";
 
 //========== Preview Sections Component ===========
 
 interface PreviewSectionsProps {
   executiveSummary: string;
   propertyOverview: PropertyOverviewData;
+  propertyHighlights: string[];
+  areaOverview: {
+    description: string;
+    neighborhoodDescription: string;
+    localAmenities: string;
+  };
+  areaHighlights: string[];
+  marketSummary: MarketSummaryData;
+  financingSummary: string;
+  financialAnalysis: FinancialAnalysisData;
+  salesComparables: SalesComparablesData;
+  leaseComparables: LeaseComparablesData;
+  areaAmenities: AreaAmenitiesData;
+  sponsorship: SponsorshipData;
+  disclaimer: DisclaimerData;
 }
 
 const PreviewSections: React.FC<PreviewSectionsProps> = ({
   executiveSummary,
   propertyOverview,
+  propertyHighlights,
+  areaOverview,
+  areaHighlights,
+  marketSummary,
+  financingSummary,
+  financialAnalysis,
+  salesComparables,
+  leaseComparables,
+  areaAmenities,
+  sponsorship,
+  disclaimer,
 }) => {
   return (
     <div>
@@ -87,20 +130,8 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
           {/* ====== Property Details Card ====== */}
           <div className="bg-blue-50 rounded-lg p-6">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
+              <div className="w-6 h-6 rounded flex items-center justify-center">
+                <LuBuilding2 size={28} className="font-bold text-blue-600" />
               </div>
               <h4 className="text-base text-gray-900">Property Details</h4>
             </div>
@@ -136,20 +167,8 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
           {/* ====== Performance Metrics Card ====== */}
           <div className="bg-green-50 rounded-lg p-6">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 bg-green-600 rounded flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                  />
-                </svg>
+              <div className="w-6 h-6  rounded flex items-center justify-center">
+                <FaArrowTrendUp size={28} className=" text-blue-600" />
               </div>
               <h4 className="text-base text-gray-900">Performance Metrics</h4>
             </div>
@@ -177,6 +196,96 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
           </div>
         </div>
       </PreviewSection>
+
+      {/* ====== Property Highlights Section ====== */}
+      <PreviewSection sectionNumber={3} title="Property Highlights">
+        <div className="bg-gray-50 rounded-lg p-6">
+          <ul className="space-y-3">
+            {propertyHighlights.map((highlight, index) => (
+              <li key={index} className="flex gap-3 text-gray-700">
+                <span className="text-gray-900">•</span>
+                <p>{highlight}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </PreviewSection>
+
+      {/* ====== Area Overview Section ====== */}
+      <PreviewSection sectionNumber={4} title="Area Overview">
+        <div className="bg-gray-50 rounded-lg p-6 space-y-4">
+          <p className="text-gray-700 leading-relaxed">
+            {areaOverview.description}
+          </p>
+          <p className="text-gray-700 leading-relaxed">
+            {areaOverview.neighborhoodDescription}
+          </p>
+          <p className="text-gray-700 leading-relaxed">
+            {areaOverview.localAmenities}
+          </p>
+        </div>
+      </PreviewSection>
+
+      {/* ====== Area Highlights Section ====== */}
+      <PreviewSection sectionNumber={5} title="Area Highlights">
+        <div className="bg-gray-50 rounded-lg p-6">
+          <ul className="space-y-3">
+            {areaHighlights.map((highlight, index) => (
+              <li key={index} className="flex gap-3 text-gray-700">
+                <span className="text-gray-900">•</span>
+                <p>{highlight}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </PreviewSection>
+
+      {/* ====== Market Summary Section ====== */}
+      <PreviewSection sectionNumber={6} title="Market Summary">
+        <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
+          <p className="text-gray-700 leading-relaxed mb-4">
+            {marketSummary.description}
+          </p>
+          <div className="mt-4">
+            <p className="text-sm text-gray-900 mb-2">Key market indicators:</p>
+            <ul className="space-y-2">
+              {marketSummary.keyIndicators.map((indicator, index) => (
+                <li key={index} className="flex gap-2 text-sm text-gray-700">
+                  <span>•</span>
+                  <span>
+                    {indicator.label}: {indicator.value}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </PreviewSection>
+
+      {/* ====== Financing Summary Section ====== */}
+      <PreviewSection sectionNumber={7} title="Financing Summary">
+        <div className="bg-gray-50 rounded-lg p-6">
+          <p className="text-gray-700 leading-relaxed">{financingSummary}</p>
+        </div>
+      </PreviewSection>
+
+      {/* ====== Financial Analysis Section ====== */}
+      <FinancialAnalysis data={financialAnalysis} />
+
+      {/* ====== Sales Comparables Section ====== */}
+      <SalesComparables data={salesComparables} />
+
+      {/* ====== Lease Comparables Section ====== */}
+      <LeaseComparables data={leaseComparables} />
+
+      {/* ====== Area Amenities Section ====== */}
+      <AreaAmenities data={areaAmenities} />
+
+      {/* ====== Sponsorship Section ====== */}
+      <Sponsorship data={sponsorship} />
+
+      {/* ====== Disclaimer Section ====== */}
+      <Disclaimer data={disclaimer} />
     </div>
   );
 };
