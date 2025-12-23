@@ -42,15 +42,15 @@ const chats = [
     },
 ];
 
-interface MesssageListProps {
+interface MessageListProps {
   selectedMessageId ?: string | number | null;
   setSelectedMessageId ?: (value: string | number | null) => void
 }
 
-const MessageList = ({
+const AllMessage = ({
     selectedMessageId,
     setSelectedMessageId
-}:MesssageListProps) => {
+}:MessageListProps) => {
     const [filter, setFilter] = useState<"all" | "unread" | "stared">("all");
     
 
@@ -117,4 +117,4 @@ const MessageList = ({
     );
 };
 
-export default MessageList;
+export default AllMessage;
