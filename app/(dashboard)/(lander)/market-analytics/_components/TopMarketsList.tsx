@@ -37,7 +37,7 @@ const TopMarketsList: React.FC<TopMarketsListProps> = ({ markets }) => {
             className="flex items-center gap-3 md:gap-4 p-3 md:p-4 hover:bg-gray-50 rounded-xl transition-colors min-w-0"
           >
             {/* ====== Rank Badge ====== */}
-            <div className="flex-shrink-0 w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center">
+            <div className="shrink-0 w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center">
               <span className="text-sm md:text-base font-semibold text-white">
                 #{market.rank}
               </span>
@@ -55,7 +55,7 @@ const TopMarketsList: React.FC<TopMarketsListProps> = ({ markets }) => {
 
             {/* ====== Change Badge ====== */}
             <div
-              className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium ${
+              className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium ${
                 market.changeType === "positive"
                   ? "bg-green-100 text-green-700"
                   : "bg-red-100 text-red-700"

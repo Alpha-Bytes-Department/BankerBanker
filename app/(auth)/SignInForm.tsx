@@ -21,6 +21,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Button from "@/components/Button";
+import { useAuth } from "@/components/Provider/AuthProvider";
 
 const formSchema = z.object({
   email: z
@@ -55,6 +56,10 @@ const SignInForm: React.FC = () => {
       notifications: false,
     },
   });
+
+  // const {user , login} = React.useContext(AuthContext)!;
+  const {user}= useAuth()
+  // console.log("Current User:", user);
 
   const handleSign = (data: SignInFormValues) => {
     console.log(data);

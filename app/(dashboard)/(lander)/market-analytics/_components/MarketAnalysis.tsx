@@ -168,7 +168,7 @@ const MarketAnalysis: React.FC = () => {
       icon: "trending",
       bgColor: "bg-blue-50",
       iconColor: "text-blue-600",
-      borderColor: "border-blue-200",
+      borderColor: "border-blue-600",
     },
     {
       id: 2,
@@ -178,7 +178,7 @@ const MarketAnalysis: React.FC = () => {
       icon: "chart",
       bgColor: "bg-orange-50",
       iconColor: "text-orange-600",
-      borderColor: "border-orange-200",
+      borderColor: "border-orange-600",
     },
     {
       id: 3,
@@ -188,12 +188,12 @@ const MarketAnalysis: React.FC = () => {
       icon: "location",
       bgColor: "bg-green-50",
       iconColor: "text-green-600",
-      borderColor: "border-green-200",
+      borderColor: "border-green-600",
     },
   ]);
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* ====== Header ====== */}
       <header className="bg-white text-start rounded-2xl p-4 md:p-6 mb-4 md:mb-6 mx-3 md:mx-0">
         <h1 className="text-xl md:text-2xl font-normal text-gray-900">

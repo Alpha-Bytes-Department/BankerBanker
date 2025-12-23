@@ -29,7 +29,7 @@ const MarketInsightsCards: React.FC<MarketInsightsCardsProps> = ({
       {insights.map((insight) => (
         <div
           key={insight.id}
-          className={`${insight.bgColor} rounded-2xl p-4 md:p-6 border-2 ${insight.borderColor}`}
+          className={`${insight.bgColor} rounded-2xl p-4 md:p-6 border-2 border-l-6 ${insight.borderColor}`}
         >
           <div className="flex items-start gap-3 md:gap-4">
             {/* ====== Icon ====== */}

@@ -4,14 +4,13 @@ import React from "react";
 import { MarketStat } from "@/types/market-analytics";
 import {
   FiDollarSign,
-  FiBriefcase,
   FiTrendingUp,
   FiCalendar,
-  FiBarChart2,
   FiMapPin,
-  FiArrowUp,
-  FiArrowDown,
 } from "react-icons/fi";
+import { IoMdTrendingDown, IoMdTrendingUp } from "react-icons/io";
+import { LuBuilding2 } from "react-icons/lu";
+import { FaChartColumn } from "react-icons/fa6";
 
 //========== Stats Cards Component ===========
 
@@ -24,8 +23,8 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
   const getIconComponent = (iconType: string) => {
     const iconMap = {
       dollar: FiDollarSign,
-      briefcase: FiBriefcase,
-      chart: FiBarChart2,
+      briefcase: LuBuilding2,
+      chart: FaChartColumn,
       calendar: FiCalendar,
       trending: FiTrendingUp,
       location: FiMapPin,
@@ -58,26 +57,27 @@ const StatsCards: React.FC<StatsCardsProps> = ({ stats }) => {
               }`}
             >
               {stat.changeType === "positive" ? (
-                <FiArrowUp className="w-4 h-4" />
+                <IoMdTrendingUp size={28} className=" " />
               ) : stat.changeType === "negative" ? (
-                <FiArrowDown className="w-4 h-4" />
+                <IoMdTrendingDown size={28} className=" " />
               ) : null}
               {stat.change}
             </div>
           </div>
+          <div className=" flex flex-col gap-6">
+            {/* ====== Label ====== */}
+            <p className="text-sm md:text-base text-gray-600 mb-2">
+              {stat.label}
+            </p>
 
-          {/* ====== Label ====== */}
-          <p className="text-sm md:text-base text-gray-600 mb-2">
-            {stat.label}
-          </p>
+            {/* ====== Value ====== */}
+            <p className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2  ">
+              {stat.value}
+            </p>
 
-          {/* ====== Value ====== */}
-          <p className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2 break-words">
-            {stat.value}
-          </p>
-
-          {/* ====== Subtitle ====== */}
-          <p className="text-xs md:text-sm text-gray-500">{stat.subtitle}</p>
+            {/* ====== Subtitle ====== */}
+            <p className="text-xs md:text-sm text-gray-500">{stat.subtitle}</p>
+          </div>
         </div>
       ))}
     </div>
