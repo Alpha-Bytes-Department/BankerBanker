@@ -3,7 +3,6 @@ import { PropertyProps } from "@/types/sponsor";
 import Button from "./Button";
 import { IoLocationOutline } from "react-icons/io5";
 import Image from "next/image";
-import { FiDollarSign } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 
 // type declaration 
@@ -65,8 +64,8 @@ const PropertyCard = ({
                 </div>
                 <div className="flex justify-between items-center mt-4">
                     
-                        <Button text="View Document" onClick={()=>data?.link && router.push(data.link)} />
-                        <Button text="View Quotes" className="button-outline" onClick={()=>data?.link2 && router.push(data.link2)} />
+                        <Button text="View Document" onClick={()=>router.push("/memorandum/1")} />
+                        <Button text="View Quotes" className="button-outline" onClick={()=>router.push("/loan")} />
                 </div>
             </div>
         </div>
