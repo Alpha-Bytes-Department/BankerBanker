@@ -2,7 +2,10 @@
 import { MessageSquare } from "lucide-react";
 import { useState } from "react";
 import MessageText from "./_components/MessageText";
-import MessageList from "./_components/messageList";
+import AllMessage from "./_components/AllMessage";
+
+
+
 
 
 
@@ -12,7 +15,7 @@ const Page = () => {
 
     return (
         <div className="flex gap-5">
-            <MessageList selectedMessageId={selectedMessageId} setSelectedMessageId={setSelectedMessageId}/>
+            <AllMessage selectedMessageId={selectedMessageId} setSelectedMessageId={setSelectedMessageId}/>
             {selectedMessageId == null ? <div className="flex flex-col gap-5 p-5 flex-1 border border-[#0000001A] rounded-lg h-[90vh]">
                 <div className="flex flex-col justify-center items-center border-[#E5E7EB] my-auto">
                     <MessageSquare size={62} stroke="#99A1AF" />
