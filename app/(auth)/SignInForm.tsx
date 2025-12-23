@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import Button from "@/components/Button";
 import { useAuth } from "@/components/Provider/AuthProvider";
 
+
 const formSchema = z.object({
   email: z
     .string()
@@ -33,11 +34,11 @@ const formSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password should be at least 8 characters" })
-    .max(30, { message: "Password should be at most 30 characters" })
-    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/, {
-      message:
-        "Password must contain uppercase, lowercase, number, and special character",
-    }),
+    .max(30, { message: "Password should be at most 30 characters" }),
+    // .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/, {
+    //   message:
+    //     "Password must contain uppercase, lowercase, number, and special character",
+    // }),
 
   notifications: z.boolean(),
 });
@@ -57,13 +58,15 @@ const SignInForm: React.FC = () => {
     },
   });
 
-  // const {user , login} = React.useContext(AuthContext)!;
-  const {user}= useAuth()
-  // console.log("Current User:", user);
+
+  const {user, login}= useAuth()
+
 
   const handleSign = (data: SignInFormValues) => {
+    console.log("clicked.....");
     console.log(data);
-    router.push("/signin/verify_email");
+    login(data.email, data.password);
+    router.push("/sponsor");
   };
 
   return (
