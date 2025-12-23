@@ -99,9 +99,7 @@ const Navbar = ({
                         <div className="flex items-center justify-between p-4 border-b border-gray-200">
                             {/* Logo Section */}
                             <div className="shrink-0">
-                                <a href="#">
-                                    <Link className='cursor-pointer' href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
-                                </a>
+                                <Link className='cursor-pointer' href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
                             </div>
                             <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500  rounded-md hover:bg-gray-100 " aria-label="Close menu">
                                 <MdClose className="h-6 w-6" />

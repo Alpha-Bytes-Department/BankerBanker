@@ -15,6 +15,7 @@ import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import ProfilePopUp from './ProfilePopUp';
 import ChatWidget from './ChatWidget';
 import { MapPin, School } from 'lucide-react';
+import { useAuth } from '@/components/Provider/AuthProvider';
 
 
 
@@ -38,7 +39,6 @@ type UserData = {
     last_name: string;
 };
 
-type UserRole = "Sponsor" | "Lender";
 
 const sponsor: LinkProps = [
     {
@@ -78,7 +78,7 @@ const sponsor: LinkProps = [
 const lander:LinkProps = [
     {
         text: 'Lender Dashboard',
-        href: '/sponsor',
+        href: '/lender',
         icon: <CiGrid42 className='text-lg' />
     },
     {
@@ -121,7 +121,7 @@ const DashboardNavigation = ({
         last_name: 'Doe'
     });
     const pathName = usePathname();
-    const user:UserRole = "Sponsor"
+    const {user} = useAuth();
 
 
 
@@ -163,7 +163,7 @@ const DashboardNavigation = ({
                     {/* Navigation Links */}
                     <nav className="grow p-4">
                         <div className="flex flex-col space-y-2 text-white">
-                            {user === "Lender" ? lander.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>) : sponsor.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>)}
+                            {user?.role === "lender" ? lander.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>) : sponsor.map((link, idx) => <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""}`} key={idx}>{link.icon && <span>{link.icon}</span>}<Link href={link.href}>{link.text}</Link></div>)}
                         </div>
                     </nav>
                     {/* bottom */}
@@ -178,7 +178,7 @@ const DashboardNavigation = ({
                 <div className={` flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white border-b border-[#E5E7EB] text-black `}>
                     <div>
                         <div className='hidden lg:flex' >
-                            {user === "Lender" ? lander.map((Link) => {
+                            {user?.role === "lender" ? lander.map((Link) => {
                                 if (Link.href === pathName) {
                                     return Link.text
                                 }
@@ -191,7 +191,7 @@ const DashboardNavigation = ({
                         <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                     </div>
                     <div className='flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer'>
-                        {user === "Lender" ? <><School size={18} /><span>Lender</span></> : <><IoBagHandleOutline className='text-lg' /><span>Sponsor</span></>}
+                        {user?.role === "lender" ? <><School size={18} /><span>Lender</span></> : <><IoBagHandleOutline className='text-lg' /><span>Sponsor</span></>}
                     </div>
                     {/*----------- notification -------- */}
                     <Notifications />

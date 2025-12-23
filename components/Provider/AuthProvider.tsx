@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           : "XYZ Properties",
       };
 
-      const storage = rememberMe ? localStorage : sessionStorage;
+      const storage = rememberMe ? localStorage : localStorage;
       storage.setItem("user", JSON.stringify(mockUser));
       storage.setItem("accessToken", "mock-access-token");
       storage.setItem("refreshToken", "mock-refresh-token");
@@ -104,10 +104,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
 
       //========== Redirect Based on Role ===========
-      if (mockUser.role === "lender") {
-        router.push("/lender");
-      } else {
+      if (mockUser.role === "sponsor") {
         router.push("/sponsor");
+      } else {
+        router.push("/lender");
       }
     } catch (error) {
       console.error("Login error:", error);
