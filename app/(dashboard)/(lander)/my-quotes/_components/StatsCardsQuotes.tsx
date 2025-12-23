@@ -37,7 +37,7 @@ const StatsCardsQuotes: React.FC<StatsCardsQuotesProps> = ({ stats }) => {
       {stats.map((stat) => (
         <div
           key={stat.id}
-          className={`${stat.bgColor} rounded-xl p-3 md:p-4 border ${stat.borderColor} min-w-0`}
+          className={`${stat.bgColor} rounded-xl flex items-center p-3 md:p-4 border ${stat.borderColor} min-w-0`}
         >
           {/* ====== Icon ====== */}
           <div
@@ -46,13 +46,14 @@ const StatsCardsQuotes: React.FC<StatsCardsQuotesProps> = ({ stats }) => {
             {getIconComponent(stat.icon)}
           </div>
 
-          {/* ====== Label ====== */}
-          <p className="text-xs md:text-sm text-gray-600 mb-1">{stat.label}</p>
-
-          {/* ====== Value ====== */}
-          <p className="text-lg md:text-2xl font-semibold text-gray-900 break-words">
-            {stat.value}
-          </p>
+          <div className="ml-3 flex flex-col items-start justify-center min-w-0">
+            <p className="text-xs md:text-sm text-gray-600 mb-1">
+              {stat.label}
+            </p>
+            <p className="text-lg md:text-2xl font-semibold text-gray-900  ">
+              {stat.value}
+            </p>
+          </div>
         </div>
       ))}
     </div>

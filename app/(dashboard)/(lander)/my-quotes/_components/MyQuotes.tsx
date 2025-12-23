@@ -163,7 +163,7 @@ const MyQuotes: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 overflow-x-hidden pb-6">
+    <div className="min-h-screen bg-white overflow-x-hidden pb-6">
       {/* ====== Header ====== */}
       <header className="bg-white text-start rounded-2xl p-4 md:p-6 mb-4 md:mb-6 mx-3 md:mx-0">
         <h1 className="text-xl md:text-2xl font-normal text-gray-900">
