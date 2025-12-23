@@ -48,7 +48,7 @@ const LoanRequestCard: React.FC<LoanRequestCardProps> = ({
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+    <div className="border shadow-lg border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
         {/* ====== Property Image Section ====== */}
         <div className="relative h-64 lg:h-auto">

@@ -40,3 +40,18 @@ export interface LoanRequestCardProps {
   onViewDetails: (id: number) => void;
   onViewDocuments: (id: number) => void;
 }
+
+//========== Property Map Types ===========
+
+export interface PropertyMapStats {
+  totalProperties: number;
+  totalLoanValue: number;
+  avgLoanSize: number;
+  urgentRequests: number;
+}
+
+export interface PropertyMapData extends LoanRequestData {
+  units?: number;
+  squareFeet?: number;
+  targetLtv?: number;
+}

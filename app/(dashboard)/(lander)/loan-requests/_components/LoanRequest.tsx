@@ -105,7 +105,7 @@ const LoanRequest = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full pt-5 pb-16">
       {/* ====== Header Section ====== */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
