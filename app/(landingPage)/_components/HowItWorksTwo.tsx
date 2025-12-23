@@ -56,7 +56,7 @@ export default function HowItWorksTwo() {
                         {
                             item.property.map(prope => (
                                 <div key={prope} className="flex items-center gap-2">
-                                    <FaCheck />
+                                    <FaCheck className="text-primary" />
                                     <p className="text-[#374151] text-sm">{prope}</p>
                                 </div>
                             ))

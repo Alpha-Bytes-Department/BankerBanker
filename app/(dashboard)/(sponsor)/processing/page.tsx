@@ -9,9 +9,9 @@ import SubmitSuccess from './_components/SubmitSuccess';
 
 const Page = () => {
     const steps = [
-        { id: 1, title: "Upload Investment Memo", description: "Choose a method for how you'd like to upload your data" },
-        { id: 2, title: "Add Connections", description: "Connect your data sources securely" },
-        { id: 3, title: "Review and Add Connections", description: "Ensure all data is accurate and complete" },
+        { id: 1, title: "Upload", description: "Choose a method for how you'd like to upload your data" },
+        { id: 2, title: "Processing", description: "Connect your data sources securely" },
+        { id: 3, title: "Review", description: "Ensure all data is accurate and complete" },
     ];
 
     const [currentStep, setCurrentStep] = useState(1);
