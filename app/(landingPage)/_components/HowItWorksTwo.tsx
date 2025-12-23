@@ -1,5 +1,6 @@
-// Fahim
-import BlackButtonRightIcon from "@/components/BlackButtonRightIcon";
+"use client";
+import Button from "@/components/Button";
+import { useRouter } from "next/navigation";
 import { FaAngleRight, FaBuilding, FaBuildingColumns, FaCheck } from "react-icons/fa6";
 
 const howItWorksTwoData = [{
@@ -34,12 +35,19 @@ const howItWorksTwoData = [{
 }];
 
 export default function HowItWorksTwo() {
+    const router = useRouter();
+
+    // Navigate to sign-up page
+    const handleGoToSignUp = () => {
+        router.push("/signup");
+    }
+
     return (
         <div className="flex flex-col xl:flex-row items-center justify-center gap-20 px-4 py-16">
             {howItWorksTwoData.map(item => (
                 // Card
-                <div key={item.id} className="bg-[#F3F3F3] max-w-[550px] h-[544px] rounded-3xl p-12">
-                    <div className="w-16 h-16 flex items-center justify-center bg-[#818181] rounded-lg">
+                <div key={item.id} className="bg-[#F3F3F3] max-w-[550px] rounded-3xl p-12">
+                    <div className="w-16 h-16 flex items-center justify-center bg-primary rounded-lg">
                         <item.logo className="w-7 h-7 text-white" />
                     </div>
                     <h1 className="text-[#111827] text-2xl font-bold mt-5">{item.title}</h1>
@@ -54,8 +62,7 @@ export default function HowItWorksTwo() {
                             ))
                         }
                     </div>
-                    <BlackButtonRightIcon buttonName={item.buttonName} iconName={item.iconName} width="w-full"
-                        rounded="rounded-full" />
+                    <Button onClick={handleGoToSignUp} text={item.buttonName} arrow={true} className="button-primary w-full mt-5" />
                 </div>
             ))}
         </div>

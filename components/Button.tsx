@@ -18,7 +18,7 @@ const Button = ({
   className = "button-primary",
   type = "button",
   icon,
-  arrow,
+  arrow = false,
 }: ButtonProps) => {
 
   const buttonStyle = width ? { width } : {};
