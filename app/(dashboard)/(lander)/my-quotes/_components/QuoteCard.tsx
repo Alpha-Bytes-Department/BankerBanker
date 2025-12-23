@@ -3,7 +3,7 @@
 import React from "react";
 import { Quote } from "@/types/my-quotes";
 import Image from "next/image";
-import { FiEye, FiEdit2, FiX, FiHome, FiMoreVertical } from "react-icons/fi";
+import { FiEye, FiEdit2, FiX, FiHome, FiMoreVertical, FiTrendingDown, FiTrendingUp } from "react-icons/fi";
 
 //========== Quote Card Component ===========
 
@@ -56,7 +56,7 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
       <div className="flex flex-col lg:flex-row">
         {/* ====== Property Image ====== */}
-        <div className="relative w-full lg:w-44 h-44 lg:h-auto flex-shrink-0">
+        <div className="relative w-full lg:w-80 h-44 lg:h-auto shrink-0">
           <Image
             src={quote.image}
             alt={quote.propertyName}
@@ -91,7 +91,7 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
                 {quote.sponsor}
               </p>
             </div>
-            <div className="text-right flex-shrink-0">
+            <div className="text-right shrink-0">
               <p className="text-xs text-gray-500 mb-1">Quoted Amount</p>
               <p className="text-lg md:text-xl font-bold text-blue-600">
                 {quote.quotedAmount}
@@ -100,7 +100,7 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
           </div>
 
           {/* ====== Details Grid ====== */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 mb-4 text-xs md:text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3 md:gap-4 mb-4 text-xs md:text-sm">
             <div>
               <p className="text-gray-500 mb-1">Interest Rate</p>
               <p className="font-medium text-gray-900">{quote.interestRate}</p>
@@ -117,27 +117,22 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
               <p className="text-gray-500 mb-1">Submitted</p>
               <p className="font-medium text-gray-900">{quote.submittedDate}</p>
             </div>
+            <div>
+              <p className="text-gray-500 mb-1">Expires in</p>
+              <p className="font-medium text-red-600">{quote.expiresIn} days</p>
+            </div>
           </div>
 
           {/* ====== Footer Info ====== */}
           <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm text-gray-600 mb-4">
             <span className="flex items-center gap-1">
-              <FiEye className="w-4 h-4" />
+              <FiTrendingUp className="w-4 h-4" />
               {quote.competingQuotes} competing quotes
             </span>
             <span className="flex items-center gap-1">
               Avg response: {quote.avgResponseTime}
             </span>
-            <span
-              className={`font-medium ${
-                quote.expiresIn < 0 ? "text-red-600" : "text-orange-600"
-              }`}
-            >
-              Expires in:{" "}
-              {quote.expiresIn < 0
-                ? `${Math.abs(quote.expiresIn)} days`
-                : `${quote.expiresIn} days`}
-            </span>
+            
           </div>
 
           {/* ====== Status Message ====== */}
@@ -184,9 +179,7 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
               View Property
             </button>
 
-            <button className="ml-auto p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <FiMoreVertical className="w-4 h-4 text-gray-600" />
-            </button>
+             
           </div>
         </div>
       </div>
