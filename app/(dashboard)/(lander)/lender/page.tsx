@@ -83,7 +83,7 @@ const page = () => {
                 <div className="flex flex-col lg:flex-row xl:flex-col gap-10 mx-auto">
                     <div className="flex flex-col items-center gap-5">
                         <ChatCard type="message" link="/message" />
-                        <ChatCard type="aiChat" />
+                        {/* <ChatCard type="aiChat" /> */}
                     </div>
                     <RecentActivity />
                 </div>
