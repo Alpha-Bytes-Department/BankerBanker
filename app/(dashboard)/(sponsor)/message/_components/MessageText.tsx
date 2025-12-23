@@ -1,5 +1,5 @@
 "use client"
-import { Send, Sparkles, Download, FileText } from 'lucide-react';
+import { Send, Sparkles } from 'lucide-react';
 import { useRef, useState, useEffect, Dispatch, SetStateAction, startTransition } from 'react';
 import { Card } from "@/components/ui/card";
 
