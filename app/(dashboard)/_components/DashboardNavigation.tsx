@@ -38,6 +38,8 @@ type UserData = {
     last_name: string;
 };
 
+type UserRole = "Sponsor" | "Lender";
+
 const sponsor: LinkProps = [
     {
         text: 'Sponsor Dashboard',
@@ -119,7 +121,7 @@ const DashboardNavigation = ({
         last_name: 'Doe'
     });
     const pathName = usePathname();
-    const user = "Lender"
+    const user:UserRole = "Sponsor"
 
 
 
