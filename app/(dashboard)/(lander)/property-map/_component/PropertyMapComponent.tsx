@@ -138,48 +138,50 @@ const PropertyMapComponent: React.FC<PropertyMapComponentProps> = ({
       </LoadScript>
 
       {/* ====== Map Controls ====== */}
-      <div className="absolute top-4 left-4 flex flex-col gap-2">
+      <div className="absolute top-2 md:top-4 left-2 md:left-4 flex flex-col gap-2">
         {/* ====== Map Type Toggle ====== */}
-        <div className="bg-white rounded-full flex gap-2 p-1 shadow-md overflow-hidden">
+        <div className="bg-white rounded-full flex gap-1 md:gap-2 p-1 shadow-md overflow-hidden">
           <button
             onClick={() => setMapType("roadmap")}
-            className={`px-4 py-2 text-sm ${
+            className={`px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm ${
               mapType === "roadmap"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-700 hover:bg-gray-50"
-            } transition-colors flex items-center justify-center rounded-full `}
+            } transition-colors flex items-center justify-center rounded-full`}
           >
-            <FaMapMarkedAlt size={20} className="inline-block mr-2" />
-            Map
+            <FaMapMarkedAlt size={16} className="inline-block md:mr-2" />
+            <span className="hidden md:inline">Map</span>
           </button>
           <button
             onClick={() => setMapType("satellite")}
-            className={`px-4 py-2 text-sm ${
+            className={`px-2 md:px-4 py-1.5 md:py-2 text-xs md:text-sm ${
               mapType === "satellite"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-700 hover:bg-gray-50"
-            } transition-colors flex items-center justify-center rounded-full `}
+            } transition-colors flex items-center justify-center rounded-full`}
           >
-            <FaGlobeAmericas size={20} className="inline-block mr-2" />
-            Satellite
+            <FaGlobeAmericas size={16} className="inline-block md:mr-2" />
+            <span className="hidden md:inline">Satellite</span>
           </button>
         </div>
       </div>
 
       {/* ====== Urgency Level Legend ====== */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-md p-4">
-        <h4 className="text-sm text-gray-900 mb-2">Urgency Level</h4>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+      <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 bg-white rounded-lg shadow-md p-2 md:p-4">
+        <h4 className="text-xs md:text-sm text-gray-900 mb-1 md:mb-2">
+          Urgency Level
+        </h4>
+        <div className="space-y-1 md:space-y-2">
+          <div className="flex items-center gap-1 md:gap-2">
+            <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500"></div>
             <span className="text-xs text-gray-700">High Priority</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+          <div className="flex items-center gap-1 md:gap-2">
+            <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-orange-500"></div>
             <span className="text-xs text-gray-700">Medium Priority</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+          <div className="flex items-center gap-1 md:gap-2">
+            <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-blue-500"></div>
             <span className="text-xs text-gray-700">Standard</span>
           </div>
         </div>

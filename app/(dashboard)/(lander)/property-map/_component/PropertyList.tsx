@@ -50,10 +50,10 @@ const PropertyList: React.FC<PropertyListProps> = ({
   };
 
   return (
-    <div className="bg-white h-full flex flex-col">
+    <div className="bg-white h-full flex flex-col overflow-hidden">
       {/* ====== List Header ====== */}
-      <div className="px-4 py-3 border-b border-gray-200">
-        <h3 className="text-base text-gray-900">
+      <div className="px-3 md:px-4 py-2 md:py-3 border-b border-gray-200">
+        <h3 className="text-sm md:text-base text-gray-900">
           All Properties ({properties.length})
         </h3>
       </div>
@@ -67,15 +67,15 @@ const PropertyList: React.FC<PropertyListProps> = ({
             <div
               key={property.id}
               onClick={() => onPropertySelect(property)}
-              className={`px-4 py-3 cursor-pointer transition-colors hover:bg-gray-50 ${
+              className={`px-3 md:px-4 py-2 md:py-3 cursor-pointer transition-colors hover:bg-gray-50 min-w-0 ${
                 isSelected ? "bg-blue-50" : ""
               }`}
             >
-              <div className="flex items-start gap-3">
+              <div className="flex items-start gap-2 md:gap-3 min-w-0">
                 {/* ====== Urgency Indicator ====== */}
                 <div className="flex items-center justify-center pt-1">
                   <div
-                    className={`w-3 h-3 rounded-full ${getMarkerColor(
+                    className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${getMarkerColor(
                       property.urgencyLevel
                     )}`}
                   ></div>
@@ -84,20 +84,20 @@ const PropertyList: React.FC<PropertyListProps> = ({
                 {/* ====== Property Info ====== */}
                 <div className="flex-1 min-w-0">
                   {/* ====== Property Name ====== */}
-                  <h4 className="text-sm text-gray-900 mb-1">
+                  <h4 className="text-xs md:text-sm text-gray-900 mb-1 truncate">
                     {property.propertyName}
                   </h4>
 
                   {/* ====== Address ====== */}
-                  <div className="flex items-center gap-1 text-xs text-gray-600 mb-2">
-                    <FiMapPin className="w-3 h-3 shrink-0" />
+                  <div className="flex items-center gap-1 text-xs text-gray-600 mb-1 md:mb-2">
+                    <FiMapPin className="w-2 h-2 md:w-3 md:h-3 shrink-0" />
                     <span className="truncate">{property.address}</span>
                   </div>
 
                   {/* ====== Property Type Badge ====== */}
-                  <div className="mb-2">
+                  <div className="mb-1 md:mb-2">
                     <span
-                      className={`text-xs px-2 py-1 rounded ${getPropertyTypeColor(
+                      className={`text-xs px-2 py-0.5 md:py-1 rounded ${getPropertyTypeColor(
                         property.propertyType
                       )}`}
                     >

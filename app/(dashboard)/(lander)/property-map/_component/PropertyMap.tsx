@@ -183,19 +183,21 @@ const PropertyMap: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white overflow-x-hidden">
       {/* ====== Header Section ====== */}
-      <div className="bg-white rounded-2xl shadow-lg mx-6 mt-6 mb-6 p-6">
-        <div className="flex items-center justify-between">
+      <div className="bg-white rounded-2xl shadow-sm mx-3 md:mx-6 mt-3 md:mt-6 mb-3 md:mb-6 p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl text-gray-900 mb-1">Property Map</h1>
-            <p className="text-sm text-gray-600">
+            <h1 className="text-xl md:text-2xl text-gray-900 mb-1">
+              Property Map
+            </h1>
+            <p className="text-xs md:text-sm text-gray-600">
               Track and manage all property loan requests on the map
             </p>
           </div>
           <button
             onClick={handleRefresh}
-            className="flex items-center gap-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-xl text-sm hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-xl text-sm hover:bg-gray-50 transition-colors w-full sm:w-auto justify-center"
           >
             <FiRefreshCw className="w-4 h-4" />
             Refresh
@@ -204,58 +206,74 @@ const PropertyMap: React.FC = () => {
       </div>
 
       {/* ====== Stats Cards Section ====== */}
-      <div className="bg-white rounded-2xl shadow-lg mx-6 mb-6 p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="bg-white rounded-2xl mx-3 md:mx-6 mb-3 md:mb-6 max-w-full overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {/* ====== Total Properties ====== */}
-          <div className="  rounded-lg p-4 border border-blue-200">
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <HiOutlineOfficeBuilding size={28} className=" text-blue-600" />
-              </div>
+          <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-blue-200 gap-3 md:gap-5 min-w-0">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <HiOutlineOfficeBuilding
+                size={24}
+                className="md:w-7 md:h-7 text-blue-600"
+              />
             </div>
-            <p className="text-2xl text-gray-900 mb-1">
-              {stats.totalProperties}
-            </p>
-            <p className="text-sm text-gray-600">Total Properties</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm md:text-base text-gray-600">
+                Total Properties
+              </p>
+              <p className="text-xl md:text-2xl text-gray-900">
+                {stats.totalProperties}
+              </p>
+            </div>
           </div>
 
           {/* ====== Total Loan Value ====== */}
-          <div className=" 00 rounded-lg p-4 border border-green-200">
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <FiDollarSign size={28} className=" text-green-600" />
-              </div>
+
+          <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-green-200 gap-3 md:gap-5 min-w-0">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FiDollarSign
+                size={24}
+                className="md:w-7 md:h-7 text-green-600"
+              />
             </div>
-            <p className="text-2xl text-gray-900 mb-1">
-              {formatCurrency(stats.totalLoanValue)}
-            </p>
-            <p className="text-sm text-gray-600">Total Loan Value</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm md:text-base text-gray-600">
+                Total Loan Value
+              </p>
+              <p className="text-xl md:text-2xl text-gray-900">
+                {formatCurrency(stats.totalLoanValue)}
+              </p>
+            </div>
           </div>
 
           {/* ====== Avg Loan Size ====== */}
-          <div className=" -100 rounded-lg p-4 border border-purple-200">
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                <FiTrendingUp size={28} className=" text-purple-600" />
-              </div>
+          <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-blue-200 gap-3 min-w-0">
+            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FiTrendingUp
+                size={24}
+                className="md:w-7 md:h-7 text-violet-600"
+              />
             </div>
-            <p className="text-2xl text-gray-900 mb-1">
-              {formatCurrency(stats.avgLoanSize)}
-            </p>
-            <p className="text-sm text-gray-600">Avg. Loan Size</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm text-gray-600">Avg Loan Size</p>
+              <p className="text-xl md:text-2xl text-gray-900">
+                {formatCurrency(stats.avgLoanSize)}
+              </p>
+            </div>
           </div>
 
           {/* ====== Urgent Requests ====== */}
-          <div className=" ounded-lg p-4 border border-red-200">
-            <div className="flex items-start justify-between mb-2">
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                <FiAlertCircle size={28} className=" text-red-600" />
-              </div>
+          <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-red-200 gap-3 min-w-0">
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FiAlertCircle size={24} className="md:w-7 md:h-7 text-red-600" />
             </div>
-            <p className="text-2xl text-gray-900 mb-1">
-              {stats.urgentRequests}
-            </p>
-            <p className="text-sm text-gray-600">Urgent Requests</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm text-gray-600">
+                Urgent Requests
+              </p>
+              <p className="text-xl md:text-2xl text-gray-900">
+                {stats.urgentRequests}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -263,13 +281,13 @@ const PropertyMap: React.FC = () => {
       {/* ====== Search and Filters Section ====== */}
 
       {/* ====== Map Section ====== */}
-      <div className="mx-6 mb-6">
-        <div className="bg-white    overflow-hidden">
-          <div className="flex gap-5">
+      <div className="mx-3 md:mx-6 mb-3 md:mb-6 max-w-full overflow-hidden">
+        <div className="bg-white overflow-hidden">
+          <div className="flex flex-col lg:flex-row gap-3 md:gap-5">
             {/* ====== Map ====== */}
-            <div className="flex-1 max-h-[700px] relative">
-              <div className=" rounded-2xl shadow-lg mx-6 mb-6 p-6">
-                <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 relative">
+              <div className="rounded-2xl border-2 border-gray-200 mb-3 md:mb-6 p-3 md:p-4">
+                <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                   {/* ====== Search Bar ====== */}
                   <div className="flex-1 relative">
                     <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -283,12 +301,12 @@ const PropertyMap: React.FC = () => {
                   </div>
 
                   {/* ====== Property Type Filters ====== */}
-                  <div className="flex items-center gap-2 overflow-x-auto">
+                  <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 -mx-3 px-3 sm:mx-0 sm:px-0">
                     {propertyTypes.map((type) => (
                       <button
                         key={type}
                         onClick={() => setSelectedFilter(type)}
-                        className={`px-4 py-2 rounded-xl text-sm whitespace-nowrap border border-gray-300 transition-colors ${
+                        className={`px-3 md:px-4 py-2 rounded-xl text-xs md:text-sm whitespace-nowrap border border-gray-300 transition-colors ${
                           selectedFilter === type
                             ? "bg-blue-600 text-white"
                             : "bg-gray-50 text-gray-700 hover:bg-gray-100"
@@ -300,17 +318,19 @@ const PropertyMap: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <PropertyMapComponent
-                properties={filteredProperties}
-                selectedProperty={selectedProperty}
-                onPropertySelect={setSelectedProperty}
-              />
+              <div className="h-100 sm:h-[500px] lg:h-[700px]">
+                <PropertyMapComponent
+                  properties={filteredProperties}
+                  selectedProperty={selectedProperty}
+                  onPropertySelect={setSelectedProperty}
+                />
+              </div>
             </div>
 
             {/* ====== Right Sidebar (Property Details + All Properties) ====== */}
-            <div className="w-96 border-gray-200 flex flex-col gap-3">
+            <div className="w-full lg:w-96 flex flex-col gap-3">
               {/* ====== Property Details Section ====== */}
-              <div className="rounded-lg border-gray-200 border-2 p-3 ">
+              <div className="rounded-lg border-gray-200 border-2 p-3">
                 <h3 className="text-lg text-gray-900 mb-2 border-b-2 border-gray-200 text-center py-2">
                   Property Details
                 </h3>
@@ -324,7 +344,7 @@ const PropertyMap: React.FC = () => {
               </div>
 
               {/* ====== All Properties List Section ====== */}
-              <div className="flex-1 border-2 border-gray-200 rounded-lg  p-3 max-h-125 overflow-y-auto">
+              <div className="flex-1 border-2 border-gray-200 rounded-lg p-3 max-h-[300px] sm:max-h-[400px] lg:max-h-[500px] overflow-y-auto">
                 <PropertyList
                   properties={filteredProperties}
                   selectedProperty={selectedProperty}
