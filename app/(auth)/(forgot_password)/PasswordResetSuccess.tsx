@@ -3,6 +3,7 @@ import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Button from "@/components/Button";
+import { Link } from "lucide-react";
 
 const PasswordResetSuccess: React.FC = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const PasswordResetSuccess: React.FC = () => {
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900">
       <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 dark:text-gray-300">
         {/* Logo */}
-        <h1 className="text-3xl font-bold">BANCre</h1>
+        <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
 
         {/* Success Message */}
         <div className="space-y-4">

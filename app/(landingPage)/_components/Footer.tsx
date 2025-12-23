@@ -1,5 +1,9 @@
 // Fahim
 "use client";
+
+import Image from "next/image";
+import Link from "next/link";
+
 const LinkedInIcon = ({ size = 24, className = "" }) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -45,9 +49,7 @@ export default function Footer() {
             <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
                 <div className="col-span-2 space-y-4">
                     <div className="flex items-center space-x-2">
-                        <h3 className="text-4xl font-extrabold text-[#FFFFFF]">
-                            BANCre
-                        </h3>
+                        <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
                     </div>
                     <div>
                         <p className="text-[#9CA3AF] text-sm leading-relaxed">

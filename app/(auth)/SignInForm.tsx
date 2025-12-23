@@ -65,10 +65,8 @@ const SignInForm: React.FC = () => {
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900">
       <div className="flex flex-col justify-center px-6 md:px-20 py-10 space-y-6 dark:text-gray-300">
         {/* Logo */}
-        <h1 className="text-3xl font-bold">BANCre</h1>
-
+        <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
         <h2 className="text-2xl font-semibold">Log in</h2>
-
         <p className="text-sm">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="text-blue-600">

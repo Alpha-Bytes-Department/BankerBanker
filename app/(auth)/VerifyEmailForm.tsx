@@ -6,6 +6,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Button from "@/components/Button";
+import Link from "next/link";
 
 const VerifyEmailForm: React.FC = () => {
   const [otp, setOtp] = useState("");
@@ -95,7 +96,7 @@ const VerifyEmailForm: React.FC = () => {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900">
       <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 dark:text-gray-300">
-        <h1 className="text-3xl font-bold">BANCre</h1>
+        <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
 
         <h2 className="text-3xl font-semibold">Verify </h2>
 
