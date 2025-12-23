@@ -27,19 +27,19 @@ export default function Footer() {
                             href="#"
                             className="text-gray-500 hover:text-blue-600 transition-transform transform hover:scale-110"
                         >
-                            <FaLinkedin className="text-xl" />
+                            <FaLinkedin className="text-2xl" />
                         </a>
                         <a
                             href="#"
                             className="text-gray-500 hover:text-blue-600 transition-transform transform hover:scale-110"
                         >
-                            <FaTwitter className="text-xl" />
+                            <FaTwitter className="text-2xl" />
                         </a>
                         <a
                             href="#"
                             className="text-gray-500 hover:text-blue-600 transition-transform transform hover:scale-110"
                         >
-                            <FaYoutube className="text-xl" />
+                            <FaYoutube className="text-2xl" />
                         </a>
                     </div>
                 </div>
