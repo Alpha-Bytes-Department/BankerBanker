@@ -25,19 +25,19 @@ export default function Footer() {
                     <div className="flex space-x-8 pt-2">
                         <a
                             href="#"
-                            className="text-gray-500 hover:text-blue-600 transition-transform transform hover:scale-110"
+                            className="text-gray-500 hover:text-primary transition-transform transform hover:scale-110"
                         >
                             <FaLinkedin className="text-2xl" />
                         </a>
                         <a
                             href="#"
-                            className="text-gray-500 hover:text-blue-600 transition-transform transform hover:scale-110"
+                            className="text-gray-500 hover:text-primary transition-transform transform hover:scale-110"
                         >
                             <FaTwitter className="text-2xl" />
                         </a>
                         <a
                             href="#"
-                            className="text-gray-500 hover:text-blue-600 transition-transform transform hover:scale-110"
+                            className="text-gray-500 hover:text-primary transition-transform transform hover:scale-110"
                         >
                             <FaYoutube className="text-2xl" />
                         </a>
