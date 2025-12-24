@@ -10,6 +10,7 @@ import Navbar from './_components/Navbar';
 import Features from './_components/Features';
 import Carousel from './_components/Carousel';
 
+
 const page = () => {
     return (
         <div>

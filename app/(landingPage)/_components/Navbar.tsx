@@ -71,7 +71,7 @@ const Navbar = ({
 
 
 
-    return (
+    return (                                             
         <>
             {/* nav for desktop  */}
             <nav className={`flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white ${className}`}>
