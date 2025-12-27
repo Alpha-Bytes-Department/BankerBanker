@@ -82,8 +82,8 @@ const page = () => {
                 {/* notification block  */}
                 <div className="flex flex-col lg:flex-row xl:flex-col gap-10 mx-auto">
                     <div className="flex flex-col items-center gap-5">
-                        <ChatCard type="message" />
-                        <ChatCard type="aiChat" />
+                        <ChatCard type="message" link="/message" />
+                        {/* <ChatCard type="aiChat" /> */}
                     </div>
                     <RecentActivity />
                 </div>
