@@ -3,6 +3,8 @@
 import Link from "next/link";
 import React, { useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { FiDownload } from "react-icons/fi";
+import { pdf } from "@react-pdf/renderer";
 import MemorandumHeader from "./MemorandumHeader";
 import HeroSection from "./HeroSection";
 import ExecutiveSummary from "./ExecutiveSummary";
@@ -16,6 +18,7 @@ import AddSections from "./AddSections";
 import PreviewCover from "./PreviewCover";
 import TableOfContents from "./TableOfContents";
 import PreviewSections from "./PreviewSections";
+import MemorandumPDFDocument from "./MemorandumPDFDocument";
 import { MemorandumTab } from "@/types/memorandum-detail";
 
 //========== Memorandum Detail Page Component ===========
@@ -23,6 +26,7 @@ import { MemorandumTab } from "@/types/memorandum-detail";
 const MemorandumDetailPage = () => {
   //========== State Management ===========
   const [activeTab, setActiveTab] = useState<MemorandumTab>("editor");
+  const [isExporting, setIsExporting] = useState(false);
 
   //========== Sample Data ===========
   const memorandumData = {
@@ -496,6 +500,37 @@ const MemorandumDetailPage = () => {
     console.log("Adding section:", sectionId);
   };
 
+  const handleExportPDF = async () => {
+    try {
+      setIsExporting(true);
+
+      // Generate PDF document
+      const blob = await pdf(
+        <MemorandumPDFDocument data={memorandumData} />
+      ).toBlob();
+
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${memorandumData.subtitle || "Memorandum"}_${
+        new Date().toISOString().split("T")[0]
+      }.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Clean up
+      URL.revokeObjectURL(url);
+
+      setIsExporting(false);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      setIsExporting(false);
+      alert("Failed to generate PDF. Please try again.");
+    }
+  };
+
   return (
     <div className=" mx-auto py-6">
       {/* ====== Back Button ====== */}
@@ -506,6 +541,18 @@ const MemorandumDetailPage = () => {
         <IoIosArrowRoundBack className="text-2xl" />
         <p className="text-sm md:text-base">Back to Memorandums</p>
       </Link>
+
+      {/* ====== Export Button ====== */}
+      <button
+        onClick={handleExportPDF}
+        disabled={isExporting}
+        className="flex items-center gap-2 border-2 rounded-full px-6 py-2 shadow-xl my-3 border-blue-100 bg-amber-50 hover:bg-amber-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <FiDownload className="text-lg" />
+        <span className="font-medium">
+          {isExporting ? "Generating PDF..." : "Export PDF"}
+        </span>
+      </button>
 
       {/* ====== Header with Tabs ====== */}
       <MemorandumHeader
