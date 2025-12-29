@@ -2,8 +2,8 @@
 import { useRouter } from "next/navigation";
 import { FiAlertCircle } from "react-icons/fi";
 
-const page = () => {
-    const router =useRouter()
+const Page = () => {
+    const router = useRouter()
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg border border-gray-200 p-8">
@@ -37,4 +37,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
