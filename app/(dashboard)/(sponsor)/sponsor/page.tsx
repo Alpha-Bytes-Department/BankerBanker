@@ -48,17 +48,18 @@ const page = () => {
         <div>
             <h1 className="text-xl lg:text-2xl my-2">Sponsor Dashboard</h1>
             <p className="text-[#4A5565] my-2">Manage your commercial real estate portfolio and generate professional offering memorandums</p>
-            {/* google map  */}
-            <div className="my-5">
-                <GMAP />
-            </div>
-            {/* status card  */}
+           {/* status card  */}
             <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
                 <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
                 <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
                 <StatusCard type="documents" data={{ value: 156 }} />
                 <StatusCard type="value" data={{ value: 3, }} />
             </div>
+             {/* google map  */}
+            <div className="my-5">
+                <GMAP />
+            </div>
+            
             <div className="flex flex-col-reverse xl:flex-row gap-5">
                 <div className=" rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
                     <div className="flex items-center gap-2 lg:justify-between">
@@ -82,7 +83,7 @@ const page = () => {
                 <div className="flex flex-col lg:flex-row xl:flex-col gap-10 mx-auto">
                     <div className="flex flex-col items-center gap-5">
                         <ChatCard type="message" />
-                        <ChatCard type="aiChat" />
+                        {/* <ChatCard type="aiChat" /> */}
                     </div>
                     <RecentActivity />
                 </div>

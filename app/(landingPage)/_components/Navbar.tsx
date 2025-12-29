@@ -6,10 +6,10 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
 import { FaCircleUser, FaHandshakeSimple } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
-import { BsBank, BsGraphUpArrow } from "react-icons/bs";
+import { BsBank } from "react-icons/bs";
 import { BiSolidContact } from "react-icons/bi";
 import Button from '@/components/Button';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 
 type NavbarProps = {
@@ -50,7 +50,8 @@ const Links: LinkProps = [
         {
             text: 'Broker',
             href: '/broker',
-            icon: <BsGraphUpArrow className='text-lg' />
+            icon: <BsBank className='text-lg' />
+
         },
         {
             text: 'Contact',
@@ -67,6 +68,7 @@ const Navbar = ({
     const [userData, setUserData] = useState<UserData | null>(null);
     const pathName = usePathname();
 
+    const router = useRouter();
 
 
 
@@ -75,7 +77,7 @@ const Navbar = ({
             {/* nav for desktop  */}
             <nav className={`flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white ${className}`}>
                 <div>
-                    <Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
+                    <Link className='cursor-pointer' href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
                     <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
                 </div>
                 {/* maping Links for desktop */}
@@ -83,8 +85,8 @@ const Navbar = ({
                     {Links && Links.map((link, idx) => <Link key={idx} className={` ${link.href === pathName ? "bg-[#0D4DA5] px-3 py-2 rounded-full text-white" : ""}`} href={link.href}>{link.text}</Link>)}
                 </div>
                 <div className='flex gap-5 items-center'>
-                    {userData ? (<></>) : <Button text='Sign in' className='button-none hidden lg:flex' />}
-                    <Button text='Get Started Free' className='button-primary' />
+                    {userData ? (<></>) : <Button onClick={()=>router.push("/signin")} text='Sign in' className='button-none hidden lg:flex' />}
+                    <Button onClick={()=>router.push("/register")} text='Get Started Free' className='button-primary' />
                 </div>
             </nav>
             {/* navbar for mobile */}
@@ -97,9 +99,7 @@ const Navbar = ({
                         <div className="flex items-center justify-between p-4 border-b border-gray-200">
                             {/* Logo Section */}
                             <div className="shrink-0">
-                                <a href="#">
-                                    <Image src={"/logo/BANCre.png"} alt="logo" width={150} height={50} />
-                                </a>
+                                <Link className='cursor-pointer' href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
                             </div>
                             <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500  rounded-md hover:bg-gray-100 " aria-label="Close menu">
                                 <MdClose className="h-6 w-6" />
@@ -126,3 +126,4 @@ const Navbar = ({
 };
 
 export default Navbar;
+
