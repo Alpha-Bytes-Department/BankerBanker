@@ -75,7 +75,7 @@ const Navbar = ({
     return (
         <>
             {/* nav for desktop  */}
-            <nav className={`flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white ${className}`}>
+            <nav className={`flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-40 bg-white ${className}`}>
                 <div>
                     <Link className='cursor-pointer' href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
                     <RxHamburgerMenu onClick={() => setIsMenuOpen(true)} className='text-xl flex lg:hidden' />
