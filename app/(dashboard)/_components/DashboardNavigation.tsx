@@ -20,7 +20,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ProfilePopUp from "./ProfilePopUp";
 import ChatWidget from "./ChatWidget";
 import { MapPin, School } from "lucide-react";
-import { useAuth } from "@/components/Provider/AuthProvider";
+import { useAuth } from "@/Provider/AuthProvider";
 
 type NavbarProps = {
   links?: { text: string; href: string }[];
