@@ -60,6 +60,62 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     initializeAuth();
   }, []);
 
+  //========== Signup Function ===========
+  const signup = async (
+    email: string,
+    password: string,
+    rememberMe: boolean = false
+  ) => {
+    try {
+      setAuthState((prev) => ({ ...prev, isLoading: true }));
+
+      //========== Temporary Mock Implementation ===========
+      // TODO: Replace with actual API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const mockUser: User = {
+        id: "1",
+        email: email,
+        name: email.split("@")[0],
+        role: email.includes("lender") ? "lender" : "sponsor",
+        companyName: email.includes("lender")
+          ? "ABC Lending"
+          : "XYZ Properties",
+      };
+
+      const storage = rememberMe ? localStorage : localStorage;
+      storage.setItem("user", JSON.stringify(mockUser));
+      storage.setItem("accessToken", "mock-access-token");
+      storage.setItem("refreshToken", "mock-refresh-token");
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", "true");
+      }
+
+      //========== Set Cookies for Middleware ===========
+      document.cookie = `accessToken=mock-access-token; path=/; SameSite=Lax`;
+      document.cookie = `userData=${encodeURIComponent(
+        JSON.stringify(mockUser)
+      )}; path=/; SameSite=Lax`;
+
+      setAuthState({
+        user: mockUser,
+        isAuthenticated: true,
+        isLoading: false,
+      });
+
+      //========== Redirect Based on Role ===========
+      if (mockUser.role === "sponsor") {
+        router.push("/sponsor");
+      } else {
+        router.push("/lender");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      setAuthState((prev) => ({ ...prev, isLoading: false }));
+      throw error;
+    }
+  };
+
   //========== Login Function ===========
   const login = async (
     email: string,
