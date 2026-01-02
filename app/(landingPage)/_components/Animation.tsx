@@ -774,7 +774,7 @@ const ComponentAnimation = () => {
             {/* ====== Hover Instruction Overlay - Hidden on mobile/touch devices ====== */}
             {!isHovered && (
               <motion.div
-                className="hidden lg:flex absolute inset-0 bg-black/5 backdrop-blur-[1px] items-center justify-center pointer-events-none z-40"
+                className="hidden lg:flex absolute inset-0 bg-black/5 backdrop-blur-[1px] items-center justify-center pointer-events-none z-30"
                 initial={{ opacity: 1 }}
                 animate={{ opacity: 1 }}
               >
