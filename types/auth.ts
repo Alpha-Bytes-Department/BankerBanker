@@ -22,6 +22,15 @@ export interface AuthContextType extends AuthState {
     password: string,
     rememberMe?: boolean
   ) => Promise<void>;
+  signup: (
+    customer_type: "lender" | "sponsor",
+    first_name: string,
+    last_name: string,
+    email: string,
+    phone: string,
+    password: string,
+    confirm_password: string,
+  ) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
 }
