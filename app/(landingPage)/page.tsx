@@ -15,10 +15,10 @@ const page = () => {
     <div>
       <Banner />
       <ComponentAnimation />
-      <div className="text-center my-10">
+      <div className="text-center flex flex-col gap-5 my-20">
         <Headline text="Our Network of Partners"  />
+        <Partners />
       </div>
-      <Partners />
       <Features />
       <div className="text-center">
         <Headline text="How It Works" />
