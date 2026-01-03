@@ -8,12 +8,17 @@ import Description from "@/components/Description";
 import Features from "./_components/Features";
 import Carousel from "./_components/Carousel";
 import ComponentAnimation from "./_components/Animation";
+import Partners from "./_components/Partners";
 
 const page = () => {
   return (
     <div>
       <Banner />
       <ComponentAnimation />
+      <div className="text-center my-10">
+        <Headline text="Our Network of Partners"  />
+      </div>
+      <Partners />
       <Features />
       <div className="text-center">
         <Headline text="How It Works" />
@@ -22,7 +27,6 @@ const page = () => {
       <HowItWorksOne />
       <HowItWorksTwo />
       <Carousel />
-
       <div className="my-16">
         <div className="text-center">
           <Headline text="Join the BANCre Capital Markets Network" />

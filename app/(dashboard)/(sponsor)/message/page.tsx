@@ -5,7 +5,7 @@ import MessageText from "./_components/MessageText";
 import AllMessage from "./_components/AllMessage";
 
 
-
+// todos: set back button from message text to all message on mobile
 
 
 
