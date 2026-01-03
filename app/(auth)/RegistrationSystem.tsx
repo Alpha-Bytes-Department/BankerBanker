@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-undef */
 
 "use client"
 import React, { useState } from 'react';
@@ -360,7 +359,7 @@ export default function RegistrationSystem() {
                 index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <img
+              <Image
                 src={slide.image}
                 alt="Background"
                 className="w-full h-full object-cover"

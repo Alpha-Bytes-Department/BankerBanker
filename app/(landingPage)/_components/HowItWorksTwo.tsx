@@ -39,7 +39,7 @@ export default function HowItWorksTwo() {
 
     // Navigate to sign-up page
     const handleGoToSignUp = () => {
-        router.push("/signup");
+        router.push("/register");
     }
 
     return (

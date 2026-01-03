@@ -120,7 +120,7 @@ const MessageText = ({
     };
 
     return (
-        <Card className="shadow-md flex-1 rounded-xl border-[#E5E7EB] py-0 flex flex-col gap-0 bg-white">
+        <Card className={"shadow-md flex-1 rounded-xl border-[#E5E7EB] py-0 hidden lg:flex flex-col gap-0 bg-white"}>
             {/* Header */}
             <div className="p-4 rounded-xl flex justify-between items-center">
                 <div className='flex items-center gap-2'>
