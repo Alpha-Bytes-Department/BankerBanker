@@ -14,7 +14,7 @@ const PasswordResetSuccess: React.FC = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
-      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 dark:text-gray-300">
+      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6">
         {/* Logo */}
         <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
 
@@ -22,7 +22,7 @@ const PasswordResetSuccess: React.FC = () => {
         <div className="space-y-4">
           <h2 className="text-2xl font-semibold text-green-600">Password successfully reset</h2>
 
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-600">
             Set a new Your password has been reset successfully. Continue with login
           </p>
         </div>

@@ -56,14 +56,14 @@ const ResetPasswordForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900">
-      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 dark:text-gray-300">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
+      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6">
         {/* Logo */}
         <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
 
         <h2 className="text-2xl font-semibold">Reset your password</h2>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-gray-600">
           Type in your registered email address to reset password
         </p>
 
@@ -101,7 +101,7 @@ const ResetPasswordForm: React.FC = () => {
 
             {/* Resend Link */}
             <div className="text-center text-sm">
-              <span className="text-gray-600 dark:text-gray-400">
+              <span className="text-gray-600">
                 Don&apos;t get the code?{" "}
               </span>
               <Link href="#" className="text-blue-600 hover:underline">

@@ -95,7 +95,7 @@ const VerifyEmailForm: React.FC = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
-      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 dark:text-gray-300">
+      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 ">
         <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
 
         <h2 className="text-3xl font-semibold">Verify </h2>

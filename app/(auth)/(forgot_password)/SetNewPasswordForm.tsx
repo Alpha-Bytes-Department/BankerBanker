@@ -72,11 +72,11 @@ const SetNewPasswordForm: React.FC = () => {
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white ">
-      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 dark:text-gray-300">
+      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 ">
         {/* Logo */}
         <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
         <h2 className="text-2xl font-semibold">Reset password</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-gray-600 ">
           Set a new password
         </p>
 
@@ -103,7 +103,7 @@ const SetNewPasswordForm: React.FC = () => {
                       />
 
                       {/* Vertical separator */}
-                      <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300 dark:bg-gray-600" />
+                      <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300" />
 
                       {/* Eye Icon */}
                       <button
@@ -141,7 +141,7 @@ const SetNewPasswordForm: React.FC = () => {
                       />
 
              
-                      <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300 dark:bg-gray-600" />
+                      <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300" />
 
                    
                       <button
@@ -173,7 +173,7 @@ const SetNewPasswordForm: React.FC = () => {
 
          
             <div className="text-center text-sm">
-              <span className="text-gray-600 dark:text-gray-400">
+              <span className="text-gray-600 ">
                 Don&apos;t get the code?{" "}
               </span>
               <Link href="#" className="text-blue-600 hover:underline">
