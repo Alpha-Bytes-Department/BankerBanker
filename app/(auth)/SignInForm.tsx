@@ -70,8 +70,8 @@ const SignInForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900">
-      <div className="flex flex-col justify-center px-6 md:px-20 py-10 space-y-6 dark:text-gray-300">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
+      <div className="flex flex-col justify-center px-6 md:px-20 py-10 space-y-6 ">
         {/* Logo */}
         <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
         <h2 className="text-2xl font-semibold">Log in</h2>
@@ -120,7 +120,7 @@ const SignInForm: React.FC = () => {
                         {...field}
                       />
 
-                      <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300 dark:bg-gray-600" />
+                      <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300" />
 
                       {/* Eye Icon */}
                       <button
@@ -189,7 +189,7 @@ const SignInForm: React.FC = () => {
             {/* Google Button */}
             <Link
               href="#"
-              className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+              className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer"
             >
               <FcGoogle className="text-2xl" />
               Continue with Google

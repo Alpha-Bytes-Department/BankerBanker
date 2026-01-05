@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa6";
 import GMAP from "../../_components/GMAP";
 import ChatCard from "@/components/ChatCard";
 import RecentActivity from "../recent-activity/page";
+import Link from "next/link";
 
 const propertyData: PropertyProps[] = [
     {
@@ -67,10 +68,10 @@ const page = () => {
                             <h1 className="text-lg">Property Portfolio</h1>
                             <p className="text-[#6A7282]">Manage and track your properties</p>
                         </div>
-                        <div className="flex gap-2 button-primary rounded-full py-2 px-3 cursor-pointer justify-center items-center">
+                        <Link href="/add-property" className="flex gap-2 button-primary rounded-full py-2 px-3 cursor-pointer justify-center items-center">
                             <FaPlus className="hidden md:flex" />
-                            <button className="text-xs sm:text-sm lg:text-base">Add property</button>
-                        </div>
+                            <p className="text-xs sm:text-sm lg:text-base">Add property</p>
+                        </Link>
                     </div>
                     {/* property block  */}
                     <div className="my-10 flex flex-col gap-5">
