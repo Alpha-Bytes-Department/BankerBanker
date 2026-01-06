@@ -323,15 +323,14 @@ export default function RegistrationSystem() {
                 </div>
               </div>
             </div>
-
             {/* Terms Checkbox */}
             <div>
-              <label className="flex items-start gap-3 cursor-pointer">
+              <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={formData.agreedToTerms}
                   onChange={(e) => setFormData({ ...formData, agreedToTerms: e.target.checked })}
-                  className="mt-1 w-5 h-5 rounded border-gray-300"
+                  className=" w-5 h-5 rounded border-gray-300"
                 />
                 <span className="text-sm text-gray-700">
                   I agree to all the <span className="text-red-500">Terms</span> and <span className="text-red-500">Privacy Policies</span>
@@ -339,14 +338,12 @@ export default function RegistrationSystem() {
               </label>
               {errors.agreedToTerms && <p className="text-red-500 text-sm mt-1">{errors.agreedToTerms}</p>}
             </div>
-
             {/* Submit Button */}
             <Button
               type="submit"
               text="Sign Up"
               className="button-primary w-full h-14"
             />
-
             {/* Login Link */}
             <p className="text-center text-sm text-gray-600">
               Already have an account? <span className="text-red-500 cursor-pointer">
@@ -356,8 +353,6 @@ export default function RegistrationSystem() {
           </form>
         </div>
       </div>
-
-      
       <div className="hidden lg:block lg:w-1/2 relative bg-gray-900">
         <button className="absolute top-8 right-8 text-white flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20 transition-colors z-10">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
