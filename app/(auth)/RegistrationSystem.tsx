@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 // Types
-type CustomerType = 'Broker' | 'Lender' | 'Sponsor';
+type CustomerType = 'Lender' | 'Sponsor';
 
 interface RegistrationFormData {
   customerType: CustomerType;
@@ -24,7 +24,7 @@ interface RegistrationFormData {
 // Main Component
 export default function RegistrationSystem() {
   const [formData, setFormData] = useState<RegistrationFormData>({
-    customerType: 'Broker',
+    customerType: 'Sponsor',
     firstName: '',
     lastName: '',
     email: '',
@@ -40,7 +40,7 @@ export default function RegistrationSystem() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter();
 
-  const customerTypes: CustomerType[] = ['Broker', 'Lender', 'Sponsor'];
+  const customerTypes: CustomerType[] = ['Lender', 'Sponsor'];
 
   const slides = [
     {
@@ -183,7 +183,7 @@ export default function RegistrationSystem() {
                   value={formData.firstName}
                   onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-full"
-                  placeholder="Prayas"
+                  placeholder="enter your first name"
                 />
                 {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
               </div>
@@ -196,7 +196,7 @@ export default function RegistrationSystem() {
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Mazumder"
+                  placeholder="enter your last name"
                 />
                 {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
               </div>
@@ -213,7 +213,7 @@ export default function RegistrationSystem() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="prayasmazumder150@gmail.com"
+                  placeholder="enter your email"
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
@@ -243,7 +243,7 @@ export default function RegistrationSystem() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
-                  placeholder="••••••••"
+                  placeholder="enter your password"
                 />
                 <button
                   type="button"
@@ -267,7 +267,7 @@ export default function RegistrationSystem() {
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
-                  placeholder="••••••••"
+                  placeholder="enter your password again"
                 />
                 <button
                   type="button"
