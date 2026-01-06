@@ -44,15 +44,30 @@ export default function RegistrationSystem() {
 
   const slides = [
     {
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop",
+      image: "/images/Auth_Images/sigup1.jpg",
       title: "Discover verified lending opportunities.",
       description: "Access AI-processed property data, evaluate deals faster, and provide offers confidently — all in one place."
     },
     {
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop",
+      image: "/images/Auth_Images/sigup2.jpg",
       title: "Smarter decisions, faster closings.",
       description: "Review standardized loan packages, analyze instantly, and close deals with transparency and speed."
-    }
+    },
+    {
+      image: "/images/Auth_Images/sigup3.jpg",
+      title: "Discover verified lending opportunities.",
+      description: "Access AI-processed property data, evaluate deals faster, and provide offers confidently — all in one place."
+    },
+    {
+      image: "/images/Auth_Images/sigup4.jpg",
+      title: "Manage your properties smarter",
+      description: "Upload property documents, let AI analyze your data, and get instant loan offers from verified lenders."
+    },
+    {
+      image: "/images/Auth_Images/sigup5.jpg",
+      title: "Smarter decisions, faster closings.",
+      description: "Review standardized loan packages, analyze instantly, and close deals with transparency and speed."
+    },
   ];
 
   // Password validation
@@ -362,7 +377,8 @@ export default function RegistrationSystem() {
               <Image
                 src={slide.image}
                 alt="Background"
-                className="w-full h-full object-cover"
+                fill
+                className="w-full h-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-black/40" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-12 text-center">
