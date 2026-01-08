@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
 import { AuthProvider } from "@/Provider/AuthProvider";
-import { AxiosProvider } from "@/Provider/AxiosProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
         <AuthProvider>
-          <AxiosProvider>{children}</AxiosProvider>
+          {children}
         </AuthProvider>
       </body>
     </html>
