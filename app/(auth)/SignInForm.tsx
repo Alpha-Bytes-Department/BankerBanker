@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { MdSupportAgent } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
@@ -40,33 +39,29 @@ const formSchema = z.object({
     //     "Password must contain uppercase, lowercase, number, and special character",
     // }),
 
-  notifications: z.boolean(),
+  remember_me: z.boolean(),
 });
 
 type SignInFormValues = z.infer<typeof formSchema>;
 
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
-      notifications: false,
+      remember_me: false,
     },
   });
 
 
-  const {user, login}= useAuth()
+  const {login}= useAuth();
 
 
   const handleSign = (data: SignInFormValues) => {
-    console.log("clicked.....");
-    console.log(data);
-    login(data.email, data.password);
-    router.push("/sponsor");
+    login(data.email, data.password, data.remember_me);
   };
 
   return (
@@ -143,7 +138,7 @@ const SignInForm: React.FC = () => {
                     <div className="flex items-center text-sm space-x-2">
                       <FormField
                         control={form.control}
-                        name="notifications"
+                        name="remember_me"
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-center">
                             <FormControl>

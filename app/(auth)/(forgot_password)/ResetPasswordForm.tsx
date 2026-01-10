@@ -73,7 +73,6 @@ const ResetPasswordForm: React.FC = () => {
             onSubmit={form.handleSubmit(handleResetPassword)}
             className="space-y-6"
           >
-       
             <FormField
               control={form.control}
               name="email"
@@ -98,17 +97,6 @@ const ResetPasswordForm: React.FC = () => {
               text={isLoading ? "Sending..." : "Next"}
               className="button-primary w-full md:w-[593px] h-14"
             />
-
-            {/* Resend Link */}
-            <div className="text-center text-sm">
-              <span className="text-gray-600">
-                Don&apos;t get the code?{" "}
-              </span>
-              <Link href="#" className="text-blue-600 hover:underline">
-                Resend
-              </Link>
-              <span className="text-gray-400"> (50s)</span>
-            </div>
           </form>
         </Form>
       </div>
