@@ -4,7 +4,6 @@ import Image from "next/image";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { Loader2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Button from "@/components/Button";
 import Link from "next/link";
 import { useAuth } from "@/Provider/AuthProvider";
@@ -13,7 +12,6 @@ const VerifyEmailForm: React.FC = () => {
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(30);
   const { user,verifyEmail, resendOtp } = useAuth();
 
@@ -29,12 +27,17 @@ const VerifyEmailForm: React.FC = () => {
 
   // verify otp
   const handleOtpVerify = () => {
+    setIsVerifying(true);
     verifyEmail(otp);
+    setIsVerifying(false);
   };
 
   // Resend OTP
-  const handleResend = async () => {
+  const handleResend = () => {
+    setIsResending(true);
     resendOtp(user?.email || "");
+    setResendCooldown(30);
+    setIsResending(false);
   };
 
   return (
@@ -75,20 +78,6 @@ const VerifyEmailForm: React.FC = () => {
             />
           </div>
         </div>
-
-        {showAlert && (
-          <Alert
-            className={`w-[90%] lg:w-[600px] mx-auto mt-6 border-green-500 transition-opacity duration-500 ${
-              showAlert ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <AlertTitle>Verification Sent</AlertTitle>
-            <AlertDescription>
-              A verification link or OTP has been sent to your email. Please
-              check your inbox.
-            </AlertDescription>
-          </Alert>
-        )}
 
         <div className="mt-8 text-center">
           <span className="text-lg">Not receive a code? </span>

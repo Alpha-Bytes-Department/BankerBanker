@@ -20,7 +20,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     isLoading: true,
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [signUpData, setSignupData] = useState<signup | null>(null);
   const router = useRouter();
 
@@ -113,12 +112,42 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   //------------ Login Function ------------
-  const login = async () => {
+  const login = async (email:string, password:string, remember_me?:boolean) => {
+    try {
+      setLoading(true);
+      const res = await api.post("/api/accounts/login/", {
+        email,
+        password,
+        remember_me,
+      });
+      if (res.status === 200) {
+        const { user, accessToken, refreshToken } = res.data;
+        localStorage.setItem("accessToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+        setUser(user);
+        toast.success("Logged in successfully!");
+        setLoading(false);
+        if(user.role === "Sponsor"){
+          router.push("/sponsor");
+        }else{
+          router.push("/lender");
+        }
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Login failed. Please check your credentials and try again.");
+    }finally{
+      setLoading(false);
+    }
   };
 
   //------------ Logout Function ------------
   const logout = () => {
-
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    setUser(null);
+    toast.success("Logged out successfully!");
+    router.push("/signin");
   };
 
   //------------ Set User Function ------------
@@ -136,7 +165,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         ...authState,
         signUpData,
         loading,
-        error,
         setSignupData,
         signup,
         verifyEmail,

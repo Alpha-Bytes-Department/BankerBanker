@@ -33,7 +33,6 @@ export interface AuthState {
 
 export interface AuthContextType extends AuthState {
   signUpData: signup | null;
-  error: string | null;
   loading: boolean;
   setSignupData: (data: signup) => void;
   login: (
