@@ -27,7 +27,7 @@ export default function RegistrationSystem() {
   const [errors, setErrors] = useState<Partial<Record<keyof signup, string>>>({});
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const {signup} = useAuth();
+  const { signup } = useAuth();
 
   const customer_type: UserType[] = ['Lender', 'Sponsor'];
 
@@ -61,9 +61,9 @@ export default function RegistrationSystem() {
 
   // Password validation
   const passwordValidation = {
-    minLength: formData.password.length >= 8,
-    hasNumber: /\d/.test(formData.password),
-    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(formData.password)
+    minLength: formData?.password?.length ? formData?.password?.length >= 8 : false,
+    hasNumber: /\d/.test(formData?.password || ''),
+    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(formData?.password || ''),
   };
 
   const passwordStrength = Object.values(passwordValidation).filter(Boolean).length;
@@ -72,14 +72,14 @@ export default function RegistrationSystem() {
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof signup, string>> = {};
 
-    if (!formData.first_name.trim()) newErrors.first_name = 'First name is required';
-    if (!formData.last_name.trim()) newErrors.last_name = 'Last name is required';
-    if (!formData.email.trim()) {
+    if (!formData.first_name?.trim()) newErrors.first_name = 'First name is required';
+    if (!formData.last_name?.trim()) newErrors.last_name = 'Last name is required';
+    if (!formData.email?.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
     }
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.phone?.trim()) newErrors.phone = 'Phone number is required';
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (!passwordValidation.minLength || !passwordValidation.hasNumber || !passwordValidation.hasSymbol) {
@@ -128,12 +128,12 @@ export default function RegistrationSystem() {
                 className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-left flex items-center justify-between"
               >
                 <span className="text-gray-900">{formData.customer_type}</span>
-                <ChevronDown 
-                  size={20} 
+                <ChevronDown
+                  size={20}
                   className={`text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
                 />
               </button>
-              
+
               {isDropdownOpen && (
                 <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
                   {customer_type.map((type) => (
@@ -144,9 +144,8 @@ export default function RegistrationSystem() {
                         setFormData({ ...formData, customer_type: type });
                         setIsDropdownOpen(false);
                       }}
-                      className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors ${
-                        formData.customer_type === type ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
-                      }`}
+                      className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors ${formData.customer_type === type ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
+                        }`}
                     >
                       {type}
                     </button>
@@ -188,7 +187,7 @@ export default function RegistrationSystem() {
             {/* Email & Phone */}
             <div className="grid lg:grid-cols-2 gap-4">
               <div className='relative'>
-                 <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
                   Email <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -201,7 +200,7 @@ export default function RegistrationSystem() {
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
               <div className='relative'>
-                 <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
+                <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
                   Phone Number <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -217,9 +216,9 @@ export default function RegistrationSystem() {
 
             {/* Password */}
             <div className='relative'>
-                <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
-                  Password<span className="text-red-500">*</span>
-                </label>
+              <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
+                Password<span className="text-red-500">*</span>
+              </label>
               <div>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -242,8 +241,8 @@ export default function RegistrationSystem() {
             {/* Confirm Password */}
             <div className='relative'>
               <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
-                  Confirm Password<span className="text-red-500">*</span>
-                </label>
+                Confirm Password<span className="text-red-500">*</span>
+              </label>
               <div >
                 <input
                   type={showConfirmPassword ? "text" : "password"}
@@ -266,7 +265,7 @@ export default function RegistrationSystem() {
             {/* Password Strength Bar */}
             <div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div 
+                <div
                   className="h-full bg-blue-600 transition-all duration-300"
                   style={{ width: `${progressPercentage}%` }}
                 />
@@ -348,9 +347,8 @@ export default function RegistrationSystem() {
           {slides.map((slide, index) => (
             <div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-500 ${
-                index === currentSlide ? 'opacity-100' : 'opacity-0'
-              }`}
+              className={`absolute inset-0 transition-opacity duration-500 ${index === currentSlide ? 'opacity-100' : 'opacity-0'
+                }`}
             >
               <Image
                 src={slide.image}
@@ -379,9 +377,8 @@ export default function RegistrationSystem() {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentSlide ? 'bg-white w-8' : 'bg-white/50'
-                  }`}
+                  className={`w-2 h-2 rounded-full transition-all ${index === currentSlide ? 'bg-white w-8' : 'bg-white/50'
+                    }`}
                 />
               ))}
             </div>

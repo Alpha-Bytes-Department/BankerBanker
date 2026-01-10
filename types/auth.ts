@@ -13,15 +13,17 @@ export interface User {
 }
 
 export interface signup {
-  customer_type: UserType
-  first_name: string,
-  last_name: string,
-  email: string,
-  phone: string,
-  password: string,
-  confirm_password: string,
+  customer_type?: UserType,
+  first_name?: string,
+  last_name?: string,
+  email?: string,
+  phone?: string,
+  password?: string,
+  confirm_password?: string,
+  media_files?: File[],
   agreedToTerms?: boolean,
 }
+
 
 export interface AuthState {
   user: User | null;
@@ -30,6 +32,8 @@ export interface AuthState {
 }
 
 export interface AuthContextType extends AuthState {
+  signUpData: signup | null;
+  setSignupData: (data: signup) => void;
   login: (
     email: string,
     password: string,
