@@ -183,11 +183,9 @@ const SetNewPasswordForm: React.FC = () => {
           </form>
         </Form>
       </div>
-
-      
       <div className="relative w-full h-full hidden md:block">
         <Image
-          src="/Auth_Images/provide_pass.jpg"
+          src="/images/Auth_Images/provide_pass.jpg"
           alt="modern architecture"
           fill
           className="object-cover"

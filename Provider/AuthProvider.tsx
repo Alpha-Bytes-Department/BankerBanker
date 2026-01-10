@@ -140,6 +140,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setLoading(false);
     }
   };
+  //------------ forgot password Function ------------
+  const forgotPassword = async (email: string) => {
+    try {
+      setLoading(true);
+      const res = await api.post("/api/accounts/forgot-password/", {
+        email: email.trim(),
+      });
+      if (res.status === 200) {
+        toast.success("otp sent to your email successfully!");
+        router.push("/reset_pass_one/reset_pass_two");
+      }else{
+        toast.error("Failed to send password reset link. Please try again.");
+      }
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      toast.error("Failed to process forgot password. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   //------------ Logout Function ------------
   const logout = () => {
