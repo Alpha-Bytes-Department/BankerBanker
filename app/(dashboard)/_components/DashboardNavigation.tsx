@@ -176,7 +176,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
           {/* Navigation Links */}
           <nav className="grow p-4">
             <div className="flex flex-col space-y-2 text-white">
-              {user?.role === "lender"
+              {user?.role === "Lender"
                 ? lander.map((link, idx) => (
                     <div
                       className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
@@ -220,7 +220,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
         >
           <div>
             <div className="hidden lg:flex">
-              {user?.role === "lender"
+              {user?.role === "Lender"
                 ? lander.map((Link) => {
                     if (Link.href === pathName) {
                       return Link.text;
@@ -238,7 +238,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
             />
           </div>
           <div className="flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer">
-            {user?.role === "lender" ? (
+            {user?.role === "Lender" ? (
               <>
                 <School size={18} />
                 <span>Lender</span>
