@@ -201,7 +201,7 @@ const SignInForm: React.FC = () => {
       {/* RIGHT SIDE */}
       <div className="relative w-full h-full hidden md:block">
         <Image
-          src="/Auth_Images/login.jpg"
+          src="/images/Auth_Images/login.jpg"
           alt="buildings"
           fill
           className="object-cover"
