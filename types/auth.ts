@@ -33,6 +33,8 @@ export interface AuthState {
 
 export interface AuthContextType extends AuthState {
   signUpData: signup | null;
+  error: string | null;
+  loading: boolean;
   setSignupData: (data: signup) => void;
   login: (
     email: string,
@@ -40,6 +42,8 @@ export interface AuthContextType extends AuthState {
     rememberMe?: boolean
   ) => Promise<void>;
   signup: (formData : signup) => Promise<void>;
+  verifyEmail: (otp: string) => Promise<void>;
+  resendOtp: (email: string) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
 }

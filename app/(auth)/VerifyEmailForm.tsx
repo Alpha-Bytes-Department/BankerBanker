@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Button from "@/components/Button";
 import Link from "next/link";
+import { useAuth } from "@/Provider/AuthProvider";
 
 const VerifyEmailForm: React.FC = () => {
   const [otp, setOtp] = useState("");
@@ -14,6 +15,7 @@ const VerifyEmailForm: React.FC = () => {
   const [isResending, setIsResending] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(30);
+  const { user,verifyEmail, resendOtp } = useAuth();
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -25,72 +27,14 @@ const VerifyEmailForm: React.FC = () => {
     return () => clearInterval(interval);
   }, [resendCooldown]);
 
-  const handleOtpVerify = async () => {
-    if (otp.length !== 6) {
-      alert("Please enter a 6-digit OTP");
-      return;
-    }
-
-    setIsVerifying(true);
-    try {
-      console.log(otp);
-      const res = await fetch(`#################`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: otp.trim(),
-        }),
-      });
-
-      const data = await res.json();
-      console.log("Verify Response:", data);
-
-      if (data.status === "success" && data.status_code === 200) {
-        alert("Successfully sent otp");
-
-        //  It may be used next.
-        // localStorage.setItem("access_token", data.data?.access_token || "");
-        // localStorage.setItem("refresh_token", data.data?.refresh_token || "");
-      } else {
-        alert(data.detail || "Invalid OTP");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Failed to verify OTP");
-    } finally {
-      setIsVerifying(false);
-    }
+  // verify otp
+  const handleOtpVerify = () => {
+    verifyEmail(otp);
   };
 
   // Resend OTP
   const handleResend = async () => {
-    setIsResending(true);
-
-    try {
-      const res = await fetch(`############`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-
-      console.log("Data from register4", data);
-
-      if (data.status === "success" || data.status_code === 200) {
-        setShowAlert(true);
-        setResendCooldown(30);
-
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 5000);
-      } else {
-        alert(data.detail || "Failed to resend OTP");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Failed to resend OTP");
-    } finally {
-      setIsResending(false);
-    }
+    resendOtp(user?.email || "");
   };
 
   return (
@@ -111,13 +55,13 @@ const VerifyEmailForm: React.FC = () => {
             value={otp}
             onChange={(value) => setOtp(value)}
           >
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
+            <InputOTPGroup className="gap-5">
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={0} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={1} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={2} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={3} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={4} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={5} />
             </InputOTPGroup>
           </InputOTP>
 
