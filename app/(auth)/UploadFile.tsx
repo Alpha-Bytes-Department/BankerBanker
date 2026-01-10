@@ -1,15 +1,15 @@
 'use client'
 import { useState } from 'react';
 import { Upload, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuth } from '@/Provider/AuthProvider';
 
 const UploadFile = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-  const router = useRouter();
+  const { signUpData, signup } = useAuth();
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -36,7 +36,10 @@ const UploadFile = () => {
   };
 
   const handleComplete = () => {
-    router.push('/signin/verify_email');
+    if(files.length > 0) {
+      const updatedSignupData = { ...signUpData, media_files: files };
+      signup(updatedSignupData);
+    }
   };
 
   return (
@@ -46,10 +49,8 @@ const UploadFile = () => {
           <div className="mb-8">
               <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
           </div>
-
           <h2 className="text-3xl font-bold mb-2">Registration</h2>
           <p className="text-gray-600 mb-8">Let&apos;s get you all set up so you can access your account.</p>
-
           <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
             <div className="flex justify-between items-start mb-4">
               <div>
@@ -60,7 +61,6 @@ const UploadFile = () => {
                 <X size={20} />
               </button>
             </div>
-
             <div
               onDrop={handleDrop}
               onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -105,14 +105,11 @@ const UploadFile = () => {
               </div>
             )}
           </div>
-
           <Button onClick={handleComplete}
               type="submit"
-              text="Sign In"
+              text="Register"
               className="button-primary w-full h-14 mb-2"
             />
-
-
           <p className="text-center text-sm text-gray-600">
             Already have an account? <span className="text-red-500 cursor-pointer">Login</span>
           </p>
@@ -126,8 +123,7 @@ const UploadFile = () => {
           </svg>
           Support
         </button>
-
-        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop" alt="Background" className="w-full h-full object-cover" />
+        <Image src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=800&fit=crop" alt="Background" fill className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-12 text-center">
           <h2 className="text-4xl font-bold mb-4">Smarter decisions, faster closings.</h2>

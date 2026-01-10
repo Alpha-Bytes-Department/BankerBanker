@@ -1,14 +1,29 @@
 //========== Authentication Type Definitions ===========
 
+export type UserType = "Lender" | "Sponsor";
+
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: "lender" | "sponsor";
+  role: UserType
   companyName?: string;
   phoneNumber?: string;
   profileImage?: string;
 }
+
+export interface signup {
+  customer_type?: UserType,
+  first_name?: string,
+  last_name?: string,
+  email?: string,
+  phone?: string,
+  password?: string,
+  confirm_password?: string,
+  media_files?: File[],
+  agreedToTerms?: boolean,
+}
+
 
 export interface AuthState {
   user: User | null;
@@ -17,20 +32,14 @@ export interface AuthState {
 }
 
 export interface AuthContextType extends AuthState {
+  signUpData: signup | null;
+  setSignupData: (data: signup) => void;
   login: (
     email: string,
     password: string,
     rememberMe?: boolean
   ) => Promise<void>;
-  signup: (
-    customer_type: "lender" | "sponsor",
-    first_name: string,
-    last_name: string,
-    email: string,
-    phone: string,
-    password: string,
-    confirm_password: string,
-  ) => Promise<void>;
+  signup: (formData : signup) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
 }
