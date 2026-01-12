@@ -125,7 +125,7 @@ export default function RegistrationSystem() {
               <button
                 type="button"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-left flex items-center justify-between"
+                className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 bg-white text-left flex items-center justify-between"
               >
                 <span className="text-gray-900">{formData.customer_type}</span>
                 <ChevronDown
@@ -164,7 +164,7 @@ export default function RegistrationSystem() {
                   type="text"
                   value={formData.first_name}
                   onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-full"
+                  className="w-full px-4 py-3 border border-gray-300 focus:ring-3 focus:ring-blue-500 focus:outline-0 rounded-full"
                   placeholder="enter your first name"
                 />
                 {errors.first_name && <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>}
@@ -177,7 +177,7 @@ export default function RegistrationSystem() {
                   type="text"
                   value={formData.last_name}
                   onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0"
                   placeholder="enter your last name"
                 />
                 {errors.last_name && <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>}
@@ -194,7 +194,7 @@ export default function RegistrationSystem() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0"
                   placeholder="enter your email"
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -207,7 +207,7 @@ export default function RegistrationSystem() {
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0"
                   placeholder="000 0000 0000"
                 />
                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
@@ -224,7 +224,7 @@ export default function RegistrationSystem() {
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 pr-12"
                   placeholder="enter your password"
                 />
                 <button
@@ -248,7 +248,7 @@ export default function RegistrationSystem() {
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirm_password}
                   onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 pr-12"
                   placeholder="enter your password again"
                 />
                 <button

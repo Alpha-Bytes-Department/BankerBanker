@@ -34,10 +34,10 @@ const formSchema = z.object({
     .string()
     .min(8, { message: "Password should be at least 8 characters" })
     .max(30, { message: "Password should be at most 30 characters" }),
-    // .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/, {
-    //   message:
-    //     "Password must contain uppercase, lowercase, number, and special character",
-    // }),
+  // .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/, {
+  //   message:
+  //     "Password must contain uppercase, lowercase, number, and special character",
+  // }),
 
   remember_me: z.boolean(),
 });
@@ -46,6 +46,7 @@ type SignInFormValues = z.infer<typeof formSchema>;
 
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(formSchema),
@@ -57,140 +58,149 @@ const SignInForm: React.FC = () => {
   });
 
 
-  const {login}= useAuth();
+  // <div className='relative'>
+  //   <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
+  //     First Name <span className="text-red-500">*</span>
+  //   </label>
+  //   <input
+  //     type="text"
+  //     value={formData.first_name}
+  //     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+  //     className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-full"
+  //     placeholder="enter your first name"
+  //   />
+  //   {errors.first_name && <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>}
+  // </div>
 
 
+  // handling sign in action
   const handleSign = (data: SignInFormValues) => {
     login(data.email, data.password, data.remember_me);
   };
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
-      <div className="flex flex-col justify-center px-6 md:px-20 py-10 space-y-6 ">
-        {/* Logo */}
-        <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
-        <h2 className="text-2xl font-semibold">Log in</h2>
-        <p className="text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-blue-600">
-            Create now
-          </Link>
-        </p>
-
-        {/* Form */}
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSign)} className="space-y-5">
-            {/* Email */}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>E-mail</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="example@gmail.com"
-                      className="w-full md:w-[593px] h-14 rounded-4xl"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Password */}
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <div className="relative w-full md:w-[593px] h-14">
+      <div className="flex flex-col justify-center items-center py-10 space-y-6 ">
+        <div>
+          {/* Logo */}
+          <div className="mb-5">
+            <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
+            <h2 className="text-2xl font-semibold my-2">Log in</h2>
+            <p className="text-sm">
+              Don&apos;t have an account?{" "}
+              <Link href="/register" className="text-blue-600">
+                Create now
+              </Link>
+            </p>
+          </div>
+          {/* Form */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleSign)} className="space-y-5">
+              {/* Email */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormLabel className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">E-mail</FormLabel>
+                    <FormControl>
                       <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="@#*%"
-                        className="pr-14 rounded-4xl w-full h-full"
+                        placeholder="example@gmail.com"
+                        className="w-full px-4 py-7 max-w-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-full"
                         {...field}
                       />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Password */}
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="relative" >
+                    <FormLabel className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600" >Password</FormLabel>
+                    <FormControl>
+                      <div>
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="password"
+                          className="w-full px-4 py-7 max-w-xl border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+                          {...field}
+                        />
+                        {/* <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300" /> */}
+                        {/* Eye Icon */}
+                        <button
+                          type="button"
+                          className="absolute right-10 top-2/6 -translate-y-1/2 text-gray-500"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
 
-                      <span className="absolute top-3 bottom-3 right-14 w-px bg-gray-300" />
+                    {/* Remember Me + Forgot Password */}
+                    <div className="mt-2 w-full md:w-[593px] flex justify-between items-center">
+                      <div className="flex items-center text-sm space-x-2">
+                        <FormField
+                          control={form.control}
+                          name="remember_me"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center">
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                  id="toggle"
+                                />
+                              </FormControl>
+                              <Label
+                                htmlFor="toggle"
+                                className="text-blue-600"
+                              >
+                                Remember me
+                              </Label>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
-                      {/* Eye Icon */}
-                      <button
-                        type="button"
-                        className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-500"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff size={20} />
-                        ) : (
-                          <Eye size={20} />
-                        )}
-                      </button>
+                      <Link href="/reset_pass_one" className="text-blue-600 text-sm underline">
+                        Forgot Password?
+                      </Link>
                     </div>
-                  </FormControl>
-                  <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                  {/* Remember Me + Forgot Password */}
-                  <div className="mt-2 w-full md:w-[593px] flex justify-between items-center">
-                    <div className="flex items-center text-sm space-x-2">
-                      <FormField
-                        control={form.control}
-                        name="remember_me"
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                                id="toggle"
-                              />
-                            </FormControl>
-                            <Label
-                              htmlFor="toggle"
-                              className="ml-2 text-gray-400"
-                            >
-                              Remember me
-                            </Label>
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+              {/* Login Button */}
+              <Button
+                type="submit"
+                text="Sign In"
+                className="button-primary w-full md:w-[593px] h-14"
+              />
 
-                    <Link href="/reset_pass_one" className="text-blue-600 text-sm underline">
-                      Forgot Password?
-                    </Link>
-                  </div>
-                </FormItem>
-              )}
-            />
+              {/* Divider */}
+              <div className="flex items-center gap-4 my-4 w-full md:w-[593px] justify-center">
+                <hr className="flex-1 border-gray-300" />
+                <span className="text-gray-400">OR</span>
+                <hr className="flex-1 border-gray-300" />
+              </div>
 
-            {/* Login Button */}
-            <Button
-              type="submit"
-              text="Sign In"
-              className="button-primary w-full md:w-[593px] h-14"
-            />
-
-            {/* Divider */}
-            <div className="flex items-center gap-4 my-4 w-full md:w-[593px] justify-center">
-              <hr className="flex-1 border-gray-300" />
-              <span className="text-gray-400">OR</span>
-              <hr className="flex-1 border-gray-300" />
-            </div>
-
-            {/* Google Button */}
-            <Link
-              href="#"
-              className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer"
-            >
-              <FcGoogle className="text-2xl" />
-              Continue with Google
-            </Link>
-          </form>
-        </Form>
+              {/* Google Button */}
+              <Link
+                href="#"
+                className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer"
+              >
+                <FcGoogle className="text-2xl" />
+                Continue with Google
+              </Link>
+            </form>
+          </Form>
+        </div>
       </div>
 
       {/* RIGHT SIDE */}
