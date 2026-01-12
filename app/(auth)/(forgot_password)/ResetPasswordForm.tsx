@@ -41,15 +41,10 @@ const ResetPasswordForm: React.FC = () => {
   const handleResetPassword = async (data: ResetPasswordFormValues) => {
     setIsLoading(true);
     try {
-      console.log("Reset password for:", data.email);
-      //We will call the api fron here..!!
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      alert("Password reset link sent to your email!");
+
       router.push("/reset_pass_one/reset_pass_two");
     } catch (error) {
       console.error("Error:", error);
-      alert("Failed to send reset link. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -77,12 +72,12 @@ const ResetPasswordForm: React.FC = () => {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email *</FormLabel>
+                <FormItem className="relative">
+                  <FormLabel className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">E-mail</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="prayasmazumder150@gmail.com"
-                      className="w-full md:w-[593px] h-14 rounded-4xl"
+                      placeholder="example@gmail.com"
+                      className="w-full px-4 py-7 max-w-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-full"
                       {...field}
                     />
                   </FormControl>
@@ -91,7 +86,7 @@ const ResetPasswordForm: React.FC = () => {
               )}
             />
 
-           
+
             <Button
               type="submit"
               text={isLoading ? "Sending..." : "Next"}
