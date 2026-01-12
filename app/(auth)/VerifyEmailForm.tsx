@@ -59,12 +59,12 @@ const VerifyEmailForm: React.FC = () => {
             onChange={(value) => setOtp(value)}
           >
             <InputOTPGroup className="gap-5">
-              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={0} />
-              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={1} />
-              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={2} />
-              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={3} />
-              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={4} />
-              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9]" index={5} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9] data-[active=true]:border-3 data-[active=true]:border-blue-600 data-[active=true]:ring-0" index={0} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9] data-[active=true]:border-3 data-[active=true]:border-blue-600 data-[active=true]:ring-0" index={1} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9] data-[active=true]:border-3 data-[active=true]:border-blue-600 data-[active=true]:ring-0" index={2} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9] data-[active=true]:border-3 data-[active=true]:border-blue-600 data-[active=true]:ring-0" index={3} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9] data-[active=true]:border-3 data-[active=true]:border-blue-600 data-[active=true]:ring-0" index={4} />
+              <InputOTPSlot className="w-14 h-14 rounded-lg border border-[#bdb9b9] data-[active=true]:border-3 data-[active=true]:border-blue-600 data-[active=true]:ring-0" index={5} />
             </InputOTPGroup>
           </InputOTP>
 
