@@ -1,0 +1,59 @@
+// title: notification
+
+{
+  "success": true,
+  "data": {
+    "unread_count": 3,
+    "notifications": [
+      {
+        "id": "notif_uuid_9987",
+        "is_read": false,
+        "event_type": "QUOTATION_RESTRICTED",
+        "created_at": "2026-01-14T01:28:33Z",
+        "sender": {
+          "user_id": "u_772",
+          "name": "Sarah Jenkins",
+          "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+          "role": "Compliance Manager"
+        },
+        "content": {
+          "title": "Quotation Restricted",
+          "body": "Quotation #QT-1024 has been restricted by Sarah Jenkins.",
+          "priority": "urgent"
+        },
+        "reference": {
+          "type": "quotation",
+          "id": "QT-1024",
+          "deeplink": "/finance/quotations/1024"
+        }
+      },
+      {
+        "id": "notif_uuid_9986",
+        "is_read": false,
+        "event_type": "QUOTATION_ACCEPTED",
+        "created_at": "2026-01-13T22:15:00Z",
+        "sender": {
+          "user_id": "c_441",
+          "name": "Global Tech Corp",
+          "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=GTC",
+          "role": "Client"
+        },
+        "content": {
+          "title": "Quotation Accepted",
+          "body": "Global Tech Corp just accepted quotation #QT-1020.",
+          "priority": "normal"
+        },
+        "reference": {
+          "type": "quotation",
+          "id": "QT-1020",
+          "deeplink": "/finance/quotations/1020"
+        }
+      }
+    ]
+  },
+  "pagination": {
+    "current_page": 1,
+    "has_more": false
+  }
+}
+

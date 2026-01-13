@@ -1,11 +1,12 @@
 "use client"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiBellOn } from "react-icons/ci";
 import NotificationCard from "./NotificationCard";
 import { LuCircleCheckBig, LuMessageCircle } from "react-icons/lu";
 import { FaDollarSign } from "react-icons/fa6";
 import { FiTrash2 } from "react-icons/fi";
+import api from "@/Provider/api";
 
 const notificationsData = [
     {
@@ -52,6 +53,17 @@ export default function Notifications() {
     const [unread, setUnread] = useState(false);
     const [messages, setMessages] = useState(false);
     const [dollar, setDollar] = useState(false);
+
+    useEffect(() => {
+        // Fetch notifications from an API or data source
+        const getNotifications = async () => {
+            const res = await api.get("https://mp55c341899ae102bfba.free.beeceptor.com/notification");
+            setNotifications(3);
+        }
+        getNotifications();
+    }, []);
+
+
     return (
         <div className='flex items-center relative cursor-pointer'>
             <DropdownMenu>
