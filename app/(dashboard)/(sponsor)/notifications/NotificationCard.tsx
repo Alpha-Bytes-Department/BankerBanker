@@ -14,6 +14,8 @@ interface NotificationCardProps {
 
 export default function NotificationCard({ title, from, description }: NotificationCardProps) {
     const [read, setRead] = useState(false);
+
+    
     return (
         <div className={`${read ? "bg-[white]" : "bg-[#EFF6FF]"} border-t border-b px-2 py-3 flex gap-2 border border-[#0000001A]`}
             onClick={() => setRead(true)}>
