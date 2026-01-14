@@ -14,6 +14,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [authState, setAuthState] = useState<AuthState>({
     email: null,
     isAuthenticated: false,
@@ -33,7 +34,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setSignupData(userData);
 
     // checking user type and redirecting accordingly 
-    if (userData?.customer_type === "Lender" && userData?.media_files === undefined) {
+    if (userData?.role === "Lender" && userData?.media_files === undefined) {
       toast.info("Please upload media files to proceed.");
       router.push("/register/upload");
       return;
@@ -166,7 +167,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setUser(user);
         toast.success("Logged in successfully!");
         setLoading(false);
-        if (user?.customer_type === "Sponsor") {
+        if (user?.role === "Sponsor") {
           router.push("/sponsor");
         } else {
           router.push("/lender");
@@ -261,13 +262,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   /*----------------------------------------
             setUser Function 
   ----------------------------------------------*/
-  const setUser = (user: User | null) => {
 
-  };
 
   return (
     <AuthContext.Provider
       value={{
+        user,
         authState,
         signUpData,
         loading,
@@ -279,7 +279,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         login,
         logout,
         forgotPassword,
-        setUser,
       }}
     >
       {children}

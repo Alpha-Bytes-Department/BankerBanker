@@ -13,7 +13,7 @@ import { signup, UserType } from '@/types/auth';
 // Main Component
 export default function RegistrationSystem() {
   const [formData, setFormData] = useState<signup>({
-    customer_type: 'Sponsor',
+    role: 'Sponsor',
     first_name: '',
     last_name: '',
     email: '',
@@ -29,7 +29,7 @@ export default function RegistrationSystem() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { signup } = useAuth();
 
-  const customer_type: UserType[] = ['Lender', 'Sponsor'];
+  const role: UserType[] = ['Lender', 'Sponsor'];
 
   const slides = [
     {
@@ -127,7 +127,7 @@ export default function RegistrationSystem() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 bg-white text-left flex items-center justify-between"
               >
-                <span className="text-gray-900">{formData.customer_type}</span>
+                <span className="text-gray-900">{formData.role}</span>
                 <ChevronDown
                   size={20}
                   className={`text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
@@ -136,15 +136,15 @@ export default function RegistrationSystem() {
 
               {isDropdownOpen && (
                 <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
-                  {customer_type.map((type) => (
+                  {role.map((type) => (
                     <button
                       key={type}
                       type="button"
                       onClick={() => {
-                        setFormData({ ...formData, customer_type: type });
+                        setFormData({ ...formData, role: type });
                         setIsDropdownOpen(false);
                       }}
-                      className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors ${formData.customer_type === type ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
+                      className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors ${formData.role === type ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
                         }`}
                     >
                       {type}

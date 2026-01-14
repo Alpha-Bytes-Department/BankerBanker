@@ -3,17 +3,17 @@
 export type UserType = "Lender" | "Sponsor";
 
 export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: UserType;
+  id?: string;
+  email?: string;
+  name?: string;
+  role?: UserType;
   companyName?: string;
   phoneNumber?: string;
   profileImage?: string;
 }
 
 export interface signup {
-  customer_type?: UserType,
+  role?: UserType,
   first_name?: string,
   last_name?: string,
   email?: string,
@@ -31,10 +31,10 @@ export interface AuthState {
 }
 
 export interface AuthContextType{
+  user: User | null;
   signUpData: signup | null;
   loading: boolean;
   authState: AuthState,
-  setUser: (user: User | null) => void;
   setSignupData: (data: signup) => void;
   login: ( email: string, password: string, rememberMe?: boolean ) => Promise<void>;
   signup: (formData : signup) => Promise<void>;
