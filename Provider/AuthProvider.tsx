@@ -213,6 +213,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   /*----------------------------------------
           Verify OTP after forgot Function 
+
+
+ Note: this is need to change from backend and make one function for verifyOtp
 ----------------------------------------------*/
   const verifyForgotOTP = async (otp: string) => {
     const AuthState = localStorage.getItem("Authstate");
