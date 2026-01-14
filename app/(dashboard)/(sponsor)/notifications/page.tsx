@@ -57,8 +57,9 @@ export default function Notifications() {
     useEffect(() => {
         // Fetch notifications from an API or data source
         const getNotifications = async () => {
-            const res = await api.get("https://mp55c341899ae102bfba.free.beeceptor.com/notification");
-            setNotifications(3);
+            console.log("I am clicked..");
+            const res = await api.get("api/notification");
+            console.log("Your notification is...,",res);
         }
         getNotifications();
     }, []);

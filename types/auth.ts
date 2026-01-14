@@ -6,7 +6,7 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: UserType
+  role: UserType;
   companyName?: string;
   phoneNumber?: string;
   profileImage?: string;
@@ -26,25 +26,23 @@ export interface signup {
 
 
 export interface AuthState {
-  user: User | null;
+  email: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
 }
 
-export interface AuthContextType extends AuthState {
+export interface AuthContextType{
   signUpData: signup | null;
   loading: boolean;
-  setSignupData: (data: signup) => void;
-  login: (
-    email: string,
-    password: string,
-    rememberMe?: boolean
-  ) => Promise<void>;
-  signup: (formData : signup) => Promise<void>;
-  verifyEmail: (otp: string) => Promise<void>;
-  resendOtp: (email: string) => Promise<void>;
-  logout: () => void;
+  authState: AuthState,
   setUser: (user: User | null) => void;
+  setSignupData: (data: signup) => void;
+  login: ( email: string, password: string, rememberMe?: boolean ) => Promise<void>;
+  signup: (formData : signup) => Promise<void>;
+  verifyOTP: (otp: string) => Promise<void>;
+  resendOtp: (email: string) => Promise<void>;
+  forgotPassword: (email: string)=> Promise<void>
+  verifyForgotOTP: (email: string)=> Promise<void>;
+  logout: () => void;
 }
 
 export interface LoginResponse {

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
+import z, { email } from "zod";
 import {
   Form,
   FormField,
@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Button from "@/components/Button";
+import { useAuth } from "@/Provider/AuthProvider";
 
 const formSchema = z.object({
   email: z
@@ -27,9 +28,9 @@ const formSchema = z.object({
 
 type ResetPasswordFormValues = z.infer<typeof formSchema>;
 
-const ResetPasswordForm: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const ResetPasswordForm: React.FC = () => {;
   const router = useRouter();
+  const {loading,forgotPassword} = useAuth();
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(formSchema),
@@ -38,16 +39,8 @@ const ResetPasswordForm: React.FC = () => {
     },
   });
 
-  const handleResetPassword = async (data: ResetPasswordFormValues) => {
-    setIsLoading(true);
-    try {
-
-      router.push("/reset_pass_one/reset_pass_two");
-    } catch (error) {
-      console.error("Error:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleForgotPassword = async (data: ResetPasswordFormValues) => {
+    forgotPassword(data?.email);
   };
 
   return (
@@ -65,7 +58,7 @@ const ResetPasswordForm: React.FC = () => {
         {/* Form */}
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(handleResetPassword)}
+            onSubmit={form.handleSubmit(handleForgotPassword)}
             className="space-y-6"
           >
             <FormField
@@ -89,7 +82,7 @@ const ResetPasswordForm: React.FC = () => {
 
             <Button
               type="submit"
-              text={isLoading ? "Sending..." : "Next"}
+              text={loading ? "Sending..." : "Next"}
               className="button-primary w-full md:w-[593px] h-14"
             />
           </form>
