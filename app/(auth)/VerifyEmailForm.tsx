@@ -13,30 +13,29 @@ const VerifyEmailForm: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(30);
-  const { user,verifyEmail, resendOtp } = useAuth();
+  const {authState,verifyOTP, resendOtp } = useAuth();
 
+  // countdown
   useEffect(() => {
     if (resendCooldown <= 0) return;
-
     const interval = setInterval(() => {
       setResendCooldown((prev) => prev - 1);
     }, 1000);
-
     return () => clearInterval(interval);
   }, [resendCooldown]);
 
   // verify otp
   const handleOtpVerify = () => {
     setIsVerifying(true);
-    verifyEmail(otp);
+    verifyOTP(otp);
     setIsVerifying(false);
   };
 
   // Resend OTP
   const handleResend = () => {
     setIsResending(true);
-    resendOtp(user?.email || "");
     setResendCooldown(30);
+    resendOtp(authState?.email || "");
     setIsResending(false);
   };
 

@@ -9,7 +9,7 @@ import axios, {
 let isRefreshing = false;
 let waitingQueue: ((token: string) => void)[] = [];
 // Declaring public routes
-const publicEndPoint = ["/singup"];
+const publicEndPoint = ["/singup", "/login", "/dashboard", "/sponsor"];
 
 // Function to get tokens from localStorage
 const getTokensFromLocalStorage = () => {
@@ -22,7 +22,7 @@ const getTokensFromLocalStorage = () => {
 
 // Creating axios instance
 const api: AxiosInstance = axios.create({
-  baseURL: "http://10.10.12.95:8000",
+  baseURL: "http://10.10.12.95:8000/",
   withCredentials: true,
 });
 
