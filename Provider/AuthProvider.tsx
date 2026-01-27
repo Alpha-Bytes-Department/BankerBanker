@@ -162,8 +162,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
       if (res.status === 200) {
         const { user, access, refresh } = res.data.data;
-        localStorage.setItem("accessToken", access);
-        localStorage.setItem("refreshToken", refresh);
+        const userInfo = {access_token: access, refresh_token: refresh, user: user};
+        localStorage.setItem("userCredentials", JSON.stringify(userInfo));
         setUser(user);
         toast.success("Logged in successfully!");
         setLoading(false);
@@ -252,8 +252,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             Logout Function 
   ----------------------------------------------*/
   const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userCredentials");
     setUser(null);
     toast.success("Logged out successfully!");
     router.push("/signin");

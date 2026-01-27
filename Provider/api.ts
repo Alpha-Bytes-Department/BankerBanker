@@ -16,9 +16,19 @@ const getTokensFromLocalStorage = () => {
   if (typeof window === "undefined") {
     return { accessToken: null, refreshToken: null };
   }
-  const accessToken = localStorage.getItem("accessToken");
-  const refreshToken = localStorage.getItem("refreshToken");
-  return { accessToken, refreshToken };
+  try {
+    const userCredentials = localStorage.getItem("userCredentials");
+    if (userCredentials) {
+      const { access_token, refresh_token } = JSON.parse(userCredentials);
+      return { accessToken: access_token, refreshToken: refresh_token };
+    }
+    return { accessToken: null, refreshToken: null };
+  } catch (error) {
+    console.error("Failed to read tokens from localStorage", error);
+    return { accessToken: null, refreshToken: null };
+  }
+
+  
 };
 
 // Creating axios instance
@@ -90,7 +100,7 @@ api.interceptors.response.use(
         // Update localStorage with new access token
         const userData = JSON.parse(localStorage.getItem("user") || "{}");
         localStorage.setItem(
-          "user",
+          "userCredentials",
           JSON.stringify({ ...userData, access_token: newToken }),
         );
         api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
@@ -111,9 +121,9 @@ api.interceptors.response.use(
 // Function to set access token in localStorage
 export const setAccessToken = (token: string | null): void => {
   if (token) {
-    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    const userData = JSON.parse(localStorage.getItem("userCredentials") || "{}");
     localStorage.setItem(
-      "user",
+      "userCredentials",
       JSON.stringify({ ...userData, access_token: token }),
     );
   }
