@@ -13,11 +13,12 @@ const publicEndPoint = ["/singup", "/login", "/dashboard", "/sponsor"];
 
 // Function to get tokens from localStorage
 const getTokensFromLocalStorage = () => {
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  return {
-    accessToken: userData?.access_token || null,
-    refreshToken: userData?.refresh_token || null,
-  };
+  if (typeof window === "undefined") {
+    return { accessToken: null, refreshToken: null };
+  }
+  const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
+  return { accessToken, refreshToken };
 };
 
 // Creating axios instance
@@ -41,22 +42,22 @@ const executingRoutes = (token: string) => {
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const { accessToken } = getTokensFromLocalStorage();
-    const isPublic = publicEndPoint.some((url) =>
-      config.url?.includes(url)
-    );
+    const isPublic = publicEndPoint.some((url) => config.url?.includes(url));
     if (accessToken && !isPublic) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error) => Promise.reject(`Error in request: ${error}`)
+  (error) => Promise.reject(`Error in request: ${error}`),
 );
 
 // Handle token expiration automatically
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error) => {
-    const originalRequest = error.config as AxiosRequestConfig & { _retry: boolean };
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry: boolean;
+    };
 
     // Wait until original request completes
     if (error?.response?.status === 401 && !originalRequest._retry) {
@@ -82,18 +83,21 @@ api.interceptors.response.use(
 
         const { data } = await api.post<{ access_token: string }>(
           "/accounts/token/refresh/",
-          { refresh_token: refreshToken }
+          { refresh_token: refreshToken },
         );
         const newToken = data.access_token;
 
         // Update localStorage with new access token
         const userData = JSON.parse(localStorage.getItem("user") || "{}");
-        localStorage.setItem("user", JSON.stringify({ ...userData, access_token: newToken }));
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...userData, access_token: newToken }),
+        );
         api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
         executingRoutes(newToken);
         return api(originalRequest);
       } catch (refreshError) {
-        window.localStorage.href = "/login";
+        window.location.href = "/login";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -101,14 +105,17 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 // Function to set access token in localStorage
 export const setAccessToken = (token: string | null): void => {
   if (token) {
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
-    localStorage.setItem("user", JSON.stringify({ ...userData, access_token: token }));
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ ...userData, access_token: token }),
+    );
   }
 };
 
