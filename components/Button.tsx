@@ -4,32 +4,36 @@ import { FaAngleRight } from "react-icons/fa6";
 export type ButtonProps = {
   text?: string;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | (() => void | Promise<void>);
+  size?: "small" | "medium" | "large";
   className?: string;
-  width?: string;
   type?: "button" | "submit" | "reset";
   icon?: React.ReactNode;
   arrow?: boolean;
 };
 
+const sizes = {
+  small: "text-xs px-2 py-2",
+  medium: "text-sm px-3 py-3",
+  large: "text-base px-6 py-3",
+}
+
 const Button = ({
   text,
   onClick,
-  width,
   className = "button-primary",
+  size="large",
   type = "button",
   icon,
   arrow = false,
 }: ButtonProps) => {
 
-  const buttonStyle = width ? { width } : {};
   
   return (
     <button
-      style={buttonStyle}
       onClick={onClick}
       type={type}
-      className={`flex justify-center items-center gap-3 text-xs sm:text-sm lg:text-base px-3 lg:px-6 py-3 rounded-full transition-colors duration-300 
-        active:scale-95 cursor-pointer ${className}`}
+      className={`flex justify-center items-center gap-2 rounded-full transition-colors duration-300 
+        active:scale-95 cursor-pointer ${sizes[size]} ${className}`}
     >
       {icon}
       {text}

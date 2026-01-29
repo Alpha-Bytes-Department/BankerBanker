@@ -142,7 +142,7 @@ const Page = () => {
         </button>
       </div>
       {/* view randaring  */}
-      {view==="Card View" ? <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 ">
+      {view==="Card View" ? <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 ">
         {loans.map((loan) => (
           <LoanCard key={loan.id} loan={loan} />
         ))}
