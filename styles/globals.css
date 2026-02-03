@@ -11,6 +11,21 @@
   --secondary: #000000;
 }
 
+/* Hide scrollbar for Chrome, Edge, Safari */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Hide scrollbar for Firefox */
+html,
+body,
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
 @layer components {
   /* buttons  */
   .button-primary {

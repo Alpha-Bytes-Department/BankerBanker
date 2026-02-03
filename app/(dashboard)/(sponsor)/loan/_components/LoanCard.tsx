@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react";
+import { motion } from 'framer-motion';
 import { Loan } from "../page";
 import Button from "@/components/Button";
 import { FaStar } from "react-icons/fa6";
@@ -12,7 +13,14 @@ type LoanCardProps = {
 const LoanCard = ({ loan }: LoanCardProps) => {
   const [status, setStatus] = useState<"Active" | "Pending" | "Accepted" | "Decline">("Pending")
   return (
-    <div className="max-w-[400px] mx-auto w-full rounded-xl border border-blue-300 p-5">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ scale: 1.01 }}
+      className="max-w-[400px] mx-auto w-full rounded-xl border border-blue-300 p-5"
+    >
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex gap-3">
@@ -67,7 +75,7 @@ const LoanCard = ({ loan }: LoanCardProps) => {
           <Button icon={<Eye size={16}/>}  text="View" size="medium" className="button-outline flex-1" />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

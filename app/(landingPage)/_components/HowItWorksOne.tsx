@@ -1,5 +1,6 @@
-// Fahim
+"use client";
 import Image from "next/image";
+import { motion } from 'framer-motion';
 
 const howItWorksOneData = [{
     id: 1,
@@ -24,10 +25,18 @@ export default function HowItWorksOne() {
     return (
         <div className="flex flex-col xl:flex-row gap-12 items-center justify-center mt-12">
             {
-                howItWorksOneData.map(item => (
+                howItWorksOneData.map((item, idx) => (
                     // Card
-                    <div key={item.id} className="flex flex-col items-center justify-center gap-6 
-                    max-w-[362px] h-[420px] bg-[#FFFFFF] shadow-2xl rounded-2xl p-6">
+                    <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{ duration: 0.6, delay: idx * 0.15 }}
+                        whileHover={{ scale: 1.02 }}
+                        className="flex flex-col items-center justify-center gap-6 
+                    max-w-[362px] h-[420px] bg-[#FFFFFF] shadow-2xl rounded-2xl p-6"
+                    >
                         <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 
                             bg-primary text-[#FFFFFF] font-semibold">{item.id}</div>
                         <div className="text-[#111827] font-semibold">{item.title}</div>
@@ -35,7 +44,7 @@ export default function HowItWorksOne() {
                         <div className="relative w-[300px] h-[150px]">
                             <Image src={item.imagePath} alt={item.imagePath} fill className="rounded-lg object-cover object-center" />
                         </div>
-                    </div>
+                    </motion.div>
                 ))
             }
         </div>
