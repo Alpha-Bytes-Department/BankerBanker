@@ -3,6 +3,7 @@ import { Send, Sparkles } from 'lucide-react';
 import { useRef, useState, useEffect, Dispatch, SetStateAction, startTransition } from 'react';
 import { Card } from "@/components/ui/card";
 
+
 interface Message {
     role: "sender" | "receiver" | "typing";
     content: string;
@@ -62,6 +63,7 @@ const chatById = Object.fromEntries(
 
 const MessageText = ({
     selectedMessageId,
+    setSelectedMessageId
 }: MesssageTextProps) => {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<Message[]>([
@@ -120,9 +122,9 @@ const MessageText = ({
     };
 
     return (
-        <Card className={`shadow-md flex-1 rounded-xl border-[#E5E7EB] py-0 ${selectedMessageId ? "h-[90vh]" : "hidden lg:flex"}  flex-col gap-0 bg-white`}>
+        <Card className={`shadow-md flex-1 rounded-xl border-[#E5E7EB] py-0 ${selectedMessageId ? "h-[85vh]" : "hidden lg:flex"}  flex-col gap-0 bg-white`}>
             {/* Header */}
-            <div className="p-4 rounded-xl flex justify-between items-center">
+            <div className="p-2 lg:p-4 rounded-xl flex justify-between items-center">
                 <div className='flex items-center gap-2'>
                     <span className='bg-[#FFFFFF33] p-2 rounded-full'>
                         <Sparkles className='text-2xl' />
@@ -132,9 +134,17 @@ const MessageText = ({
                         <p className='text-sm'>Always here to help</p>
                     </div>
                 </div>
+                <div>
+                    <button 
+                        onClick={() => setSelectedMessageId?.(null)}
+                        className="p-2 rounded-md text-sm hover:bg-gray-100 active:bg-gray-200 active:scale-95 transition-colors lg:hidden border border-[#E5E7EB]"
+                    >
+                        back
+                    </button>
+                </div>
             </div>
             {/* Chat Body */}
-            <div className="flex-1 p-4 m-2 rounded-xl border border-[#E5E7EB] overflow-y-auto space-y-3">
+            <div className="flex-1 p-2 lg:p-4 m-2 rounded-xl border border-[#E5E7EB] overflow-y-auto space-y-3">
                 {messages.map((msg, i) => (
                     <div
                         key={i}
@@ -154,10 +164,7 @@ const MessageText = ({
             </div>
 
             {/* Input Box */}
-            <form
-                className="p-3 border-t flex border-[#E5E7EB] gap-2"
-                onSubmit={handleSubmit}
-            >
+            <form className="p-3 border-t flex border-[#E5E7EB] gap-2" onSubmit={handleSubmit}>
                 <input
                     type="text"
                     placeholder="Type a message..."
@@ -165,7 +172,7 @@ const MessageText = ({
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 />
-                <button type="submit" className='button-secondary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
+                <button type="submit" className='button-primary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
                     <Send className='text-white' />
                     <span>Ask AI</span>
                 </button>
