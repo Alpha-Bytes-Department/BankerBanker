@@ -14,7 +14,7 @@ type PropertyCardProps = {
 
 const sizeStyles = {
     small: "w-[438px] h-auto",
-    large: "w-full md: xl:w-[893px] h-auto"
+    large: "w-full md:  h-auto"
 }
 
 

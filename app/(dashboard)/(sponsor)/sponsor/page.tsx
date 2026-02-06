@@ -62,7 +62,7 @@ const page = () => {
             </div>
             
             <div className="flex flex-col-reverse xl:flex-row gap-5">
-                <div className=" rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
+                <div className="rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
                     <div className="flex items-center gap-2 lg:justify-between">
                         <div className="grow">
                             <h1 className="text-lg">Property Portfolio</h1>
@@ -74,7 +74,7 @@ const page = () => {
                         </Link>
                     </div>
                     {/* property block  */}
-                    <div className="my-10 flex flex-col gap-5">
+                    <div className="my-10 flex flex-col gap-5 mx-auto">
                         {propertyData.map((property, index) => (
                             <PropertyCard key={index} data={property} />
                         ))}

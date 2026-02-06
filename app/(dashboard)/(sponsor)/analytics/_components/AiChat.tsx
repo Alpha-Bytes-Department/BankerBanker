@@ -92,7 +92,7 @@ const AiChat = () => {
 
                     {/* Input Box */}
                     <form
-                        className="p-3 border-t flex flex-col border-[#E5E7EB] flex gap-2"
+                        className="p-3 border-t flex flex-col border-[#E5E7EB] gap-2"
                         onSubmit={handleSubmit}
                     >
                         <input
@@ -102,7 +102,7 @@ const AiChat = () => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                         />
-                        <button type="submit" className='button-secondary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
+                        <button type="submit" className='button-primary flex justify-center items-center gap-3 p-2 rounded-lg cursor-pointer'>
                             <Send className='text-white' />
                             <span>Ask AI</span>
                         </button>
