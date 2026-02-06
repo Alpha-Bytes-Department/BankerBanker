@@ -117,14 +117,13 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
     last_name: "Doe",
   });
   const pathName = usePathname();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   return (
     <nav className="flex items-start">
       <div
-        className={`fixed top-0 left-0 h-screen w-72 z-50 bg-black shadow-xl transform transition-transform duration-300 ease-in-out  ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 h-screen w-72 z-50 bg-black shadow-xl transform transition-transform duration-300 ease-in-out  ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex justify-center  flex-col h-full">
           {/* Menu Header */}
@@ -178,27 +177,25 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
             <div className="flex flex-col space-y-2 text-white">
               {user?.role === "Lender"
                 ? lander.map((link, idx) => (
-                    <div
-                      className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
-                        link.href === pathName ? "button-primary" : ""
+                  <div
+                    className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""
                       }`}
-                      key={idx}
-                    >
-                      {link.icon && <span>{link.icon}</span>}
-                      <Link href={link.href}>{link.text}</Link>
-                    </div>
-                  ))
+                    key={idx}
+                  >
+                    {link.icon && <span>{link.icon}</span>}
+                    <Link href={link.href}>{link.text}</Link>
+                  </div>
+                ))
                 : sponsor.map((link, idx) => (
-                    <div
-                      className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
-                        link.href === pathName ? "button-primary" : ""
+                  <div
+                    className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""
                       }`}
-                      key={idx}
-                    >
-                      {link.icon && <span>{link.icon}</span>}
-                      <Link href={link.href}>{link.text}</Link>
-                    </div>
-                  ))}
+                    key={idx}
+                  >
+                    {link.icon && <span>{link.icon}</span>}
+                    <Link href={link.href}>{link.text}</Link>
+                  </div>
+                ))}
             </div>
           </nav>
           {/* bottom */}
@@ -215,46 +212,46 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
       </div>
       {/* top section with children*/}
       <div className="flex-1 flex flex-col md:ml-72 min-h-screen">
-        <div
-          className={` flex justify-between items-center px-5 lg:px-8 py-3 sticky top-0 z-30 bg-white border-b border-[#E5E7EB] text-black `}
-        >
-          <div>
-            <div className="hidden lg:flex">
-              {user?.role === "Lender"
-                ? lander.map((Link) => {
+        <div className="sticky top-0 z-30 border-b border-[#E5E7EB] bg-white text-black">
+          <div className={`flex justify-between items-center px-5 lg:px-8 py-3 max-w-[1550px] mx-auto`}>
+            <div>
+              <div className="hidden lg:flex">
+                {user?.role === "Lender"
+                  ? lander.map((Link) => {
                     if (Link.href === pathName) {
                       return Link.text;
                     }
                   })
-                : sponsor.map((Link) => {
+                  : sponsor.map((Link) => {
                     if (Link.href === pathName) {
                       return Link.text;
                     }
                   })}
+              </div>
+              <RxHamburgerMenu
+                onClick={() => setIsMenuOpen(true)}
+                className="text-xl flex lg:hidden"
+              />
             </div>
-            <RxHamburgerMenu
-              onClick={() => setIsMenuOpen(true)}
-              className="text-xl flex lg:hidden"
-            />
+            <div className="flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer">
+              {user?.role === "Lender" ? (
+                <>
+                  <School size={18} />
+                  <span>Lender</span>
+                </>
+              ) : (
+                <>
+                  <IoBagHandleOutline className="text-lg" />
+                  <span>Sponsor</span>
+                </>
+              )}
+            </div>
+            {/*----------- notification -------- */}
+            <Notifications />
           </div>
-          <div className="flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer">
-            {user?.role === "Lender" ? (
-              <>
-                <School size={18} />
-                <span>Lender</span>
-              </>
-            ) : (
-              <>
-                <IoBagHandleOutline className="text-lg" />
-                <span>Sponsor</span>
-              </>
-            )}
-          </div>
-          {/*----------- notification -------- */}
-          <Notifications />
         </div>
         {/* main content  */}
-        <div className="flex-1 overflow-y-auto px-3 md:px-5 py-2 relative">
+        <div className="flex-1 overflow-y-auto px-3 md:px-5 py-2 relative max-w-[1550px] mx-auto">
           {children}
           {pathName === "/message" || pathName === "/analytics" ? (
             <></>

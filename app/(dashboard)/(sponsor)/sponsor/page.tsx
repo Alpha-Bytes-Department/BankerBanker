@@ -62,19 +62,19 @@ const page = () => {
             </div>
             
             <div className="flex flex-col-reverse xl:flex-row gap-5">
-                <div className=" rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
+                <div className="rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
                     <div className="flex items-center gap-2 lg:justify-between">
                         <div className="grow">
                             <h1 className="text-lg">Property Portfolio</h1>
                             <p className="text-[#6A7282]">Manage and track your properties</p>
                         </div>
-                        <Link href="/processing" className="flex gap-2 button-primary rounded-full py-2 px-3 cursor-pointer justify-center items-center">
+                        <Link href="/processing" className="flex gap-2 button-primary rounded-full py-2 px-2 md:px-3 min-w-24 cursor-pointer justify-center items-center">
                             <FaPlus className="hidden md:flex" />
                             <p className="text-xs sm:text-sm lg:text-base">Add property</p>
                         </Link>
                     </div>
                     {/* property block  */}
-                    <div className="my-10 flex flex-col gap-5">
+                    <div className="my-10 flex flex-col gap-5 mx-auto">
                         {propertyData.map((property, index) => (
                             <PropertyCard key={index} data={property} />
                         ))}
