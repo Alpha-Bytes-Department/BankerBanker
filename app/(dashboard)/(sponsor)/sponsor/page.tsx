@@ -68,7 +68,7 @@ const page = () => {
                             <h1 className="text-lg">Property Portfolio</h1>
                             <p className="text-[#6A7282]">Manage and track your properties</p>
                         </div>
-                        <Link href="/processing" className="flex gap-2 button-primary rounded-full py-2 px-3 cursor-pointer justify-center items-center">
+                        <Link href="/processing" className="flex gap-2 button-primary rounded-full py-2 px-2 md:px-3 min-w-24 cursor-pointer justify-center items-center">
                             <FaPlus className="hidden md:flex" />
                             <p className="text-xs sm:text-sm lg:text-base">Add property</p>
                         </Link>
