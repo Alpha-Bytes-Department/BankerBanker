@@ -251,7 +251,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
           </div>
         </div>
         {/* main content  */}
-        <div className="flex-1 overflow-y-auto px-3 md:px-5 py-2 relative max-w-[1550px] mx-auto">
+        <div className="flex-1 overflow-y-auto px-3 md:px-5 py-2 relative max-w-[1550px] mx-auto w-full">
           {children}
           {pathName === "/message" || pathName === "/analytics" ? (
             <></>
