@@ -12,7 +12,7 @@ type LoanCardProps = {
 const LoanCard = ({ loan }: LoanCardProps) => {
   const [status, setStatus] = useState<"Active" | "Pending" | "Accepted" | "Decline">("Pending")
   return (
-    <div className="w-lg rounded-xl border border-blue-300 p-5">
+    <div className="max-w-[400px] mx-auto w-full rounded-xl border border-blue-300 p-5">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex gap-3">

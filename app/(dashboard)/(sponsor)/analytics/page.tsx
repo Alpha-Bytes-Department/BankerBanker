@@ -4,10 +4,12 @@ import Preview from './_components/Preview';
 
 const page = () => {
     return (
-        <div className='flex flex-col-reverse md:flex-row w-full gap-5'>
-            <DocumentList/>
-            <Preview/>
-            <AiChat/>
+        <div className='flex flex-col w-full gap-3'>
+            <div className='flex flex-col-reverse lg:flex-row gap-3'>
+                <DocumentList />
+                <AiChat />
+            </div>
+            <Preview />
         </div>
     );
 };

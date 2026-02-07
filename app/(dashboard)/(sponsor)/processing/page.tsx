@@ -19,7 +19,7 @@ const Page = () => {
 
 
     return (
-        <div>
+        <div className='w-full'>
             <h1 className='text-2xl'>Upload Investment Memo</h1>
             <p className='text-[#4A5565]'>Upload existing documents to help auto-populate your offering memorandum</p>
             {currentStep <= 3 && <Step

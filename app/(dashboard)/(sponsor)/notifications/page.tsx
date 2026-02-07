@@ -57,7 +57,6 @@ export default function Notifications() {
     useEffect(() => {
         // Fetch notifications from an API or data source
         const getNotifications = async () => {
-            console.log("I am clicked..");
             const res = await api.get("api/notification");
             console.log("Your notification is...,",res);
         }
@@ -75,9 +74,9 @@ export default function Notifications() {
                         flex justify-center items-center'><span className='text-white p-1 text-sm'>3</span></p>}
                     </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='max-w-[350px] h-[500px] border border-[#0000001A] mr-5  bg-[#FFFFFF]
+                <DropdownMenuContent className='max-w-[300px] md:max-w-[400px] h-[500px]  border border-[#0000001A] mr-7 md:mr-10 2xl:mr-15 3xl:mr-25  bg-[#FFFFFF]
                 -right-3'>
-                    <div className="sticky top-0 z-10 bg-[#FFFFFF] py-2">
+                    <div className="sticky -top-1 z-10 bg-[#FFFFFF] py-2">
                         <div className='flex justify-between mt-2 px-4'>
                             <p className="text-[#101828]">Notifications</p>
                             <div className="bg-[#DBEAFE] px-2 flex items-center justify-center rounded-lg">
