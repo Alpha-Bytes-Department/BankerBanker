@@ -1,29 +1,25 @@
 "use client";
-import Link from "next/link";
-import  { useState } from "react";
-import { IoIosArrowRoundBack } from "react-icons/io";
-import MemorandumHeader from "./MemorandumHeader";
-import HeroSection from "./HeroSection";
-import ExecutiveSummary from "./ExecutiveSummary";
-import PropertyOverview from "./PropertyOverview";
-import PropertyHighlights from "./PropertyHighlights";
-import AreaOverview from "./AreaOverview";
-import AreaHighlights from "./AreaHighlights";
-import MarketSummary from "./MarketSummary";
-import FinancingSummary from "./FinancingSummary";
-import AddSections from "./AddSections";
-import PreviewCover from "./PreviewCover";
-import TableOfContents from "./TableOfContents";
-import PreviewSections from "./PreviewSections";
-import { MemorandumTab } from "@/types/memorandum-detail";
 
-//========== Memorandum Detail Page Component ===========
+import React from "react";
+import PDFCoverPage from "./_components/PDFCoverPage";
+import PDFTableOfContents from "./_components/PDFTableOfContents";
+import {
+  PDFSummaryOverview,
+  PDFPropertyHighlights,
+  PDFAreaOverview,
+  PDFAreaHighlights,
+  PDFMarketSummary,
+  PDFFinancingSummary,
+} from "./_components/PDFContentSections";
+import PDFFinancialAnalysis from "./_components/PDFFinancialAnalysis";
+import PDFSalesComparables from "./_components/PDFSalesComparables";
+import PDFLeaseComparables from "./_components/PDFLeaseComparables";
+import PDFAreaAmenities from "./_components/PDFAreaAmenities";
+import PDFSponsorship from "./_components/PDFSponsorship";
+import PDFDisclaimer from "./_components/PDFDisclaimer";
 
-const MemorandumDetailPage = () => {
-  //========== State Management ===========
-  const [activeTab, setActiveTab] = useState<MemorandumTab>("editor");
 
-  //========== Sample Data ===========
+const DownloadPage = () => {
   const memorandumData = {
     title: "Offering Memorandum",
     subtitle: "Riverside Shopping Center",
@@ -470,154 +466,113 @@ const MemorandumDetailPage = () => {
     },
     offeringDate: "October 2025",
     tableOfContents: [
-      { id: 1, title: "Executive Summary", pageNumber: 3 },
-      { id: 2, title: "Property Overview", pageNumber: 4 },
-      { id: 3, title: "Property Highlights", pageNumber: 5 },
-      { id: 4, title: "Area Overview", pageNumber: 6 },
-      { id: 5, title: "Area Highlights", pageNumber: 7 },
-      { id: 6, title: "Market Summary", pageNumber: 8 },
-      { id: 7, title: "Financing Summary", pageNumber: 9 },
-      { id: 8, title: "Financial Analysis", pageNumber: 10 },
-      { id: 9, title: "Sales Comparables", pageNumber: 11 },
-      { id: 10, title: "Lease Comparables", pageNumber: 12 },
-      { id: 11, title: "Area Amenities", pageNumber: 13 },
-      { id: 12, title: "Sponsorship", pageNumber: 14 },
-      { id: 13, title: "Disclaimer", pageNumber: 15 },
+      { id: 1, title: "Executive Summary & Property Overview", pageNumber: 3 },
+      { id: 2, title: "Property Highlights", pageNumber: 4 },
+      { id: 3, title: "Area Overview", pageNumber: 5 },
+      { id: 4, title: "Area Highlights", pageNumber: 6 },
+      { id: 5, title: "Market Summary", pageNumber: 7 },
+      { id: 6, title: "Financing Summary", pageNumber: 8 },
+      { id: 7, title: "Financial Analysis", pageNumber: 9 },
+      { id: 8, title: "Sales Comparables", pageNumber: 13 },
+      { id: 9, title: "Lease Comparables", pageNumber: 14 },
+      { id: 10, title: "Area Amenities", pageNumber: 15 },
+      { id: 11, title: "Sponsorship", pageNumber: 16 },
+      { id: 12, title: "Disclaimer", pageNumber: 17 },
     ],
   };
 
-  //========== Event Handlers ===========
-  const handleTabChange = (tab: MemorandumTab) => {
-    setActiveTab(tab);
-  };
-
-  const handleAddSection = (sectionId: string) => {
-    console.log("Adding section:", sectionId);
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
-    <div className=" mx-auto py-6">
-      {/* ====== Back Button ====== */}
-      <Link
-        href="/memorandum"
-        className="flex items-center gap-1 mb-4 text-gray-800 hover:text-blue-700 w-fit"
+    <>
+      {/* ====== Floating Print Button — hidden in print ====== */}
+      <div className="no-print fixed top-4 right-4 z-50 flex gap-2">
+        <button
+          onClick={handlePrint}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium text-white shadow-lg transition-colors"
+          style={{ backgroundColor: "#0D4DA5" }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+            />
+          </svg>
+          Download PDF
+        </button>
+      </div>
+
+      {/* ====== A4 Container ====== */}
+      <div
+        className="mx-auto bg-white"
+        style={{ maxWidth: "210mm", minHeight: "297mm" }}
       >
-        <IoIosArrowRoundBack className="text-2xl" />
-        <p className="text-sm md:text-base">Back to Memorandums</p>
-      </Link>
+        {/* ==== COVER PAGE ==== */}
+        <PDFCoverPage
+          presentedBy={memorandumData.presentedBy}
+          confidential={memorandumData.confidential}
+          investmentOpportunity={memorandumData.investmentOpportunity}
+          propertyName={memorandumData.propertyName}
+          location={memorandumData.location}
+          stats={memorandumData.propertyStats}
+          offeringDate={memorandumData.offeringDate}
+          heroImage={memorandumData.heroImage}
+        />
 
-      {/* ====== Header with Tabs ====== */}
-      <MemorandumHeader
-        title={memorandumData.title}
-        subtitle={memorandumData.subtitle}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-      />
+        {/* ==== TABLE OF CONTENTS ==== */}
+        <PDFTableOfContents items={memorandumData.tableOfContents} />
 
-      {/* ====== Editor Tab Content ====== */}
-      {activeTab === "editor" && (
-        <div>
-          {/* ====== Hero Section ====== */}
-          <HeroSection
-            heroImage={memorandumData.heroImage}
-            galleryImages={memorandumData.galleryImages}
-            title="Prime Location"
-          />
+        {/* ==== EXECUTIVE SUMMARY + PROPERTY OVERVIEW ==== */}
+        <PDFSummaryOverview
+          executiveSummary={memorandumData.executiveSummary}
+          propertyOverview={memorandumData.propertyOverview}
+        />
 
-          {/* ====== Executive Summary ====== */}
-          <ExecutiveSummary
-            content={memorandumData.executiveSummary}
-            isAiGenerated={true}
-            onEdit={() => console.log("Edit executive summary")}
-          />
+        {/* ==== PROPERTY HIGHLIGHTS ==== */}
+        <PDFPropertyHighlights highlights={memorandumData.propertyHighlights} />
 
-          {/* ====== Property Overview ====== */}
-          <PropertyOverview
-            data={memorandumData.propertyOverview}
-            onEdit={() => console.log("Edit property overview")}
-            onAiGenerate={() => console.log("AI generate property overview")}
-          />
+        {/* ==== AREA OVERVIEW ==== */}
+        <PDFAreaOverview areaOverview={memorandumData.areaOverview} />
 
-          {/* ====== Property Highlights ====== */}
-          <PropertyHighlights
-            highlights={memorandumData.propertyHighlights}
-            isAiGenerated={true}
-            onEdit={() => console.log("Edit property highlights")}
-          />
+        {/* ==== AREA HIGHLIGHTS ==== */}
+        <PDFAreaHighlights highlights={memorandumData.areaHighlights} />
 
-          {/* ====== Area Overview ====== */}
-          <AreaOverview
-            data={memorandumData.areaOverview}
-            isAiGenerated={true}
-            onEdit={() => console.log("Edit area overview")}
-          />
+        {/* ==== MARKET SUMMARY ==== */}
+        <PDFMarketSummary data={memorandumData.marketSummary} />
 
-          {/* ====== Area Highlights ====== */}
-          <AreaHighlights
-            highlights={memorandumData.areaHighlights}
-            isAiGenerated={true}
-            onEdit={() => console.log("Edit area highlights")}
-          />
+        {/* ==== FINANCING SUMMARY ==== */}
+        <PDFFinancingSummary content={memorandumData.financingSummary} />
 
-          {/* ====== Market Summary ====== */}
-          <MarketSummary
-            data={memorandumData.marketSummary}
-            isAiGenerated={true}
-            onEdit={() => console.log("Edit market summary")}
-          />
+        {/* ==== FINANCIAL ANALYSIS (multi-page) ==== */}
+        <PDFFinancialAnalysis data={memorandumData.financialAnalysis} />
 
-          {/* ====== Financing Summary ====== */}
-          <FinancingSummary
-            content={memorandumData.financingSummary}
-            onEdit={() => console.log("Edit financing summary")}
-            onAiGenerate={() => console.log("AI generate financing summary")}
-          />
+        {/* ==== SALES COMPARABLES ==== */}
+        <PDFSalesComparables data={memorandumData.salesComparables} />
 
-          {/* ====== Add Additional Sections ====== */}
-          <AddSections
-            sections={memorandumData.additionalSections}
-            onAddSection={handleAddSection}
-          />
-        </div>
-      )}
+        {/* ==== LEASE COMPARABLES ==== */}
+        <PDFLeaseComparables data={memorandumData.leaseComparables} />
 
-      {/* ====== Preview Tab Content ====== */}
-      {activeTab === "preview" && (
-        <div className="shadow-xl rounded-lg p-3 md:p-6 lg:p-10 mb-10 ">
-          {/* ====== Preview Cover Page ====== */}
-          <PreviewCover
-            presentedBy={memorandumData.presentedBy}
-            confidential={memorandumData.confidential}
-            investmentOpportunity={memorandumData.investmentOpportunity}
-            propertyName={memorandumData.propertyName}
-            location={memorandumData.location}
-            stats={memorandumData.propertyStats}
-            offeringDate={memorandumData.offeringDate}
-          />
+        {/* ==== AREA AMENITIES ==== */}
+        <PDFAreaAmenities data={memorandumData.areaAmenities} />
 
-          {/* ====== Table of Contents ====== */}
-          <TableOfContents items={memorandumData.tableOfContents} />
+        {/* ==== SPONSORSHIP ==== */}
+        <PDFSponsorship data={memorandumData.sponsorship} />
 
-          {/* ====== Preview Sections ====== */}
-          <PreviewSections
-            executiveSummary={memorandumData.executiveSummary}
-            propertyOverview={memorandumData.propertyOverview}
-            propertyHighlights={memorandumData.propertyHighlights}
-            areaOverview={memorandumData.areaOverview}
-            areaHighlights={memorandumData.areaHighlights}
-            marketSummary={memorandumData.marketSummary}
-            financingSummary={memorandumData.financingSummary}
-            financialAnalysis={memorandumData.financialAnalysis}
-            salesComparables={memorandumData.salesComparables}
-            leaseComparables={memorandumData.leaseComparables}
-            areaAmenities={memorandumData.areaAmenities}
-            sponsorship={memorandumData.sponsorship}
-            disclaimer={memorandumData.disclaimer}
-          />
-        </div>
-      )}
-    </div>
+        {/* ==== DISCLAIMER ==== */}
+        <PDFDisclaimer data={memorandumData.disclaimer} />
+      </div>
+    </>
   );
 };
 
-export default MemorandumDetailPage;
+export default DownloadPage;

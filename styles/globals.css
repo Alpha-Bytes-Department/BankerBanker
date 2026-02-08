@@ -1,19 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-
 @theme inline {
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
 }
 
 :root {
-    --primary: #0D4DA5;
-    --secondary: #000000;
+  --primary: #0d4da5;
+  --secondary: #000000;
 }
 
-
-@layer components{
+@layer components {
   /* buttons  */
   .button-primary {
     @apply bg-primary text-white hover:bg-blue-700;
@@ -26,5 +24,77 @@
   }
   .button-none {
     @apply bg-transparent text-black hover:bg-gray-200;
+  }
+}
+
+/* ========== PDF / Print Styles ========== */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 12mm 10mm 12mm 10mm;
+  }
+
+  /* Remove browser header/footer (title, URL, date) */
+  @page {
+    margin-top: 10mm;
+    margin-bottom: 10mm;
+  }
+
+  html,
+  body {
+    width: 210mm;
+    min-height: 297mm;
+  }
+
+  /* Hide non-printable elements */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Page break utilities */
+  .print-page-break {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ensure background images/colors render */
+  .print-bg {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: inherit !important;
+    background-image: inherit !important;
+  }
+
+  /* Prevent tables and images from splitting across pages */
+  table {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  img {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Remove shadows and borders in print */
+  .print-no-border {
+    border: none !important;
+    box-shadow: none !important;
   }
 }
