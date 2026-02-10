@@ -71,7 +71,7 @@ const MemorandamPage = () => {
 
       <div className="mb-10">
         {dataArray.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3 xl:gap-5">
             {dataArray.map((data, index) => (
               <PropertyCard key={index} data={data} size="small" />
             ))}

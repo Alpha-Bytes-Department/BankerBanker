@@ -63,8 +63,8 @@ const PropertyCard = ({
                     
                 </div>
                 <div className="flex justify-between items-center mt-4">      
-                    <Button text="View Document" onClick={()=>router.push("/memorandum/1")} />
-                    <Button text="View Quotes" className="button-outline" onClick={()=>router.push("/loan")} />
+                    <Button text="View Document" size="medium" onClick={()=>router.push("/memorandum/1")} />
+                    <Button text="View Quotes" size="medium" className="button-outline" onClick={()=>router.push("/loan")} />
                 </div>
             </div>
         </div>
