@@ -12,6 +12,7 @@ type StatusCardProps = {
     };
 };
 
+
 const CardTypes = {
     Properties: {
         title: 'Total Properties',
@@ -32,7 +33,7 @@ const CardTypes = {
         statusIcon: <IoMdCheckmarkCircleOutline />
     },
     value: {
-        title: 'Total Property Value',
+        title: 'Total Property',
         status: 'Avg 93% occupancy',
         icon: <FaArrowTrendUp className="text-xl" />,
         statusIcon: <FaRegStar />
@@ -41,12 +42,12 @@ const CardTypes = {
 
 const StatusCard = ({
     type,
-    data
+    data,
 }:StatusCardProps) => {
     return (
-        <div className="flex flex-col gap-5 p-5 border border-[#0000001A] w-[344px] rounded-lg">
+        <div className={`flex flex-col border border-[#0000001A] rounded-lg w-[240px] 2xl:w-[344px] gap-5 p-5 h-auto`}>
             <div className="flex justify-between items-center">
-                <p className="text-xl">{CardTypes[type].title}</p>
+                <p className="text-base xl:text-lg 2xl:text-xl">{CardTypes[type].title}</p>
                 <span>{CardTypes[type].icon}</span>
             </div>
             <div className="text-3xl">

@@ -62,7 +62,7 @@ const MemorandamPage = () => {
         Monitor your memorandams and related details below.
       </p>
 
-      <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
+      <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 2xl:gap-10 my-10">
         <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
         <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
         <StatusCard type="documents" data={{ value: 156 }} />
