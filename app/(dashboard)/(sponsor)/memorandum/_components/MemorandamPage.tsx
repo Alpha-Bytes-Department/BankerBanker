@@ -62,7 +62,7 @@ const MemorandamPage = () => {
         Monitor your memorandams and related details below.
       </p>
 
-      <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 2xl:gap-10 my-10">
+      <div className="flex flex-wrap items-center justify-center md:justify-start gap-5 2xl:gap-10 my-10">
         <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
         <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
         <StatusCard type="documents" data={{ value: 156 }} />
@@ -71,7 +71,7 @@ const MemorandamPage = () => {
 
       <div className="mb-10">
         {dataArray.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3 xl:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 2xl:grid-cols-3 gap-5 place-items-center">
             {dataArray.map((data, index) => (
               <PropertyCard key={index} data={data} size="small" />
             ))}
