@@ -55,7 +55,7 @@ const AllMessage = ({
     
 
     return (
-        <div className={`${selectedMessageId?"hidden lg:block":"block"} w-full max-w-md h-[90vh] rounded-xl bg-white shadow-sm border border-[#0000001A]`}>
+        <div className={`${selectedMessageId?"hidden md:block":"block"} w-full max-w-md h-[90vh] rounded-xl bg-white shadow-sm border border-[#0000001A]`}>
             {/* Search */}
             <div className="p-4 border-b border-[#0000001A]">
                 <input
