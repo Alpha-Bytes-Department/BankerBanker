@@ -1,7 +1,7 @@
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Progress } from "@/components/ui/progress"
 
-export function Loading() {
+const Loading = () => {
   return (
     <Field className="w-full max-w-sm">
       <FieldLabel htmlFor="progress-upload">
@@ -12,3 +12,5 @@ export function Loading() {
     </Field>
   )
 }
+
+export default Loading
