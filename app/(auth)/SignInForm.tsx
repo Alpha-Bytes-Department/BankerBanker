@@ -78,6 +78,13 @@ const SignInForm: React.FC = () => {
     login(data.email, data.password, data.remember_me);
   };
 
+  // // handling google login
+  // const handleGoogleLogin = async () => {
+  //   const res = await fetch("http://localhost:8080/api/v1/users/google");
+  //   const data = await res.json();
+  //   console.log("checking google login", data);
+  // }
+
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
       <div className="flex flex-col justify-center items-center py-10 space-y-6 ">
@@ -189,17 +196,16 @@ const SignInForm: React.FC = () => {
                 <span className="text-gray-400">OR</span>
                 <hr className="flex-1 border-gray-300" />
               </div>
-
-              {/* Google Button */}
-              <Link
-                href="#"
-                className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer"
-              >
-                <FcGoogle className="text-2xl" />
-                Continue with Google
-              </Link>
             </form>
           </Form>
+          {/* Google Button */}
+          <Link
+            href={"http://localhost:8080/api/v1/users/google"}
+            className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer"
+          >
+            <FcGoogle className="text-2xl" />
+            Continue with Google
+          </Link>
         </div>
       </div>
 
