@@ -1,3 +1,4 @@
+"use client"
 // Fahim
 import { useState } from "react";
 import { FiTrash2 } from "react-icons/fi";

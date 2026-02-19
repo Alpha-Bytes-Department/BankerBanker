@@ -6,6 +6,7 @@ import { Eye, EyeOff, CheckCircle2, Circle, ChevronDown } from 'lucide-react';
 import Button from '@/components/Button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 // Types
 type CustomerType = 'Broker' | 'Lender' | 'Sponsor';
@@ -112,9 +113,8 @@ export default function RegistrationSystem() {
         <div className="max-w-lg mx-auto">
           {/* Logo */}
           <div className="mb-8">
-            <h1 className="text-5xl font-bold">BANCre</h1>
+            <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
           </div>
-
           {/* Title */}
           <h2 className="text-3xl font-bold mb-2">Registration</h2>
           <p className="text-gray-600 mb-8">Let&apos;s get you all set up so you can access your account.</p>

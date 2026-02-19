@@ -1,7 +1,9 @@
-import React from 'react';
+"use client";
 import { BsChat } from "react-icons/bs";
-import { RiGeminiLine } from "react-icons/ri";
 import Button from './Button';
+import { Sparkles } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
 
 type ChatCardProps = {
     type: "aiChat" | "message",
@@ -10,21 +12,26 @@ type ChatCardProps = {
 
 
 const CardTypes = {
-    message : {
+    message: {
         title: "Your Broker",
         description: "Need information or support? Your AI is ready to chat anytime.",
-        icon: <BsChat className='text-2xl'/>
+        icon: <BsChat className='text-2xl' />
     },
     aiChat: {
         title: "Assistant",
         description: "Whenever you need help, simply reach out—I am here for you.",
-        icon: <RiGeminiLine className='text-2xl'/>
+        icon: <Sparkles className='text-2xl' />
     }
 }
 
+
+
 const ChatCard = ({
-    type = "message"
-}:ChatCardProps) => {
+    type = "message",
+    link = "/message"
+}: ChatCardProps) => {
+    const router = useRouter();
+   
     return (
         <div className='flex flex-col gap-10 justify-between p-5 border border-[#0000001A] bg-[#F6FAFD] w-[344px] lg:w-[450px] rounded-xl'>
             <div className='flex gap-5'>
@@ -32,7 +39,7 @@ const ChatCard = ({
                 <p className='text-lg'>{CardTypes[type].title}</p>
             </div>
             <p>{CardTypes[type].description}</p>
-            <Button text='Start Chat'/>
+            <Button onClick={()=>router.push(link)} text='Start Chat' />
         </div>
     );
 };

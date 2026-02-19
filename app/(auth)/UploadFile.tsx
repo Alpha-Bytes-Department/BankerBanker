@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Upload, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const UploadFile = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -42,7 +44,7 @@ const UploadFile = () => {
       <div className="w-full lg:w-1/2 bg-white p-8 lg:p-12 overflow-y-auto">
         <div className="max-w-lg mx-auto">
           <div className="mb-8">
-              <h1 className="text-5xl font-bold">BANCre</h1>
+              <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
           </div>
 
           <h2 className="text-3xl font-bold mb-2">Registration</h2>

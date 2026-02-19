@@ -84,7 +84,7 @@ const Features = () => {
                     description={feature.description}
                 />)}
             </div>
-            <Button text='Get started' className='button-primary mx-auto my-20' icon={true}/>
+            <Button text='Get started' className='button-primary mx-auto my-20' arrow={true}/>
         </div>
     );
 };

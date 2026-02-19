@@ -21,6 +21,8 @@ import { Eye, EyeOff } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Button from "@/components/Button";
+import { useAuth } from "@/components/Provider/AuthProvider";
+
 
 const formSchema = z.object({
   email: z
@@ -32,11 +34,11 @@ const formSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password should be at least 8 characters" })
-    .max(30, { message: "Password should be at most 30 characters" })
-    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/, {
-      message:
-        "Password must contain uppercase, lowercase, number, and special character",
-    }),
+    .max(30, { message: "Password should be at most 30 characters" }),
+    // .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])/, {
+    //   message:
+    //     "Password must contain uppercase, lowercase, number, and special character",
+    // }),
 
   notifications: z.boolean(),
 });
@@ -56,19 +58,23 @@ const SignInForm: React.FC = () => {
     },
   });
 
+
+  const {user, login}= useAuth()
+
+
   const handleSign = (data: SignInFormValues) => {
+    console.log("clicked.....");
     console.log(data);
-    router.push("/signin/verify_email");
+    login(data.email, data.password);
+    router.push("/sponsor");
   };
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-gray-900">
       <div className="flex flex-col justify-center px-6 md:px-20 py-10 space-y-6 dark:text-gray-300">
         {/* Logo */}
-        <h1 className="text-3xl font-bold">BANCre</h1>
-
+        <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
         <h2 className="text-2xl font-semibold">Log in</h2>
-
         <p className="text-sm">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="text-blue-600">

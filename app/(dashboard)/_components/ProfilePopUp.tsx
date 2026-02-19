@@ -1,31 +1,79 @@
+'use client'
 import Button from "@/components/Button";
+import { GoPerson } from "react-icons/go";
 import {
     DialogClose,
     DialogContent,
-    DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog"
+import Image from "next/image";
+import { BsBuildings } from "react-icons/bs";
+import { FiShield } from "react-icons/fi";
+import { useState } from "react";
+import ProfileInfo from "./ProfileInfo";
+import ChangePassword from "./ChangePassword";
+import CompanyInfo from "./CompanyInfo";
+
+const options = [
+    {
+        title: "Profile",
+        icon: <GoPerson className="text-lg"/>
+    },
+    {
+        title: "Company",
+        icon: <BsBuildings className="text-lg"/>
+    },
+    {
+        title: "Security",
+        icon: <FiShield className="text-lg" />
+    }
+]
 
 const ProfilePopUp = () => {
+    const [selectedOption, setSelectedOption] = useState("Profile");
+    let subsection;
+     switch(selectedOption){
+        case "Profile":
+            subsection = <ProfileInfo/>
+            break;
+        case "Company":
+            subsection = <CompanyInfo/>
+            break;
+        case "Security":
+            subsection = <ChangePassword/>
+            break;
+        default:
+            subsection = <ProfileInfo/>
+    }
+
     return (
-        <DialogContent className="sm:max-w-[425px] bg-white">
-            <DialogHeader>
-                <DialogTitle>Edit profile</DialogTitle>
-                <DialogDescription>
-                    Make changes to your profile here. Click save when you&apos;re
-                    done.
-                </DialogDescription>
+        <DialogContent className="sm:max-w-[425px] lg:max-w-[550px] xl:max-w-[750px] bg-white rounded-xl border-0 outline-0 p-0">
+            <DialogHeader className="bg-[#0D4DA5] text-white p-5 rounded-xl flex lg:flex-row items-center">
+                <DialogTitle>
+                    <Image src={"/images/img2.jpg"} alt="profile" width={100} height={100} className="object-center object-cover rounded-full h-20 w-20" />
+                </DialogTitle>
+                <div>
+                    <p className="text-xl">John Doe</p>
+                    <p>Managing Partner at Acme Properties LLC</p>
+                </div>
             </DialogHeader>
-            <div className="grid gap-4">
-                Hello how are you
+            <div className="px-5">
+                <div className={`inline-flex items-center gap-10 bg-[#ECECF0] rounded-full`}>{options.map((option)=><div onClick={()=>setSelectedOption(option.title)} key={option.title} className={`flex flew-row items-center gap-1 cursor-pointer py-2 px-3 ${selectedOption === option.title && "bg-primary text-white px-2 py-1 rounded-full"}`}>
+                    <span>{option.icon}</span>
+                    {option.title}
+                </div>)}</div>
+                {/* option are rander here  */}
+                <div>
+                    {subsection}
+                </div>
             </div>
-            <DialogFooter>
+            <DialogFooter className="p-5">
                 <DialogClose asChild>
-                    <Button text="Cancel" className="button-outline"/>
+                    <Button text="Cancel" className="button-outline" />
                 </DialogClose>
-                <Button text="Save Changes" type="submit" className="button-primary"/>
+                <Button text="Save Changes" type="submit" className="button-primary" />
             </DialogFooter>
         </DialogContent>
 

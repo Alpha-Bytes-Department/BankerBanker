@@ -1,9 +1,9 @@
+"use client";
 import { PropertyProps } from "@/types/sponsor";
 import Button from "./Button";
 import { IoLocationOutline } from "react-icons/io5";
 import Image from "next/image";
-import { FiDollarSign } from "react-icons/fi";
-
+import { useRouter } from "next/navigation";
 
 // type declaration 
 type PropertyCardProps = {
@@ -24,6 +24,8 @@ const PropertyCard = ({
     size = "large"
 }:PropertyCardProps) => {
 
+    const router = useRouter();
+    
     
     return (
         <div className={`border border-[#E5E7EB] rounded-lg flex flex-col gap-5 lg:gap-10 ${sizeStyles[size]}`}>
@@ -41,12 +43,12 @@ const PropertyCard = ({
                     <IoLocationOutline className="text-lg"/>
                     <span>{data?.location}</span>
                 </div>
-                <div className="grid grid-cols-3 gap-5 mt-4">
-                    <div className="flex flex-col gap-2">
+                <div className="grid grid-cols-6 gap-3 mt-4">
+                    <div className="flex flex-col col-span-2 gap-2">
                         <span className="text-sm text-[#6A7282]">Loan Request</span>
                         <span>$ {data?.loan_requested}</span>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col col-span-2 gap-2">
                         <span className="text-sm text-[#6A7282]">Loan Type</span>
                         <span>{data?.loan_type}</span>
                     </div>
@@ -54,16 +56,16 @@ const PropertyCard = ({
                         <span className="text-sm text-[#6A7282]">Units</span>
                         <span>{data?.units}</span>
                     </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="text-sm text-[#6A7282]">Quotes</span>
+                        <span>{data?.quotes}</span>
+                    </div>                                  
+                    
                 </div>
                 <div className="flex justify-between items-center mt-4">
-                    <div className="flex items-center gap-2">
-                        <FiDollarSign className="text-lg text-[#00A63E]" />
-                        <span className="text-[#4A5565]">{data?.quotes} quotes</span>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button text="View Document" />
-                        <Button text="View Quotes" className="button-outline" />
-                    </div>
+                    
+                        <Button text="View Document" onClick={()=>router.push("/memorandum/1")} />
+                        <Button text="View Quotes" className="button-outline" onClick={()=>router.push("/loan")} />
                 </div>
             </div>
         </div>
@@ -71,3 +73,5 @@ const PropertyCard = ({
 };
 
 export default PropertyCard;
+
+                    

@@ -14,42 +14,42 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 const reviews = [
     {
         id: 1,
-        image: "/Landing_Page/ReviewPhoto/1.png",
+        image: "/images/Landing_Page/ReviewPhoto/1.png",
         name: "Floyd Miles",
         review: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim 
         velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non.`
     },
     {
         id: 2,
-        image: "/Landing_Page/ReviewPhoto/2.png",
+        image: "/images/Landing_Page/ReviewPhoto/2.png",
         name: "Ronald Richards",
         review: `ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam 
         consequat sunt nostrud amet.`
     },
     {
         id: 3,
-        image: "/Landing_Page/ReviewPhoto/3.png",
+        image: "/images/Landing_Page/ReviewPhoto/3.png",
         name: "Savannah Nguyen",
         review: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim 
         velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt.`
     },
     {
         id: 4,
-        image: "/Landing_Page/ReviewPhoto/1.png",
+        image: "/images/Landing_Page/ReviewPhoto/1.png",
         name: "Floyd Miles",
         review: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim 
         velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non.`
     },
     {
         id: 5,
-        image: "/Landing_Page/ReviewPhoto/2.png",
+        image: "/images/Landing_Page/ReviewPhoto/2.png",
         name: "Ronald Richards",
         review: `ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam 
         consequat sunt nostrud amet.`
     },
     {
         id: 6,
-        image: "/Landing_Page/ReviewPhoto/3.png",
+        image: "/images/Landing_Page/ReviewPhoto/3.png",
         name: "Savannah Nguyen",
         review: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim 
         velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt.`

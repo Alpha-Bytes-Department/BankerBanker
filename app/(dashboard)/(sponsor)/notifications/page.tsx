@@ -1,4 +1,4 @@
-// Fahim
+"use client"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
 import { CiBellOn } from "react-icons/ci";
@@ -62,7 +62,7 @@ export default function Notifications() {
                         flex justify-center items-center'><span className='text-white p-1 text-sm'>3</span></p>}
                     </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='max-w-[350px] h-[500px] border border-[#0000001A] bg-[#FFFFFF]
+                <DropdownMenuContent className='max-w-[350px] h-[500px] border border-[#0000001A] mr-5  bg-[#FFFFFF]
                 -right-3'>
                     <div className="sticky top-0 z-10 bg-[#FFFFFF] py-2">
                         <div className='flex justify-between mt-2 px-4'>
@@ -110,7 +110,7 @@ export default function Notifications() {
                             </button>
                         </div>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-3 flex flex-col gap-2">
                         {
                             notificationsData.map(item => (
                                 <NotificationCard key={item.id} title={item.title} from={item.from}
@@ -134,7 +134,5 @@ export default function Notifications() {
     );
 }
 
-// Inside a dropdown / modal → Use position: sticky
-// Don't use position: fixed inside DropdownMenu
 
 
