@@ -28,7 +28,7 @@ const ProfileInfo = () => {
     return (
         <div className='flex flex-col gap-5 mt-5'>
             <h1>Personal Information</h1>
-            <form action="submit" className='grid grid-cols-2 gap-5'>
+            <form action="submit" className='grid grid-cols-1 lg:grid-cols-2 gap-5'>
                 {/* form  */}
                 <div className='flex flex-col'>
                     <label htmlFor="firstName">
