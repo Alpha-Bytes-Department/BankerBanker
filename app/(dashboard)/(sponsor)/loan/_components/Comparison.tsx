@@ -1,6 +1,8 @@
+"use client";
 import StatCard from "./StatCard";
 import { FiCheck, FiEye } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
+import { motion } from 'framer-motion';
 
 //========== Type Definitions ===========
 
@@ -96,13 +98,20 @@ const Comparison = () => {
       {/* ====== Quote Comparison Summary Section ====== */}
       <h1 className="text-lg my-5">Quote Comparison Summary</h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {quoteStats.map((stat) => (
-          <StatCard
+        {quoteStats.map((stat, idx) => (
+          <motion.div
             key={stat.id}
-            title={stat.title}
-            value={stat.value}
-            type={stat.type}
-          />
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45, delay: idx * 0.06 }}
+          >
+            <StatCard
+              title={stat.title}
+              value={stat.value}
+              type={stat.type}
+            />
+          </motion.div>
         ))}
       </div>
 
@@ -112,9 +121,13 @@ const Comparison = () => {
       </div>
 
       <div className="space-y-4">
-        {topRecommendations.map((recommendation) => (
-          <div
+        {topRecommendations.map((recommendation, idx) => (
+          <motion.div
             key={recommendation.id}
+            initial={{ opacity: 0, y: 14 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.5, delay: 0.08 + idx * 0.06 }}
             className="border border-gray-200 rounded-lg p-4 md:p-6"
           >
             {/* ====== Lender Header ====== */}
@@ -200,7 +213,7 @@ const Comparison = () => {
                 <p className="text-gray-900">{recommendation.dscr}</p>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

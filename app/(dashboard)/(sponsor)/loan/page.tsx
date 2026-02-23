@@ -128,7 +128,7 @@ const Page = () => {
         <StatusCard type="documents" data={{ value: 156 }} />
         <StatusCard type="value" data={{ value: 3, }} />
       </div>
-      {/* viwe selection  */}
+      {/* view selection  */}
       <div className="relative inline-flex rounded-full bg-[#ECECF0] p-1 mb-5">
         <span className={`absolute top-1 bottom-1 w-1/2 rounded-full bg-primary transition-all duration-300 ease-in-out ${view === "Card View" ? "left-1" : "left-1/2"}`} />
         <button
