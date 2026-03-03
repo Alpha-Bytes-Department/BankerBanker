@@ -92,13 +92,13 @@ const AiChat = () => {
 
                     {/* Input Box */}
                     <form
-                        className="p-3 border-t flex flex-col border-[#E5E7EB] gap-2"
+                        className="p-3 border-t flex border-[#E5E7EB] gap-2"
                         onSubmit={handleSubmit}
                     >
                         <input
                             type="text"
                             placeholder="Type a message..."
-                            className="w-full border border-[#00000000] focus:outline-[#00000000] bg-[#F3F3F5] rounded-md px-2 py-1"
+                            className="w-full border border-[#00000000] flex-1 focus:outline-[#00000000] bg-[#F3F3F5] rounded-md px-2 py-1"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                         />

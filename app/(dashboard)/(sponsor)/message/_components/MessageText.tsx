@@ -122,7 +122,7 @@ const MessageText = ({
     };
 
     return (
-        <Card className={`shadow-md flex-1 rounded-xl border-[#E5E7EB] py-0 ${selectedMessageId ? "h-[85vh]" : "hidden lg:flex"}  flex-col gap-0 bg-white`}>
+        <Card className={`shadow-md flex-1 rounded-xl border-[#E5E7EB] py-0 ${selectedMessageId ? "h-[85vh]" : "hidden lg:flex"} flex-col gap-0 bg-white`}>
             {/* Header */}
             <div className="p-2 lg:p-4 rounded-xl flex justify-between items-center">
                 <div className='flex items-center gap-2'>
@@ -162,7 +162,6 @@ const MessageText = ({
 
                 <div ref={messagesEndRef} />
             </div>
-
             {/* Input Box */}
             <form className="p-3 border-t flex border-[#E5E7EB] gap-2" onSubmit={handleSubmit}>
                 <input
