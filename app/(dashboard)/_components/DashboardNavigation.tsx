@@ -68,11 +68,11 @@ const sponsor: LinkProps = [
     href: "/loan",
     icon: <FaRegChartBar className="text-lg" />,
   },
-  {
-    text: "Message",
-    href: "/message",
-    icon: <FiMessageCircle className="text-lg" />,
-  },
+  // {
+  //   text: "Message",
+  //   href: "/message",
+  //   icon: <FiMessageCircle className="text-lg" />,
+  // },
 ];
 
 const lander: LinkProps = [
@@ -101,11 +101,11 @@ const lander: LinkProps = [
     href: "/market-analytics",
     icon: <FaRegChartBar className="text-lg" />,
   },
-  {
-    text: "Message",
-    href: "/message",
-    icon: <FiMessageCircle className="text-lg" />,
-  },
+  // {
+  //   text: "Message",
+  //   href: "/message",
+  //   icon: <FiMessageCircle className="text-lg" />,
+  // },
 ];
 
 const DashboardNavigation = ({ children }: NavbarProps) => {

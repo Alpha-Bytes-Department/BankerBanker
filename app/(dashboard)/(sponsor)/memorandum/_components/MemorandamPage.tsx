@@ -1,6 +1,5 @@
 import PropertyCard from "@/components/PropertyCard";
 import StatusCard from "@/components/StatusCard";
-import { link } from "fs";
 
 const MemorandamPage = () => {
   const dataArray = [

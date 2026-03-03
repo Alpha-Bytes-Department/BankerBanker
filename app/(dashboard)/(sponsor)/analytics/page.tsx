@@ -6,10 +6,10 @@ const page = () => {
     return (
         <div className='flex flex-col w-full gap-3'>
             <div className='flex flex-col-reverse lg:flex-row gap-3'>
-                <DocumentList />
+                <Preview />
                 <AiChat />
             </div>
-            <Preview />
+            <DocumentList />
         </div>
     );
 };
