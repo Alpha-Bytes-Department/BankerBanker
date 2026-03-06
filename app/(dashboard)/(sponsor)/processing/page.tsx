@@ -1,10 +1,9 @@
-import React from 'react';
-import Processing from './_components/Processing';
+import MakingMemorandumPage from './_components/MakingMemorandumPage';
 
 const page = () => {
     return (
         <div>
-            <Processing/>
+            <MakingMemorandumPage/>
         </div>
     );
 };

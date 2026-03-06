@@ -20,7 +20,7 @@ const markers = [
     { id: 8, position: { lat: 40.7648, lng: -73.9723 }, title: 'Central Park (South)', color: 'green', icon: customIcons.green },
     { id: 9, position: { lat: 40.7466, lng: -74.0055 }, title: 'High Line Park', color: 'green', icon: customIcons.green },
     { id: 10, position: { lat: 40.8504, lng: -73.8763 }, title: 'The Bronx Zoo', color: 'green', icon: customIcons.green },
-];;
+];
 
 
 
