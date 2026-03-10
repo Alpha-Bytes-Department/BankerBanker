@@ -1,6 +1,8 @@
-import VerifyOtp from '../../VerifyOtp';
+import VerifyOtp from "../VerifyOtp";
+
 
 const page = () => {
+
     return (
         <div>
             <VerifyOtp/>

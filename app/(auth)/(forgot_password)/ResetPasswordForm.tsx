@@ -1,9 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z, { email } from "zod";
+import z from "zod";
 import {
   Form,
   FormField,
@@ -48,9 +48,7 @@ const ResetPasswordForm: React.FC = () => {;
       <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6">
         {/* Logo */}
         <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
-
         <h2 className="text-2xl font-semibold">Reset your password</h2>
-
         <p className="text-sm text-gray-600">
           Type in your registered email address to reset password
         </p>
@@ -92,7 +90,7 @@ const ResetPasswordForm: React.FC = () => {;
       {/* RIGHT SIDE */}
       <div className="relative w-full h-full hidden md:block">
         <Image
-          src="/Auth_Images/reset_pass_one.jpg"
+          src="/images/Auth_Images/reset_pass_one.jpg"
           alt="abstract architecture"
           fill
           className="object-cover"

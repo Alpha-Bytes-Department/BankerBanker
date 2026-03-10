@@ -12,7 +12,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     const checkAuth = () => {
       const creds = localStorage.getItem('userCredentials');
       if (!creds) {
-        router.replace('/login');
+        router.replace('/signin');
       } else {
         setIsAuthorized(true);
       }

@@ -9,7 +9,7 @@ import axios, {
 let isRefreshing = false;
 let waitingQueue: ((token: string) => void)[] = [];
 // Declaring public routes
-const publicEndPoint = ["/singup", "/login", "/dashboard", "/sponsor"];
+const publicEndPoint = ["/signup", "/signin", "/dashboard", "/sponsor"];
 
 // Function to get tokens from localStorage
 const getTokensFromLocalStorage = () => {
@@ -107,7 +107,7 @@ api.interceptors.response.use(
         executingRoutes(newToken);
         return api(originalRequest);
       } catch (refreshError) {
-        window.location.href = "/login";
+        window.location.href = "/signin";
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

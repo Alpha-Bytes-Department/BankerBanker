@@ -27,7 +27,7 @@ export default function RegistrationSystem() {
   const [errors, setErrors] = useState<Partial<Record<keyof signup, string>>>({});
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { signup } = useAuth();
+  const {loading, signup } = useAuth();
 
   const customer_type: UserType[] = ['Lender', 'Sponsor'];
 
@@ -324,7 +324,8 @@ export default function RegistrationSystem() {
             {/* Submit Button */}
             <Button
               type="submit"
-              text="Sign Up"
+              isDisabled={loading}
+              text={loading ? "Processing..." : "Sign Up"}
               className="button-primary w-full h-14"
             />
             {/* Login Link */}

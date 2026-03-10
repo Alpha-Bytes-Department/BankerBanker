@@ -38,7 +38,7 @@ export interface AuthContextType{
   setSignupData: (data: signup) => void;
   login: ( email: string, password: string, rememberMe?: boolean ) => Promise<void>;
   signup: (formData : signup) => Promise<void>;
-  verifyOTP: (otp: string) => Promise<void>;
+  verifyOTP: (otp: string, from: string) => Promise<void>;
   resendOtp: (email: string) => Promise<void>;
   forgotPassword: (email: string)=> Promise<void>
   logout: () => void;

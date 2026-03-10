@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setLoading(false);
         localStorage.setItem("Authstate", JSON.stringify(newAuthState));
         toast.success("Successfully signed up! Please verify your email.");
-        router.push('/signin/verify_otp');
+        router.push('/verify_otp?from=signup');
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -81,40 +81,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-
-
-  /*----------------------------------------
-            Verify OTP Function 
-  ----------------------------------------------*/
-  const verifyOTP = async (otp: string, after?: string) => {
-    const AuthState = localStorage.getItem("Authstate");
-    if (!AuthState) {
-      toast.error("No pending signup found. Please sign up first.");
-      router.push('/register');
-      return;
-    }
-    const email = JSON.parse(AuthState).email;
-    console.log("email and otp", email, otp);
-    // verifying otp
-    try {
-      setLoading(true);
-      const res = await api.post("/api/accounts/verify-otp/", {
-        email: email,
-        otp_code: otp.trim(),
-      });
-      if (res.status === 200) {
-        setLoading(false);
-        localStorage.removeItem("Authstate");
-        toast.success("Email verified successfully! You can now log in.");
-        router.push('/signin');
-      }
-    } catch (error) {
-      console.error("Verify email error:", error);
-      toast.error("Email verification failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   /*----------------------------------------
             Resend OTP Function 
@@ -135,7 +101,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           setLoading(false);
           localStorage.setItem("Authstate", JSON.stringify(newAuthState));
           toast.success("OTP resend successfull");
-          router.push('/signin/verify_otp');
+          router.push('/verify_otp?from=resendOtp');
         }
       } else {
         toast.error("Email is required to resend OTP.");
@@ -147,6 +113,96 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       setLoading(false);
     }
   };
+
+  /*----------------------------------------
+            Forgot Password Function 
+  ----------------------------------------------*/
+  const forgotPassword = async (email: string) => {
+    try {
+      setLoading(true);
+
+      const res = await api.post("/api/accounts/forgot-password/", {
+        email: email.trim(),
+      });
+
+      if (res.status === 200) {
+        const newAuthState = {
+          email: email,
+          isAuthenticated: false,
+        };
+        localStorage.setItem("Authstate", JSON.stringify(newAuthState));
+        setAuthState(newAuthState);
+        toast.success("otp sent to your email successfully!");
+        router.push("/reset_pass_one/reset_pass_two?from=forgotPassword");
+      } else {
+        toast.error("Failed to send password reset link. Please try again.");
+      }
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      toast.error("Failed to process forgot password. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /*----------------------------------------
+          Verify OTP Function 
+----------------------------------------------*/
+  const verifyOTP = async (otp: string, from: string) => {
+    const AuthState = localStorage.getItem("Authstate");
+    if (!AuthState) {
+      toast.error("No pending signup found. Please sign up first.");
+      router.push('/register');
+      return;
+    }
+    const email = JSON.parse(AuthState).email;
+
+    switch (from) {
+      case "signup":
+        // verifying otp
+        try {
+          setLoading(true);
+          const res = await api.post("/api/accounts/verify-otp/", {
+            email: email,
+            otp_code: otp.trim(),
+          });
+          if (res.status === 200) {
+            setLoading(false);
+            localStorage.removeItem("Authstate");
+            toast.success("Email verified successfully! You can now log in.");
+            router.push('/signin');
+          }
+        } catch (error) {
+          console.error("Verify email error:", error);
+          toast.error("Email verification failed. Please try again.");
+        } finally {
+          setLoading(false);
+          break;
+        }
+      case "forgotPassword":
+        // verifying otp
+        try {
+          setLoading(true);
+          const res = await api.post("/api/accounts/forgot-password/verify-otp/", {
+            email: email,
+            otp_code: otp.trim(),
+          });
+          if (res.status === 200) {
+            setLoading(false);
+            localStorage.removeItem("Authstate");
+            toast.success("Email verified successfully! You can now log in.");
+            router.push('/signin');
+          }
+        } catch (error) {
+          console.error("Verify email error:", error);
+          toast.error("Email verification failed. Please try again.");
+        } finally {
+          setLoading(false);
+          break;
+        }
+    }
+  };
+
 
   /*----------------------------------------
             Login Function 
@@ -181,36 +237,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  /*----------------------------------------
-            Forgot Password Function 
-  ----------------------------------------------*/
-  const forgotPassword = async (email: string) => {
-    try {
-      setLoading(true);
-      console.log(email);
-      const res = await api.post("/api/accounts/forgot-password/", {
-        email: email.trim(),
-      });
-
-      if (res.status === 200) {
-        const newAuthState = {
-          email: email,
-          isAuthenticated: false,
-        };
-        localStorage.setItem("Authstate", JSON.stringify(newAuthState));
-        setAuthState(newAuthState);
-        toast.success("otp sent to your email successfully!");
-        router.push("/reset_pass_one/reset_pass_two");
-      } else {
-        toast.error("Failed to send password reset link. Please try again.");
-      }
-    } catch (error) {
-      console.error("Forgot password error:", error);
-      toast.error("Failed to process forgot password. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
 
   /*----------------------------------------
@@ -222,11 +248,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     toast.success("Logged out successfully!");
     router.push("/signin");
   };
-
-  /*----------------------------------------
-            setUser Function 
-  ----------------------------------------------*/
-
 
   return (
     <AuthContext.Provider

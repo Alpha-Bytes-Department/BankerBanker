@@ -46,7 +46,7 @@ type SignInFormValues = z.infer<typeof formSchema>;
 
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = useAuth();
+  const {loading, login } = useAuth();
 
   const form = useForm<SignInFormValues>({
     resolver: zodResolver(formSchema),
@@ -186,6 +186,7 @@ const SignInForm: React.FC = () => {
               {/* Login Button */}
               <Button
                 type="submit"
+                isDisabled={loading}
                 text="Sign In"
                 className="button-primary w-full md:w-[593px] h-14"
               />

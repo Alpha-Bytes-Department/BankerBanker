@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import Button from "@/components/Button";
 import Link from "next/link";
 import { useAuth } from "@/Provider/AuthProvider";
+import { useSearchParams } from "next/navigation";
 
 const VerifyOtp: React.FC = () => {
   const [otp, setOtp] = useState("");
@@ -14,6 +15,9 @@ const VerifyOtp: React.FC = () => {
   const [isResending, setIsResending] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(30);
   const {authState,verifyOTP, resendOtp } = useAuth();
+
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
 
   // countdown
   useEffect(() => {
@@ -27,7 +31,7 @@ const VerifyOtp: React.FC = () => {
   // verify otp
   const handleOtpVerify = () => {
     setIsVerifying(true);
-    verifyOTP(otp);
+    verifyOTP(otp, from || "unknown");
     setIsVerifying(false);
   };
 
