@@ -13,7 +13,7 @@ export interface User {
 }
 
 export interface signup {
-  role?: UserType,
+  customer_type?: UserType,
   first_name?: string,
   last_name?: string,
   email?: string,
@@ -41,7 +41,6 @@ export interface AuthContextType{
   verifyOTP: (otp: string) => Promise<void>;
   resendOtp: (email: string) => Promise<void>;
   forgotPassword: (email: string)=> Promise<void>
-  verifyForgotOTP: (email: string)=> Promise<void>;
   logout: () => void;
 }
 

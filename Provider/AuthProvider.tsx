@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setSignupData(userData);
 
     // checking user type and redirecting accordingly 
-    if (userData?.role === "Lender" && userData?.media_files === undefined) {
+    if (userData?.customer_type === "Lender" && userData?.media_files === undefined) {
       toast.info("Please upload media files to proceed.");
       router.push("/register/upload");
       return;
@@ -71,7 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setLoading(false);
         localStorage.setItem("Authstate", JSON.stringify(newAuthState));
         toast.success("Successfully signed up! Please verify your email.");
-        router.push('/signin/verify_email');
+        router.push('/signin/verify_otp');
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -86,7 +86,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   /*----------------------------------------
             Verify OTP Function 
   ----------------------------------------------*/
-  const verifyOTP = async (otp: string) => {
+  const verifyOTP = async (otp: string, after?: string) => {
     const AuthState = localStorage.getItem("Authstate");
     if (!AuthState) {
       toast.error("No pending signup found. Please sign up first.");
@@ -135,7 +135,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           setLoading(false);
           localStorage.setItem("Authstate", JSON.stringify(newAuthState));
           toast.success("OTP resend successfull");
-          router.push('/signin/verify_email');
+          router.push('/signin/verify_otp');
         }
       } else {
         toast.error("Email is required to resend OTP.");
@@ -162,7 +162,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
       if (res.status === 200) {
         const { user, access, refresh } = res.data.data;
-        const userInfo = {access_token: access, refresh_token: refresh, user: user};
+        const userInfo = { access_token: access, refresh_token: refresh, user: user };
         localStorage.setItem("userCredentials", JSON.stringify(userInfo));
         setUser(user);
         toast.success("Logged in successfully!");
@@ -212,41 +212,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  /*----------------------------------------
-          Verify OTP after forgot Function 
-
-
- Note: this is need to change from backend and make one function for verifyOtp
-----------------------------------------------*/
-  const verifyForgotOTP = async (otp: string) => {
-    const AuthState = localStorage.getItem("Authstate");
-    if (!AuthState) {
-      toast.error("No pending signup found. Please sign up first.");
-      router.push('/register');
-      return;
-    }
-    const email = JSON.parse(AuthState).email;
-    console.log("email and otp", email, otp);
-    // verifying otp
-    try {
-      setLoading(true);
-      const res = await api.post("/api/accounts/forgot-password/verify-otp/", {
-        email: email,
-        otp_code: otp.trim(),
-      });
-      if (res.status === 200) {
-        setLoading(false);
-        localStorage.removeItem("Authstate");
-        toast.success("Email verified successfully! You can now log in.");
-        router.push('/signin');
-      }
-    } catch (error) {
-      console.error("Verify email error:", error);
-      toast.error("Email verification failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   /*----------------------------------------
             Logout Function 
@@ -274,7 +239,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         signup,
         verifyOTP,
         resendOtp,
-        verifyForgotOTP,
         login,
         logout,
         forgotPassword,

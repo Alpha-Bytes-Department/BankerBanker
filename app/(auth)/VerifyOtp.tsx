@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import { useAuth } from "@/Provider/AuthProvider";
 
-const VerifyEmailForm: React.FC = () => {
+const VerifyOtp: React.FC = () => {
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -97,7 +97,7 @@ const VerifyEmailForm: React.FC = () => {
 
       <div className="relative w-full h-full hidden md:block">
         <Image
-          src="/Auth_Images/verify_email.jpg"
+          src="/images/Auth_Images/verify_email.jpg"
           alt="buildings"
           fill
           className="object-cover"
@@ -107,4 +107,4 @@ const VerifyEmailForm: React.FC = () => {
   );
 };
 
-export default VerifyEmailForm;
+export default VerifyOtp;
