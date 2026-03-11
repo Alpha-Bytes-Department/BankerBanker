@@ -249,6 +249,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     router.push("/signin");
   };
 
+
+  /*----------------------------------------
+            Getting user data 
+  ----------------------------------------------*/
+
+  React.useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const userCredentials = localStorage.getItem("userCredentials");
+        if (userCredentials) {
+          const res = await api.get("/api/accounts/profile/");
+          if (res.status === 200) {
+            setUser(res.data.data);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+    fetchUserProfile();
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{

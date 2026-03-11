@@ -98,7 +98,6 @@ export default function RegistrationSystem() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("checking form data", formData);
     if (validateForm()) {
       signup(formData);
     }

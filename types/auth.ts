@@ -5,9 +5,17 @@ export type UserType = "Lender" | "Sponsor";
 export interface User {
   id?: string;
   email?: string;
-  name?: string;
+  first_name?: string;
+  last_name?: string;
   role?: UserType;
-  companyName?: string;
+  company_information?: {
+    company_name?: string,
+    position?: string,
+    street_address?: string,
+    city?: string,
+    state?: string,
+    zip_code?: string
+  };
   phoneNumber?: string;
   profileImage?: string;
 }
@@ -30,17 +38,17 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 
-export interface AuthContextType{
+export interface AuthContextType {
   user: User | null;
   signUpData: signup | null;
   loading: boolean;
   authState: AuthState,
   setSignupData: (data: signup) => void;
-  login: ( email: string, password: string, rememberMe?: boolean ) => Promise<void>;
-  signup: (formData : signup) => Promise<void>;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
+  signup: (formData: signup) => Promise<void>;
   verifyOTP: (otp: string, from: string) => Promise<void>;
   resendOtp: (email: string) => Promise<void>;
-  forgotPassword: (email: string)=> Promise<void>
+  forgotPassword: (email: string) => Promise<void>
   logout: () => void;
 }
 

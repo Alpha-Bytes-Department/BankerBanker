@@ -15,6 +15,7 @@ import { useState } from "react";
 import ProfileInfo from "./ProfileInfo";
 import ChangePassword from "./ChangePassword";
 import CompanyInfo from "./CompanyInfo";
+import { User } from "@/types/auth";
 
 const options = [
     {
@@ -31,22 +32,24 @@ const options = [
     }
 ]
 
-const ProfilePopUp = () => {
+const ProfilePopUp = (user: User | null) => {
     const [selectedOption, setSelectedOption] = useState("Profile");
     let subsection;
      switch(selectedOption){
         case "Profile":
-            subsection = <ProfileInfo/>
+            subsection = <ProfileInfo user={user} />
             break;
         case "Company":
-            subsection = <CompanyInfo/>
+            subsection = <CompanyInfo user={user} />
             break;
         case "Security":
             subsection = <ChangePassword/>
             break;
         default:
-            subsection = <ProfileInfo/>
+            subsection = <ProfileInfo user={user} />
     }
+
+    
 
     return (
         <DialogContent className="max-w-[350px] sm:max-w-[425px] lg:max-w-[550px] xl:max-w-[750px] bg-white rounded-xl border-0 outline-0 p-0">
@@ -55,7 +58,7 @@ const ProfilePopUp = () => {
                     <Image src={"/images/img2.jpg"} alt="profile" width={100} height={100} className="object-center object-cover rounded-full h-12 w-12 lg:h-20 lg:w-20" />
                 </DialogTitle>
                 <div>
-                    <p className="text-xl">John Doe</p>
+                    <p className="text-xl">{user?.first_name} {user?.last_name}</p>
                     <p>Managing Partner at Acme Properties LLC</p>
                 </div>
             </DialogHeader>

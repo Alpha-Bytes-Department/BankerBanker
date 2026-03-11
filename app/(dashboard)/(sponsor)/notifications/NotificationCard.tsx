@@ -1,6 +1,8 @@
 "use client"
 import { useState } from "react";
+import { FiTrash2 } from "react-icons/fi";
 import { GoDotFill } from "react-icons/go";
+import { IoCheckmarkSharp } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
 
 interface NotificationCardProps {
@@ -29,16 +31,16 @@ export default function NotificationCard({ title, from, description }: Notificat
                 <div className="flex justify-between items-center mt-1">
                     <p className="text-sm text-[#6A7282]">1h ago</p>
                     <div className="flex gap-3 items-center">
-                        {/* <button className="cursor-pointer" onClick={() => setRead(true)}>
+                        <button className="cursor-pointer" onClick={() => setRead(true)}>
                             {read ? "" : (
                                 <div className="flex gap-1 items-center">
                                     <IoCheckmarkSharp />
                                     <p className="text-[#0A0A0A] text-xs">Mark read</p>
                                 </div>)}
-                        </button> */}
-                        {/* <button className="cursor-pointer">
+                        </button>
+                        <button className="cursor-pointer">
                             <FiTrash2 className="text-[#E7000B]" />
-                        </button> */}
+                        </button>
                     </div>
                 </div>
             </div>

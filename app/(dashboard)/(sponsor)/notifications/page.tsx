@@ -130,7 +130,7 @@ export default function Notifications() {
                             ))
                         }
                     </div>
-                    {/* <div className="sticky bottom-0 bg-[#FFFFFF] flex justify-between px-6 py-3 z-50">
+                    <div className="sticky bottom-0 bg-[#FFFFFF] flex justify-between px-6 py-3 z-50">
                         <button className="flex gap-2 items-center cursor-pointer">
                             <LuCircleCheckBig />
                             Mark all read
@@ -139,7 +139,7 @@ export default function Notifications() {
                             <FiTrash2 className="text-[#E7000B]" />
                             Clear all
                         </button>
-                    </div> */}
+                    </div>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
