@@ -9,7 +9,7 @@ import axios, {
 let isRefreshing = false;
 let waitingQueue: ((token: string) => void)[] = [];
 // Declaring public routes
-const publicEndPoint = ["/signup", "/signin", "/dashboard", "/sponsor"];
+const publicEndPoint = ["/register", "/signin", "/register/upload", "/verify_otp", "/reset_pass_one", "/reset_pass_one/reset_pass_two", "/reset_pass_one/reset_pass_two/reset_pass_three", "/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four"];
 
 // Function to get tokens from localStorage
 const getTokensFromLocalStorage = () => {
@@ -28,12 +28,13 @@ const getTokensFromLocalStorage = () => {
     return { accessToken: null, refreshToken: null };
   }
 
-  
+
 };
+console.log("Base URL:", process.env.NEXT_PUBLIC_BASE_URL);
 
 // Creating axios instance
 const api: AxiosInstance = axios.create({
-  baseURL: "http://10.10.12.95:8000/",
+  baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000/",
   withCredentials: true,
 });
 
@@ -72,8 +73,9 @@ api.interceptors.response.use(
     // Wait until original request completes
     if (error?.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
           queuingFailedRoute((token) => {
+            if (!token) return reject("Refresh failed");
             if (originalRequest.headers) {
               originalRequest.headers["Authorization"] = `Bearer ${token}`;
             }
@@ -88,7 +90,8 @@ api.interceptors.response.use(
       try {
         const { refreshToken } = getTokensFromLocalStorage();
         if (!refreshToken) {
-          return null;
+          window.location.href = "/signin";
+          return Promise.reject("No refresh token");
         }
 
         const { data } = await api.post<{ access_token: string }>(
@@ -98,7 +101,7 @@ api.interceptors.response.use(
         const newToken = data.access_token;
 
         // Update localStorage with new access token
-        const userData = JSON.parse(localStorage.getItem("user") || "{}");
+        const userData = JSON.parse(localStorage.getItem("userCredentials") || "{}");
         localStorage.setItem(
           "userCredentials",
           JSON.stringify({ ...userData, access_token: newToken }),

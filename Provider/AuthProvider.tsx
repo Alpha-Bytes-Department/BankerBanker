@@ -3,9 +3,16 @@
 import React, { createContext, useContext, useState, type ReactNode } from "react";
 import type { AuthContextType, User, AuthState, signup } from "@/types/auth";
 import api from "./api";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation"; // ✅ added usePathname
 import { toast } from "sonner";
 
+// ✅ Public routes that don't need profile fetch
+const PUBLIC_ROUTES = [
+  '/signin',
+  '/register',
+  '/verify_otp',
+  '/reset_pass_one',
+];
 
 //------------ Auth Context ------------
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,53 +29,43 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [signUpData, setSignupData] = useState<signup | null>(null);
   const router = useRouter();
-
-  //------------ Initialize Auth State from Storage ------------
-
+  const pathname = usePathname(); //  track current route
 
   /*----------------------------------------
             Signup Function 
   ----------------------------------------------*/
   const signup = async (userData: signup) => {
-
     setSignupData(userData);
 
-    // checking user type and redirecting accordingly 
     if (userData?.customer_type === "Lender" && userData?.media_files === undefined) {
       toast.info("Please upload media files to proceed.");
       router.push("/register/upload");
       return;
     }
 
-    // validating media files
     if (userData?.media_files?.length === 0) {
       toast.error("Please upload at least one media file.");
       return;
     }
 
-    // proceeding with signup
     try {
       setLoading(true);
       const formData = new FormData();
-      // append normal fields
       Object.entries(userData).forEach(([key, value]) => {
         if (key !== "media_files") {
           formData.append(key, String(value));
         }
       });
-      // append files
       userData.media_files?.forEach((file: File) => {
         formData.append("media_files", file);
       });
       const res = await api.post("/api/accounts/signup/", formData);
-      // on successful signup
       if (res.status === 201) {
         const newAuthState = {
           email: res.data.data.email,
           isAuthenticated: false,
         };
         setAuthState(newAuthState);
-        setLoading(false);
         localStorage.setItem("Authstate", JSON.stringify(newAuthState));
         toast.success("Successfully signed up! Please verify your email.");
         router.push('/verify_otp?from=signup');
@@ -77,10 +74,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Signup error:", error);
       toast.error("Signup failed. Please try again.");
     } finally {
-      setLoading(false);
+      setLoading(false); // ✅ only in finally, removed duplicate on line 71
     }
   };
-
 
   /*----------------------------------------
             Resend OTP Function 
@@ -98,9 +94,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             isAuthenticated: false,
           };
           setAuthState(newAuthState);
-          setLoading(false);
           localStorage.setItem("Authstate", JSON.stringify(newAuthState));
-          toast.success("OTP resend successfull");
+          toast.success("OTP resent successfully!");
           router.push('/verify_otp?from=resendOtp');
         }
       } else {
@@ -110,7 +105,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Resend OTP error:", error);
       toast.error("Failed to resend OTP. Please try again.");
     } finally {
-      setLoading(false);
+      setLoading(false); // ✅ only in finally, removed duplicate on line 101
     }
   };
 
@@ -120,11 +115,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const forgotPassword = async (email: string) => {
     try {
       setLoading(true);
-
       const res = await api.post("/api/accounts/forgot-password/", {
         email: email.trim(),
       });
-
       if (res.status === 200) {
         const newAuthState = {
           email: email,
@@ -132,7 +125,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         };
         localStorage.setItem("Authstate", JSON.stringify(newAuthState));
         setAuthState(newAuthState);
-        toast.success("otp sent to your email successfully!");
+        toast.success("OTP sent to your email successfully!");
         router.push("/reset_pass_one/reset_pass_two?from=forgotPassword");
       } else {
         toast.error("Failed to send password reset link. Please try again.");
@@ -147,7 +140,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
   /*----------------------------------------
           Verify OTP Function 
-----------------------------------------------*/
+  ----------------------------------------------*/
   const verifyOTP = async (otp: string, from: string) => {
     const AuthState = localStorage.getItem("Authstate");
     if (!AuthState) {
@@ -155,19 +148,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       router.push('/register');
       return;
     }
-    const email = JSON.parse(AuthState).email;
+
+    //  guard against null email before sending to API
+    const parsedState = JSON.parse(AuthState);
+    const email = parsedState?.email;
+    if (!email) {
+      toast.error("Session expired. Please sign up again.");
+      router.push('/register');
+      return;
+    }
 
     switch (from) {
       case "signup":
-        // verifying otp
         try {
           setLoading(true);
           const res = await api.post("/api/accounts/verify-otp/", {
-            email: email,
+            email,
             otp_code: otp.trim(),
           });
           if (res.status === 200) {
-            setLoading(false);
             localStorage.removeItem("Authstate");
             toast.success("Email verified successfully! You can now log in.");
             router.push('/signin');
@@ -176,39 +175,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           console.error("Verify email error:", error);
           toast.error("Email verification failed. Please try again.");
         } finally {
-          setLoading(false);
-          break;
+          setLoading(false); //  break moved outside finally
         }
+        break; //  break is now correctly outside finally
+
       case "forgotPassword":
-        // verifying otp
         try {
           setLoading(true);
           const res = await api.post("/api/accounts/forgot-password/verify-otp/", {
-            email: email,
+            email,
             otp_code: otp.trim(),
           });
           if (res.status === 200) {
-            setLoading(false);
             localStorage.removeItem("Authstate");
-            toast.success("Email verified successfully! You can now log in.");
-            router.push('/signin');
+            toast.success("OTP verified! Please set your new password.");
+            router.push('/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four');
           }
         } catch (error) {
           console.error("Verify email error:", error);
           toast.error("Email verification failed. Please try again.");
         } finally {
-          setLoading(false);
-          break;
+          setLoading(false); // break moved outside finally
         }
+        break; // break is now correctly outside finally
     }
   };
-
 
   /*----------------------------------------
             Login Function 
   ----------------------------------------------*/
   const login = async (email: string, password: string, remember_me?: boolean) => {
-    console.log("checking", email, password, remember_me);
+    //  removed console.log with password
     try {
       setLoading(true);
       const res = await api.post("/api/accounts/login/", {
@@ -218,11 +215,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       });
       if (res.status === 200) {
         const { user, access, refresh } = res.data.data;
-        const userInfo = { access_token: access, refresh_token: refresh, user: user };
-        localStorage.setItem("userCredentials", JSON.stringify(userInfo));
+        //  flat structure matches getTokensFromLocalStorage() in api.ts
+        localStorage.setItem("userCredentials", JSON.stringify({
+          access_token: access,
+          refresh_token: refresh,
+          user,
+        }));
         setUser(user);
         toast.success("Logged in successfully!");
-        setLoading(false);
+        // removed duplicate setLoading(false) here — finally handles it
         if (user?.role === "Sponsor") {
           router.push("/sponsor");
         } else {
@@ -237,8 +238,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-
-
   /*----------------------------------------
             Logout Function 
   ----------------------------------------------*/
@@ -249,27 +248,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     router.push("/signin");
   };
 
-
   /*----------------------------------------
             Getting user data 
   ----------------------------------------------*/
-
   React.useEffect(() => {
     const fetchUserProfile = async () => {
+      // Skip profile fetch on public routes — this was causing the 401 loop
+      const isPublicRoute = PUBLIC_ROUTES.some(route => pathname?.startsWith(route));
+      if (isPublicRoute) return;
+
       try {
         const userCredentials = localStorage.getItem("userCredentials");
-        if (userCredentials) {
-          const res = await api.get("/api/accounts/profile/");
-          if (res.status === 200) {
-            setUser(res.data.data);
-          }
+        if (!userCredentials) return; // exit early if no credentials
+
+        const res = await api.get("/api/accounts/profile/");
+        if (res.status === 200) {
+          setUser(res.data.data);
         }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);
       }
     };
     fetchUserProfile();
-  }, []);
+  }, [pathname]); // re-run when route changes, not just on mount
 
   return (
     <AuthContext.Provider
@@ -293,7 +294,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 };
 
 /*-----------------------------------------------
-            exporting hooking 
+            exporting hook
   ----------------------------------------------*/
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);

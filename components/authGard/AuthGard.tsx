@@ -1,28 +1,71 @@
 "use client";
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
+// ✅ Define public routes here — no auth check needed
+const PUBLIC_ROUTES = [
+  '/signin',
+  '/register',
+  '/register/upload',
+  '/verify_otp',
+  '/reset_pass_one',
+];
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  
+  const pathname = usePathname();
+
   const [isMounted, setIsMounted] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const checkAuth = () => {
-      const creds = localStorage.getItem('userCredentials');
-      if (!creds) {
-        router.replace('/signin');
-      } else {
+      // Skip auth check entirely for public routes
+      const isPublicRoute = PUBLIC_ROUTES.some(route => pathname?.startsWith(route));
+      if (isPublicRoute) {
         setIsAuthorized(true);
+        setIsMounted(true); // always called
+        return;
       }
-      setIsMounted(true);
+
+      try {
+        const creds = localStorage.getItem('userCredentials');
+        if (!creds) {
+          setIsMounted(true); // always called before redirect
+          router.replace('/signin');
+          return;
+        }
+
+        const { access_token } = JSON.parse(creds);
+        if (!access_token) {
+          setIsMounted(true); // always called before redirect
+          router.replace('/signin');
+          return;
+        }
+
+        // Decode token without jwt-decode package
+        const payload = JSON.parse(atob(access_token.split('.')[1]));
+        const isExpired = Date.now() >= payload.exp * 1000;
+        if (isExpired) {
+          localStorage.removeItem('userCredentials'); // clean up expired token
+          setIsMounted(true); // always called before redirect
+          router.replace('/signin');
+          return;
+        }
+
+        setIsAuthorized(true);
+      } catch {
+        setIsMounted(true); // always called before redirect
+        router.replace('/signin');
+        return;
+      }
+
+      setIsMounted(true); // success path
     };
 
     checkAuth();
-  }, [router]);
+  }, [pathname]); // depend on pathname, not router
 
-  // Return null or a loader until the client-side check is done
   if (!isMounted) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -31,6 +74,5 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // Only render children if authorized
   return isAuthorized ? <>{children}</> : null;
 }

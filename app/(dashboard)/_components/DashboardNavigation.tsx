@@ -10,7 +10,6 @@ import { CiGrid42, CiSearch } from "react-icons/ci";
 import {
   FiFileText,
   FiLogOut,
-  FiMessageCircle,
   FiUpload,
 } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
@@ -156,7 +155,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
               <Dialog>
                 <DialogTrigger asChild>
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={process.env.NEXT_PUBLIC_BASE_URL + (user?.profile_photo || "")} alt="profile"/>
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DialogTrigger>

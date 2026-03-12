@@ -5,9 +5,11 @@ export type UserType = "Lender" | "Sponsor";
 export interface User {
   id?: string;
   email?: string;
+  profile_photo?: string;
   first_name?: string;
   last_name?: string;
   role?: UserType;
+  phone?: string;
   company_information?: {
     company_name?: string,
     position?: string,
