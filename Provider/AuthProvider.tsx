@@ -3,15 +3,12 @@
 import React, { createContext, useContext, useState, type ReactNode } from "react";
 import type { AuthContextType, User, AuthState, signup } from "@/types/auth";
 import api from "./api";
-import { useRouter, usePathname } from "next/navigation"; // ✅ added usePathname
+import { useRouter, usePathname } from "next/navigation"; // added usePathname
 import { toast } from "sonner";
 
-// ✅ Public routes that don't need profile fetch
+// Public routes that don't need profile fetch
 const PUBLIC_ROUTES = [
-  '/signin',
-  '/register',
-  '/verify_otp',
-  '/reset_pass_one',
+  "/register", "/signin", "/register/upload", "/verify_otp", "/reset_pass_one", "/reset_pass_one/reset_pass_two", "/reset_pass_one/reset_pass_two/reset_pass_three", "/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four"
 ];
 
 //------------ Auth Context ------------
@@ -74,7 +71,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Signup error:", error);
       toast.error("Signup failed. Please try again.");
     } finally {
-      setLoading(false); // ✅ only in finally, removed duplicate on line 71
+      setLoading(false);
     }
   };
 
@@ -105,7 +102,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       console.error("Resend OTP error:", error);
       toast.error("Failed to resend OTP. Please try again.");
     } finally {
-      setLoading(false); // ✅ only in finally, removed duplicate on line 101
+      setLoading(false); // only in finally, removed duplicate on line 101
     }
   };
 

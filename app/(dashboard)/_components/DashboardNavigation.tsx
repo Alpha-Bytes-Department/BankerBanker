@@ -159,7 +159,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DialogTrigger>
-                <ProfilePopUp {...user} />
+                <ProfilePopUp user={user} />
               </Dialog>
             </div>
             <div>

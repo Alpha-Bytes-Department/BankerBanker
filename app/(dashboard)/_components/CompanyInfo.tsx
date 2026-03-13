@@ -1,11 +1,14 @@
 import { User } from '@/types/auth';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BsBuildings } from 'react-icons/bs';
 import { CiLocationOn } from 'react-icons/ci';
 import { MdEdit } from 'react-icons/md';
 
 const CompanyInfo = ({ user, onDataChange }: { user: User | null; onDataChange?: (data: any) => void }) => {
     const [isEdit, setEdit] = useState<boolean>(false);
+    const isMounted = useRef(false);
+
+    // default values come from user prop
     const [formData, setFormData] = useState({
         company_name: user?.company_information?.company_name || '',
         position: user?.company_information?.position || '',
@@ -17,23 +20,21 @@ const CompanyInfo = ({ user, onDataChange }: { user: User | null; onDataChange?:
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [id]: value
-        }));
+        setFormData(prev => ({ ...prev, [id]: value }));
     };
 
-    const handleSave = () => {
-        setEdit(false);
-    };
 
-    // Send updated data to parent whenever formData changes
+    // only sync to parent after user makes a change, not on initial mount
     useEffect(() => {
-        if (isEdit && onDataChange) {
+        if (!isMounted.current) {
+            isMounted.current = true;
+            return;
+        }
+        if (onDataChange) {
             onDataChange({ company: formData });
         }
-    }, [formData, isEdit]);
-    
+    }, [formData]);
+
     return (
         <div className='flex flex-col gap-5 mt-5'>
             <form action="submit" className={`grid grid-cols-1 gap-5 p-4 rounded-lg transition-all ${
@@ -43,17 +44,9 @@ const CompanyInfo = ({ user, onDataChange }: { user: User | null; onDataChange?:
                     <h1>Company Information</h1>
                     <button
                         type='button'
-                        onClick={() => {
-                            if (isEdit) {
-                                handleSave();
-                            } else {
-                                setEdit(true);
-                            }
-                        }}
+                        onClick={() => setEdit(prev => !prev)}
                         className={`p-2 rounded-full cursor-pointer transition-all ${
-                            isEdit 
-                                ? 'bg-blue-500 text-white hover:bg-blue-600' 
-                                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                            isEdit ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
                         }`}
                     >
                         <MdEdit className='text-lg' />
@@ -61,81 +54,87 @@ const CompanyInfo = ({ user, onDataChange }: { user: User | null; onDataChange?:
                 </div>
                 <div className='flex flex-col'>
                     <label htmlFor="company_name">Company Name</label>
-                    <span className='flex items-center gap-2 border border-[#99A1AF]  py-2 px-3 rounded-xl'><BsBuildings className='text-lg text-[#99A1AF]' /><input 
-                        type="text" 
-                        id='company_name' 
-                        value={formData.company_name}
-                        onChange={handleInputChange}
-                        placeholder='Acme Properties LLC' 
-                        disabled={!isEdit} 
-                        className='border-0 focus:outline-0' 
-                    /></span>
+                    <span className='flex items-center gap-2 border border-[#99A1AF] py-2 px-3 rounded-xl'>
+                        <BsBuildings className='text-lg text-[#99A1AF]' />
+                        <input
+                            type="text"
+                            id='company_name'
+                            defaultValue={user?.company_information?.company_name}
+                            onChange={handleInputChange}
+                            placeholder='Company Name'
+                            disabled={!isEdit}
+                            className='border-0 focus:outline-0'
+                        />
+                    </span>
                 </div>
+
                 <div className='flex flex-col'>
-                    <label htmlFor="position">
-                        Position/Title</label>
-                    <input 
-                        type="text" 
-                        id='position' 
-                        value={formData.position}
+                    <label htmlFor="position">Position/Title</label>
+                    <input
+                        type="text"
+                        id='position'
+                        defaultValue={user?.company_information?.position}
                         onChange={handleInputChange}
-                        placeholder='Managing Partner' 
-                        disabled={!isEdit} 
-                        className='border border-[#99A1AF] focus:outline-[#99A1AF] py-2 px-3 rounded-xl' 
+                        placeholder='position at company'
+                        disabled={!isEdit}
+                        className='border border-[#99A1AF] focus:outline-[#99A1AF] py-2 px-3 rounded-xl'
                     />
                 </div>
+
                 <hr className='text-[#0000001A]' />
                 <h1>Business Address</h1>
+
                 <div className='flex flex-col'>
-                    <label htmlFor="street_address">Street Address </label>
-                    <span className='flex items-center gap-2 bg-[#F3F3F5] py-2 px-3 rounded-xl'><CiLocationOn  className='text-lg text-[#99A1AF]' /><input 
-                        type="text" 
-                        id='street_address' 
-                        value={formData.street_address}
-                        onChange={handleInputChange}
-                        placeholder='123 Business Ave, Suite 500' 
-                        disabled={!isEdit} 
-                        className='border-0 focus:outline-0' 
-                    /></span>
+                    <label htmlFor="street_address">Street Address</label>
+                    <span className='flex items-center gap-2 bg-[#F3F3F5] py-2 px-3 rounded-xl'>
+                        <CiLocationOn className='text-lg text-[#99A1AF]' />
+                        <input
+                            type="text"
+                            id='street_address'
+                            defaultValue={user?.company_information?.street_address}
+                            onChange={handleInputChange}
+                            placeholder='street address'
+                            disabled={!isEdit}
+                            className='border-0 focus:outline-0'
+                        />
+                    </span>
                 </div>
+
                 <div className='grid grid-cols-3 gap-3'>
                     <div className='flex flex-col'>
-                        <label htmlFor="city">
-                            City</label>
-                        <input 
-                            type="text" 
-                            id='city' 
-                            value={formData.city}
+                        <label htmlFor="city">City</label>
+                        <input
+                            type="text"
+                            id='city'
+                            defaultValue={user?.company_information?.city}
                             onChange={handleInputChange}
-                            placeholder='New York' 
-                            disabled={!isEdit} 
-                            className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl' 
+                            placeholder='City'
+                            disabled={!isEdit}
+                            className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl'
                         />
                     </div>
                     <div className='flex flex-col'>
-                        <label htmlFor="state">
-                            State</label>
-                        <input 
-                            type="text" 
-                            id='state' 
-                            value={formData.state}
+                        <label htmlFor="state">State</label>
+                        <input
+                            type="text"
+                            id='state'
+                            defaultValue={user?.company_information?.state}
                             onChange={handleInputChange}
-                            placeholder='NY' 
-                            disabled={!isEdit} 
-                            className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl' 
+                            placeholder='State'
+                            disabled={!isEdit}
+                            className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl'
                         />
                     </div>
                     <div className='flex flex-col'>
-                        <label htmlFor="zip_code">
-                            ZIP Code</label>
-                        <input 
-                            type="text" 
-                            id='zip_code' 
-                            value={formData.zip_code}
+                        <label htmlFor="zip_code">ZIP Code</label>
+                        <input
+                            type="text"
+                            id='zip_code'
+                            defaultValue={user?.company_information?.zip_code}
                             onChange={handleInputChange}
-                            placeholder='10001' 
-                            disabled={!isEdit} 
-                            className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl' 
+                            placeholder='ZIP Code'
+                            disabled={!isEdit}
+                            className='border-0 focus:outline-0 bg-[#F3F3F5] py-2 px-3 rounded-xl'
                         />
                     </div>
                 </div>

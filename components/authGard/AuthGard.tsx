@@ -2,13 +2,9 @@
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-// ✅ Define public routes here — no auth check needed
+// Define public routes here — no auth check needed
 const PUBLIC_ROUTES = [
-  '/signin',
-  '/register',
-  '/register/upload',
-  '/verify_otp',
-  '/reset_pass_one',
+  "/register", "/signin", "/register/upload", "/verify_otp", "/reset_pass_one", "/reset_pass_one/reset_pass_two", "/reset_pass_one/reset_pass_two/reset_pass_three", "/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four"
 ];
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
