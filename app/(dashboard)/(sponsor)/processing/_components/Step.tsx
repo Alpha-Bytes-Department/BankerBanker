@@ -48,7 +48,7 @@ export const Step = ({ steps, value, loading, onChange }: StepperProps) => {
               <button
                 key={step.id}
                 disabled={loading}
-                onClick={() => onChange(step.id)}
+                // onClick={() => onChange(step.id)}
                 className={`
                   flex-1 flex flex-col items-center gap-1 py-1 rounded-lg transition-all duration-200
                   ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
@@ -95,7 +95,7 @@ export const Step = ({ steps, value, loading, onChange }: StepperProps) => {
               {/* Step circle */}
               <button
                 disabled={loading}
-                onClick={() => onChange(step.id)}
+                // onClick={() => onChange(step.id)}
                 className={`
                   relative z-10 flex h-9 w-9 items-center justify-center rounded-full border
                   transition-all duration-300 shrink-0

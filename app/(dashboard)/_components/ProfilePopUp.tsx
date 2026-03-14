@@ -124,7 +124,6 @@ const ProfilePopUp = ({ user }: { user: User | null }) => {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            console.log("checking response after update user data", response);
 
             if (response.status !== 200) {
                 throw new Error(response.data?.message || 'Failed to update profile');

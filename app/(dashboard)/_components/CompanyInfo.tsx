@@ -80,10 +80,8 @@ const CompanyInfo = ({ user, onDataChange }: { user: User | null; onDataChange?:
                         className='border border-[#99A1AF] focus:outline-[#99A1AF] py-2 px-3 rounded-xl'
                     />
                 </div>
-
                 <hr className='text-[#0000001A]' />
                 <h1>Business Address</h1>
-
                 <div className='flex flex-col'>
                     <label htmlFor="street_address">Street Address</label>
                     <span className='flex items-center gap-2 bg-[#F3F3F5] py-2 px-3 rounded-xl'>
