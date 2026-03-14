@@ -13,7 +13,7 @@ type Marker = {
 };
 
 type GMAPProps = {
-    markersList: Marker[];
+    markersList?: Marker[];
     // Callback to send coordinates to the parent/backend
     onLocationSelect?: (coords: { lat: number; lng: number }) => void;
 }
@@ -27,8 +27,8 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
     const [tempMarker, setTempMarker] = useState<google.maps.LatLngLiteral | null>(null);
 
     const [center, setCenter] = useState<google.maps.LatLngLiteral>({
-        lat: 23.8103, // Default to Dhaka or your preferred start
-        lng: 90.4125
+        lat: 40.7128, // Default to New York
+        lng: -74.0060
     });
 
     const mapOptions = useMemo<google.maps.MapOptions>(() => ({

@@ -15,6 +15,7 @@ const AddPropertyInfo = ({
     description,
     setCurrentStep,
 }: AddPropertyInfoProps) => {
+    const [location, setLocation] = React.useState({ lat: 0, lng: 0 });
     return (
         <div>
             {/* Header */}
@@ -26,7 +27,7 @@ const AddPropertyInfo = ({
             </div>
             {/* map  */}
             <h1 className='mt-5 mb-2 text-xl '>Select your property Location </h1>
-            <GMAP/>
+            <GMAP onLocationSelect={setLocation} />
         </div>
     );
 };
