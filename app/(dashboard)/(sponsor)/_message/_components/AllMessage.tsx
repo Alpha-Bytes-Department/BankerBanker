@@ -98,14 +98,12 @@ const AllMessage = ({
                             <p className="text-sm text-gray-700 line-clamp-1">
                                 {chat.message}
                             </p>
-
                             {chat.unread > 0 && (
                                 <span className="mt-1 inline-block rounded-full bg-blue-600 px-2 py-0.5 text-xs text-white">
                                     {chat.unread} new
                                 </span>
                             )}
                         </div>
-
                         {/* Star */}
                         {chat.starred && (
                             <span className="text-yellow-400 text-sm">⭐</span>

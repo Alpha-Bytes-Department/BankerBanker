@@ -9,6 +9,7 @@ export type ButtonProps = {
   type?: "button" | "submit" | "reset";
   icon?: React.ReactNode;
   arrow?: boolean;
+  isDisabled?: boolean;
 };
 
 const sizes = {
@@ -25,6 +26,7 @@ const Button = ({
   type = "button",
   icon,
   arrow = false,
+  isDisabled = false,
 }: ButtonProps) => {
 
   
@@ -32,8 +34,9 @@ const Button = ({
     <button
       onClick={onClick}
       type={type}
+      disabled={isDisabled}
       className={`flex justify-center items-center gap-2 rounded-full transition-colors duration-300 
-        active:scale-95 cursor-pointer ${sizes[size]} ${className}`}
+        active:scale-95 cursor-pointer ${sizes[size]} ${className} ${isDisabled ? 'opacity-80 cursor-not-allowed' : ''}`}
     >
       {icon}
       {text}

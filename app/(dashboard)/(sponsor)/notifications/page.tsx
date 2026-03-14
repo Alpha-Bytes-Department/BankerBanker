@@ -83,7 +83,7 @@ export default function Notifications() {
                                 <p className="text-[#1447E6] text-sm">3 new</p>
                             </div>
                         </div>
-                        <div className='flex gap-4 px-4 mt-2'>
+                        {/* <div className='flex gap-4 px-4 mt-2'>
                             <button className={`px-4 py-1 rounded-lg ${all ? "bg-[#4361EE] text-white" :
                                 "bg-white text-black"}`} onClick={() => {
                                     setAll(true);
@@ -120,7 +120,7 @@ export default function Notifications() {
                                 }}>
                                 <FaDollarSign />
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                     <div className="mt-3 flex flex-col gap-2">
                         {

@@ -23,7 +23,7 @@ const Review = ({
                     <Check stroke="#0D4DA5" />
                 </div>
                 <div>
-                    <h1 className="text-xl">Step {id}: {title}</h1>
+                    <h1 className="text-xl">Step {id + 1} : {title}</h1>
                     <p className="text-[#4A5565]">{description}</p>
                 </div>
             </div>

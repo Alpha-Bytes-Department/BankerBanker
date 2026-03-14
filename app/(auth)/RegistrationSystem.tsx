@@ -13,7 +13,7 @@ import { signup, UserType } from '@/types/auth';
 // Main Component
 export default function RegistrationSystem() {
   const [formData, setFormData] = useState<signup>({
-    role: 'Sponsor',
+    customer_type: 'Sponsor',
     first_name: '',
     last_name: '',
     email: '',
@@ -27,9 +27,9 @@ export default function RegistrationSystem() {
   const [errors, setErrors] = useState<Partial<Record<keyof signup, string>>>({});
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { signup } = useAuth();
+  const {loading, signup } = useAuth();
 
-  const role: UserType[] = ['Lender', 'Sponsor'];
+  const customer_type: UserType[] = ['Lender', 'Sponsor'];
 
   const slides = [
     {
@@ -127,7 +127,7 @@ export default function RegistrationSystem() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 bg-white text-left flex items-center justify-between"
               >
-                <span className="text-gray-900">{formData.role}</span>
+                <span className="text-gray-900">{formData.customer_type}</span>
                 <ChevronDown
                   size={20}
                   className={`text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
@@ -136,15 +136,15 @@ export default function RegistrationSystem() {
 
               {isDropdownOpen && (
                 <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
-                  {role.map((type) => (
+                  {customer_type.map((type) => (
                     <button
                       key={type}
                       type="button"
                       onClick={() => {
-                        setFormData({ ...formData, role: type });
+                        setFormData({ ...formData, customer_type: type });
                         setIsDropdownOpen(false);
                       }}
-                      className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors ${formData.role === type ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
+                      className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors ${formData.customer_type === type ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
                         }`}
                     >
                       {type}
@@ -323,7 +323,8 @@ export default function RegistrationSystem() {
             {/* Submit Button */}
             <Button
               type="submit"
-              text="Sign Up"
+              isDisabled={loading}
+              text={loading ? "Processing..." : "Sign Up"}
               className="button-primary w-full h-14"
             />
             {/* Login Link */}

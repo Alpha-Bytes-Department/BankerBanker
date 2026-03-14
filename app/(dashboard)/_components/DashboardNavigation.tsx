@@ -10,7 +10,6 @@ import { CiGrid42, CiSearch } from "react-icons/ci";
 import {
   FiFileText,
   FiLogOut,
-  FiMessageCircle,
   FiUpload,
 } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
@@ -68,11 +67,11 @@ const sponsor: LinkProps = [
     href: "/loan",
     icon: <FaRegChartBar className="text-lg" />,
   },
-  {
-    text: "Message",
-    href: "/message",
-    icon: <FiMessageCircle className="text-lg" />,
-  },
+  // {
+  //   text: "Message",
+  //   href: "/message",
+  //   icon: <FiMessageCircle className="text-lg" />,
+  // },
 ];
 
 const lander: LinkProps = [
@@ -101,23 +100,27 @@ const lander: LinkProps = [
     href: "/market-analytics",
     icon: <FaRegChartBar className="text-lg" />,
   },
-  {
-    text: "Message",
-    href: "/message",
-    icon: <FiMessageCircle className="text-lg" />,
-  },
+  // {
+  //   text: "Message",
+  //   href: "/message",
+  //   icon: <FiMessageCircle className="text-lg" />,
+  // },
 ];
 
 const DashboardNavigation = ({ children }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
-  const [userData, setUserData] = useState<UserData | null>({
-    id: "1",
-    email: "john@example.com",
-    first_name: "John",
-    last_name: "Doe",
-  });
   const pathName = usePathname();
-  const { user } = useAuth();
+  const { loading, user, logout } = useAuth();
+
+  console.log("checking user data", user);
+
+
+  const handleLogOut = () => {
+    logout();
+  }
+
+
+
 
   return (
     <nav className="flex items-start">
@@ -152,22 +155,22 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
               <Dialog>
                 <DialogTrigger asChild>
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={process.env.NEXT_PUBLIC_BASE_URL + (user?.profile_photo || "")} alt="profile"/>
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </DialogTrigger>
-                <ProfilePopUp />
+                <ProfilePopUp user={user} />
               </Dialog>
             </div>
             <div>
               <p
                 className="overflow-y-hidden"
-                title={userData?.first_name + " " + userData?.last_name}
+                title={user?.first_name + " " + user?.last_name}
               >
-                {userData?.first_name + " " + userData?.last_name}
+                {user?.first_name + " " + user?.last_name}
               </p>
-              <p className="overflow-y-hidden" title={userData?.email}>
-                {userData?.email}
+              <p className="overflow-y-hidden" title={user?.email}>
+                {user?.email}
               </p>
             </div>
           </div>
@@ -200,12 +203,14 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
           {/* bottom */}
           <div className="p-4 border border-[#314158] flex flex-col gap-2  text-white">
             {/* <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${pathName === "/settings" ? "button-primary" : ""}`}><CiSettings className='text-lg' /><Link href={"/settings"}>Settings</Link></div> */}
-            <div
+            <button
+              onClick={handleLogOut}
               className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer `}
+              disabled={loading}
             >
               <FiLogOut className="text-lg" />
-              <span>Logout</span>
-            </div>
+              <span>{loading ? "Logging out..." : "Logout"}</span>
+            </button>
           </div>
         </div>
       </div>

@@ -39,9 +39,28 @@ const propertyData: PropertyProps[] = [
     }
 ];
 
+// Sample marker data for GMAP
+
+const customIcons = {
+    red: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+    blue: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+    green: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
+};
+
+const markers = [
+    { id: 1, position: { lat: 40.6892, lng: -74.0445 }, title: 'Statue of Liberty', color: 'red', icon: customIcons.red },
+    { id: 2, position: { lat: 40.7484, lng: -73.9857 }, title: 'Empire State Building', color: 'red', icon: customIcons.red },
+    { id: 3, position: { lat: 40.7580, lng: -73.9855 }, title: 'Times Square', color: 'red', icon: customIcons.red },
+    { id: 4, position: { lat: 40.7794, lng: -73.9632 }, title: 'The Met Museum', color: 'blue', icon: customIcons.blue },
+    { id: 5, position: { lat: 40.7530, lng: -73.9772 }, title: 'Grand Central Terminal', color: 'blue', icon: customIcons.blue },
+    { id: 6, position: { lat: 40.7052, lng: -73.9967 }, title: 'Brooklyn Bridge', color: 'blue', icon: customIcons.blue },
+    { id: 7, position: { lat: 40.7115, lng: -74.0126 }, title: '9/11 Memorial', color: 'blue', icon: customIcons.blue },
+    { id: 8, position: { lat: 40.7648, lng: -73.9723 }, title: 'Central Park (South)', color: 'green', icon: customIcons.green },
+    { id: 9, position: { lat: 40.7466, lng: -74.0055 }, title: 'High Line Park', color: 'green', icon: customIcons.green },
+    { id: 10, position: { lat: 40.8504, lng: -73.8763 }, title: 'The Bronx Zoo', color: 'green', icon: customIcons.green },
+];
+
 const page = () => {
-
-
 
 
     return (
@@ -57,7 +76,7 @@ const page = () => {
             </div>
              {/* google map  */}
             <div className="my-5">
-                <GMAP />
+                <GMAP markersList={markers} />
             </div>
             
             <div className="flex flex-col-reverse xl:flex-row gap-5">

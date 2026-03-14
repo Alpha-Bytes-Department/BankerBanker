@@ -20,7 +20,7 @@ const FileUpload = ({
     return (
         <div className="space-y-6 mt-6 p-5 pb-16 border border-[#E5E7EB] rounded-lg shadow-lg">
             <div>
-                <h1 className="text-xl">Step {id}: {title}</h1>
+                <h1 className="text-xl">Step {id + 1} : {title}</h1>
                 <p className="text-[#4A5565]">{description}</p>
             </div>
             {/* File upload input */}

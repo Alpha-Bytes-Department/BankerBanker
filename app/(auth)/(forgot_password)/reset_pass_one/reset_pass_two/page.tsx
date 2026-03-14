@@ -1,10 +1,10 @@
-import VerifyEmailForm from '@/app/(auth)/VerifyEmailForm'
-import React from 'react'
+import VerifyOtp from "@/app/(auth)/VerifyOtp"
+
 
 const page = () => {
   return (
     <div>
-      <VerifyEmailForm/>
+      <VerifyOtp/>
     </div>
   )
 }

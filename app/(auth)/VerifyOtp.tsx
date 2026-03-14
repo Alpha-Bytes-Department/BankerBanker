@@ -7,13 +7,17 @@ import { Loader2 } from "lucide-react";
 import Button from "@/components/Button";
 import Link from "next/link";
 import { useAuth } from "@/Provider/AuthProvider";
+import { useSearchParams } from "next/navigation";
 
-const VerifyEmailForm: React.FC = () => {
+const VerifyOtp: React.FC = () => {
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(30);
   const {authState,verifyOTP, resendOtp } = useAuth();
+
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
 
   // countdown
   useEffect(() => {
@@ -27,7 +31,7 @@ const VerifyEmailForm: React.FC = () => {
   // verify otp
   const handleOtpVerify = () => {
     setIsVerifying(true);
-    verifyOTP(otp);
+    verifyOTP(otp, from || "unknown");
     setIsVerifying(false);
   };
 
@@ -97,7 +101,7 @@ const VerifyEmailForm: React.FC = () => {
 
       <div className="relative w-full h-full hidden md:block">
         <Image
-          src="/Auth_Images/verify_email.jpg"
+          src="/images/Auth_Images/verify_email.jpg"
           alt="buildings"
           fill
           className="object-cover"
@@ -107,4 +111,4 @@ const VerifyEmailForm: React.FC = () => {
   );
 };
 
-export default VerifyEmailForm;
+export default VerifyOtp;
