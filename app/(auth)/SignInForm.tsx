@@ -91,7 +91,15 @@ const SignInForm: React.FC = () => {
         <div>
           {/* Logo */}
           <div className="mb-5">
-            <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
+            <Link href="/">
+              <Image
+                src={"/logo/BANCre.png"}
+                alt={"logo"}
+                width={150}
+                height={50}
+                className="hidden lg:flex"
+              />
+            </Link>
             <h2 className="text-2xl font-semibold my-2">Log in</h2>
             <p className="text-sm">
               Don&apos;t have an account?{" "}
@@ -102,14 +110,19 @@ const SignInForm: React.FC = () => {
           </div>
           {/* Form */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSign)} className="space-y-5">
+            <form
+              onSubmit={form.handleSubmit(handleSign)}
+              className="space-y-5"
+            >
               {/* Email */}
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem className="relative">
-                    <FormLabel className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">E-mail</FormLabel>
+                    <FormLabel className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
+                      E-mail
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder="example@gmail.com"
@@ -126,8 +139,10 @@ const SignInForm: React.FC = () => {
                 control={form.control}
                 name="password"
                 render={({ field }) => (
-                  <FormItem className="relative" >
-                    <FormLabel className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600" >Password</FormLabel>
+                  <FormItem className="relative">
+                    <FormLabel className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
+                      Password
+                    </FormLabel>
                     <FormControl>
                       <div>
                         <Input
@@ -143,7 +158,11 @@ const SignInForm: React.FC = () => {
                           className="absolute right-10 top-2/6 -translate-y-1/2 text-gray-500"
                           onClick={() => setShowPassword(!showPassword)}
                         >
-                          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                          {showPassword ? (
+                            <EyeOff size={20} />
+                          ) : (
+                            <Eye size={20} />
+                          )}
                         </button>
                       </div>
                     </FormControl>
@@ -164,10 +183,7 @@ const SignInForm: React.FC = () => {
                                   id="toggle"
                                 />
                               </FormControl>
-                              <Label
-                                htmlFor="toggle"
-                                className="text-blue-600"
-                              >
+                              <Label htmlFor="toggle" className="text-blue-600">
                                 Remember me
                               </Label>
                             </FormItem>
@@ -175,7 +191,10 @@ const SignInForm: React.FC = () => {
                         />
                       </div>
 
-                      <Link href="/reset_pass_one" className="text-blue-600 text-sm underline">
+                      <Link
+                        href="/reset_pass_one"
+                        className="text-blue-600 text-sm underline"
+                      >
                         Forgot Password?
                       </Link>
                     </div>
@@ -201,7 +220,7 @@ const SignInForm: React.FC = () => {
           </Form>
           {/* Google Button */}
           <Link
-            href={"http://localhost:8080/api/v1/users/google"}
+            href={"http://10.10.12.95:8000/api/v1/users/google"}
             className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer"
           >
             <FcGoogle className="text-2xl" />

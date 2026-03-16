@@ -57,6 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         formData.append("media_files", file);
       });
       const res = await api.post("/api/accounts/signup/", formData);
+      console.log("Signup response:", res);
       if (res.status === 201) {
         const newAuthState = {
           email: res.data.data.email,
