@@ -18,6 +18,8 @@ const MakingMemorandumPage = () => {
 
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [propertyId, setPropertyId] = useState<number | null>(null);
+
     
 
     return (
@@ -26,9 +28,9 @@ const MakingMemorandumPage = () => {
             <p className='text-[#4A5565]'>Upload existing documents to help auto-populate your offering memorandum</p>
             {currentStep <= 3 && <Step steps={steps} value={currentStep} loading={loading} onChange={setCurrentStep}/>}
             {/* passing the current steps  */}
-            {currentStep === 0 && <AddPropertyInfo id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} />}
-            {currentStep === 1 && <FileUpload id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} />}
-            {currentStep === 2 && <Processing id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} />}
+            {currentStep === 0 && <AddPropertyInfo id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} setPropertyId={setPropertyId} />}
+            {currentStep === 1 && <FileUpload id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} propertyId={propertyId} />}
+            {currentStep === 2 && <Processing id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} propertyId={propertyId}/>}
             {currentStep === 3 && <SubmitSuccess />}
         </div>
     );
