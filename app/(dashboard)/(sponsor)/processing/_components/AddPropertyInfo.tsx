@@ -39,6 +39,7 @@ type AddPropertyInfoProps = {
   title?: string;
   description?: string;
   setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
+  setPropertyId?: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 const AddPropertyInfo = ({
@@ -46,6 +47,7 @@ const AddPropertyInfo = ({
   title,
   description,
   setCurrentStep,
+  setPropertyId,
 }: AddPropertyInfoProps) => {
   const [location, setLocation] = React.useState({ lat: 0, lng: 0 });
   
@@ -62,7 +64,6 @@ const AddPropertyInfo = ({
       return;
     }
     try {
-      console.log("checking data", data, location.lat, location.lng)
       const response = await api.post("/api/properties/", {
         property_name: data.property_name,
         property_address: data.property_address,
@@ -73,21 +74,20 @@ const AddPropertyInfo = ({
         occupancy: String(data.occupancy),
         year_renovated: data.year_renovated,
         parking_spaces: data.parking_spaces,
-        latitude: location.lat,
-        longitude: location.lng,
+        latitude: parseFloat(location.lat.toFixed(6)),
+        longitude: parseFloat(location.lng.toFixed(6)),
       });
-    
-      console.log("checking property response", response)
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Property info added");
+        setPropertyId?.(response?.data?.data?.id);
         setCurrentStep?.((prev) => prev + 1);
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      console.log("checking error", err)
+      const err = error as { response?: { data?: Record<string, unknown> } };
+      console.log("server error details:", err?.response?.data);
       toast.error(
-        err?.response?.data?.message || "Something went wrong. Please try again."
+        (err?.response?.data?.message as string) || "Something went wrong. Please try again."
       );
     }
   };
