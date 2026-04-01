@@ -2,8 +2,11 @@
 
 import GMAP from "@/app/(dashboard)/_components/GMAP";
 import Button from "@/components/Button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import api from "@/Provider/api";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ImagePlus, X } from "lucide-react";
 
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -13,12 +16,26 @@ import { z } from "zod";
 const propertySchema = z.object({
   property_name: z.string().min(1, "Property name is required"),
   property_address: z.string().min(1, "Address is required"),
-  property_type: z.enum(["Multifamily", "Industrial", "Retail", "Office", "Other"]),
+  property_type: z.enum([
+    "Multifamily",
+    "Industrial",
+    "Retail",
+    "Office",
+    "Other",
+  ]),
   number_of_units: z.number().int().min(1, "At least 1 unit"),
   rentable_area: z.preprocess(String, z.string().min(1, "Required")),
-  year_built: z.number().int().min(1800, "Enter a valid year").max(new Date().getFullYear(), "Cannot be in the future"),
+  year_built: z
+    .number()
+    .int()
+    .min(1800, "Enter a valid year")
+    .max(new Date().getFullYear(), "Cannot be in the future"),
   occupancy: z.preprocess(String, z.string().min(1, "Required")),
-  year_renovated: z.number().int().min(1800, "Enter a valid year").max(new Date().getFullYear(), "Cannot be in the future"),
+  year_renovated: z
+    .number()
+    .int()
+    .min(1800, "Enter a valid year")
+    .max(new Date().getFullYear(), "Cannot be in the future"),
   parking_spaces: z.number().int().min(0, "Min 0"),
 });
 
@@ -50,13 +67,18 @@ const AddPropertyInfo = ({
   setPropertyId,
 }: AddPropertyInfoProps) => {
   const [location, setLocation] = React.useState({ lat: 0, lng: 0 });
-  
+  const [propertyImages, setPropertyImages] = React.useState<File[]>([]);
+  const [isDraggingImages, setIsDraggingImages] = React.useState(false);
+  const imageInputRef = React.useRef<HTMLInputElement>(null);
+  const MAX_IMAGES = 3;
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<PropertyFormData>({ resolver: zodResolver(propertySchema) as never });
+  } = useForm<PropertyFormData>({
+    resolver: zodResolver(propertySchema) as never,
+  });
 
   const onSubmit = async (data: PropertyFormData) => {
     if (location.lat === 0 && location.lng === 0) {
@@ -87,9 +109,55 @@ const AddPropertyInfo = ({
       const err = error as { response?: { data?: Record<string, unknown> } };
       console.log("server error details:", err?.response?.data);
       toast.error(
-        (err?.response?.data?.message as string) || "Something went wrong. Please try again."
+        (err?.response?.data?.message as string) ||
+          "Something went wrong. Please try again.",
       );
     }
+  };
+
+  const addImages = (files: File[]) => {
+    const onlyImages = files.filter((file) => file.type.startsWith("image/"));
+
+    if (onlyImages.length === 0) {
+      toast.error("Please upload image files only.");
+      return;
+    }
+
+    setPropertyImages((prev) => {
+      const merged = [...prev, ...onlyImages];
+      const unique = merged.filter(
+        (file, index, arr) =>
+          index ===
+          arr.findIndex(
+            (item) =>
+              item.name === file.name &&
+              item.size === file.size &&
+              item.lastModified === file.lastModified,
+          ),
+      );
+
+      if (unique.length > MAX_IMAGES) {
+        toast.error(`You can upload up to ${MAX_IMAGES} images.`);
+      }
+
+      return unique.slice(0, MAX_IMAGES);
+    });
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    addImages(Array.from(e.target.files));
+    e.target.value = "";
+  };
+
+  const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDraggingImages(false);
+    addImages(Array.from(e.dataTransfer.files));
+  };
+
+  const removeImage = (index: number) => {
+    setPropertyImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const inputClass =
@@ -116,7 +184,9 @@ const AddPropertyInfo = ({
         onSubmit={handleSubmit(onSubmit)}
         className="mt-10 border border-[#99A1AF] p-6 rounded-2xl bg-white shadow-sm"
       >
-        <h1 className="text-lg font-semibold text-gray-800 mb-1">Property Details</h1>
+        <h1 className="text-lg font-semibold text-gray-800 mb-1">
+          Property Details
+        </h1>
         <p className="text-sm text-[#4A5565] mb-5">
           Fill in the information about the property below.
         </p>
@@ -125,7 +195,10 @@ const AddPropertyInfo = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-5">
           {/* Property Name */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="property_name" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="property_name"
+              className="text-sm font-medium text-gray-700"
+            >
               Property Name
             </label>
             <input
@@ -133,14 +206,21 @@ const AddPropertyInfo = ({
               type="text"
               className={inputClass}
               placeholder="e.g. Sunset Apartments"
-              {...register("property_name", { required: "Property name is required" })}
+              {...register("property_name", {
+                required: "Property name is required",
+              })}
             />
-            {errors.property_name && <p className={errorClass}>{errors.property_name.message}</p>}
+            {errors.property_name && (
+              <p className={errorClass}>{errors.property_name.message}</p>
+            )}
           </div>
 
           {/* Property Address */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="property_address" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="property_address"
+              className="text-sm font-medium text-gray-700"
+            >
               Property Address
             </label>
             <input
@@ -148,20 +228,29 @@ const AddPropertyInfo = ({
               type="text"
               className={inputClass}
               placeholder="e.g. 123 Main St, NY"
-              {...register("property_address", { required: "Address is required" })}
+              {...register("property_address", {
+                required: "Address is required",
+              })}
             />
-            {errors.property_address && <p className={errorClass}>{errors.property_address.message}</p>}
+            {errors.property_address && (
+              <p className={errorClass}>{errors.property_address.message}</p>
+            )}
           </div>
 
           {/* Property Type */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="property_type" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="property_type"
+              className="text-sm font-medium text-gray-700"
+            >
               Property Type
             </label>
             <select
               id="property_type"
               className={`${inputClass} bg-white appearance-none`}
-              {...register("property_type", { required: "Property type is required" })}
+              {...register("property_type", {
+                required: "Property type is required",
+              })}
             >
               <option value="Multifamily">Multifamily</option>
               <option value="Industrial">Industrial</option>
@@ -169,12 +258,17 @@ const AddPropertyInfo = ({
               <option value="Office">Office</option>
               <option value="Other">Other</option>
             </select>
-            {errors.property_type && <p className={errorClass}>{errors.property_type.message}</p>}
+            {errors.property_type && (
+              <p className={errorClass}>{errors.property_type.message}</p>
+            )}
           </div>
 
           {/* Number of Units */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="number_of_units" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="number_of_units"
+              className="text-sm font-medium text-gray-700"
+            >
               Number of Units
             </label>
             <input
@@ -182,14 +276,23 @@ const AddPropertyInfo = ({
               type="number"
               className={inputClass}
               placeholder="e.g. 24"
-              {...register("number_of_units", { required: "Required", valueAsNumber: true, min: { value: 1, message: "Must be at least 1" } })}
+              {...register("number_of_units", {
+                required: "Required",
+                valueAsNumber: true,
+                min: { value: 1, message: "Must be at least 1" },
+              })}
             />
-            {errors.number_of_units && <p className={errorClass}>{errors.number_of_units.message}</p>}
+            {errors.number_of_units && (
+              <p className={errorClass}>{errors.number_of_units.message}</p>
+            )}
           </div>
 
           {/* Rentable Area */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="rentable_area" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="rentable_area"
+              className="text-sm font-medium text-gray-700"
+            >
               Rentable Area (RSF)
             </label>
             <input
@@ -199,12 +302,17 @@ const AddPropertyInfo = ({
               placeholder="e.g. 12500 sq ft"
               {...register("rentable_area")}
             />
-            {errors.rentable_area && <p className={errorClass}>{errors.rentable_area.message}</p>}
+            {errors.rentable_area && (
+              <p className={errorClass}>{errors.rentable_area.message}</p>
+            )}
           </div>
 
           {/* Year Built */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="year_built" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="year_built"
+              className="text-sm font-medium text-gray-700"
+            >
               Year Built
             </label>
             <input
@@ -212,14 +320,22 @@ const AddPropertyInfo = ({
               type="number"
               className={inputClass}
               placeholder="e.g. 1998 "
-              {...register("year_built", { required: "Required", valueAsNumber: true })}
+              {...register("year_built", {
+                required: "Required",
+                valueAsNumber: true,
+              })}
             />
-            {errors.year_built && <p className={errorClass}>{errors.year_built.message}</p>}
+            {errors.year_built && (
+              <p className={errorClass}>{errors.year_built.message}</p>
+            )}
           </div>
 
           {/* Occupancy Rate */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="occupancy" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="occupancy"
+              className="text-sm font-medium text-gray-700"
+            >
               Occupancy Rate (%)
             </label>
             <input
@@ -229,12 +345,17 @@ const AddPropertyInfo = ({
               placeholder="e.g. 92"
               {...register("occupancy")}
             />
-            {errors.occupancy && <p className={errorClass}>{errors.occupancy.message}</p>}
+            {errors.occupancy && (
+              <p className={errorClass}>{errors.occupancy.message}</p>
+            )}
           </div>
 
           {/* Year Renovated */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="year_renovated" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="year_renovated"
+              className="text-sm font-medium text-gray-700"
+            >
               Year Renovated
             </label>
             <input
@@ -242,14 +363,22 @@ const AddPropertyInfo = ({
               type="number"
               className={inputClass}
               placeholder="e.g. 2015"
-              {...register("year_renovated", { required: "Required", valueAsNumber: true })}
+              {...register("year_renovated", {
+                required: "Required",
+                valueAsNumber: true,
+              })}
             />
-            {errors.year_renovated && <p className={errorClass}>{errors.year_renovated.message}</p>}
+            {errors.year_renovated && (
+              <p className={errorClass}>{errors.year_renovated.message}</p>
+            )}
           </div>
 
           {/* Parking Spaces */}
           <div className="flex flex-col gap-1">
-            <label htmlFor="parking_spaces" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="parking_spaces"
+              className="text-sm font-medium text-gray-700"
+            >
               Parking Spaces
             </label>
             <input
@@ -257,11 +386,99 @@ const AddPropertyInfo = ({
               type="number"
               className={inputClass}
               placeholder="e.g. 40 sq ft"
-              {...register("parking_spaces", { required: "Required", valueAsNumber: true, min: { value: 0, message: "Min 0" } })}
+              {...register("parking_spaces", {
+                required: "Required",
+                valueAsNumber: true,
+                min: { value: 0, message: "Min 0" },
+              })}
             />
-            {errors.parking_spaces && <p className={errorClass}>{errors.parking_spaces.message}</p>}
+            {errors.parking_spaces && (
+              <p className={errorClass}>{errors.parking_spaces.message}</p>
+            )}
           </div>
         </div>
+
+        <div className="mt-8 rounded-2xl border border-[#E5E7EB] p-5">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <Label className="text-sm font-semibold text-gray-800">
+                Property Images
+              </Label>
+              <p className="text-xs text-[#4A5565] mt-1">
+                Upload photos of the property (max {MAX_IMAGES} images).
+              </p>
+            </div>
+            <span className="text-xs text-[#4A5565]">
+              {propertyImages.length}/{MAX_IMAGES}
+            </span>
+          </div>
+
+          <div
+            onDrop={handleImageDrop}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setIsDraggingImages(true);
+            }}
+            onDragLeave={() => setIsDraggingImages(false)}
+            className={`rounded-xl border-2 border-dashed p-8 text-center transition-colors ${
+              isDraggingImages
+                ? "border-blue-500 bg-blue-50"
+                : "border-[#D1D5DB]"
+            }`}
+          >
+            <div className="flex justify-center mb-3">
+              <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                <ImagePlus className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+            <p className="text-sm text-gray-700 mb-2">
+              Drag and drop property images here
+            </p>
+            <p className="text-xs text-[#4A5565] mb-4">
+              or browse from your device
+            </p>
+
+            <Input
+              ref={imageInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+              className="inline-flex items-center justify-center rounded-md border border-[#D1D5DB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            >
+              Browse Images
+            </button>
+          </div>
+
+          {propertyImages.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {propertyImages.map((file, index) => (
+                <div
+                  key={`${file.name}-${file.size}-${file.lastModified}`}
+                  className="flex items-center justify-between rounded-lg border border-[#E5E7EB] px-3 py-2"
+                >
+                  <p className="text-sm text-gray-700 truncate pr-3">
+                    {file.name}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    aria-label={`Remove ${file.name}`}
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Footer */}
         <div className="flex justify-end mt-8 pt-5 border-t border-[#E5E7EB]">
           <Button
@@ -277,4 +494,3 @@ const AddPropertyInfo = ({
 };
 
 export default AddPropertyInfo;
-

@@ -1,126 +1,119 @@
+"use client";
 import PropertyCard from "@/components/PropertyCard";
 import StatusCard from "@/components/StatusCard";
-import { PropertyProps } from "@/types/sponsor";
 import { FaPlus } from "react-icons/fa6";
 import GMAP from "../../_components/GMAP";
-import ChatCard from "@/components/ChatCard";
-import RecentActivity from "../recent-activity/page";
 import Link from "next/link";
+import { useEffect, useState, useCallback } from "react";
+import api from "@/Provider/api";
 
-const propertyData: PropertyProps[] = [
-  {
-    url: "/images/SponsorDashboard.png",
-    title: "Downtown Office Complex",
-    status: "active",
-    location: "123 Business Ave, Chicago, IL 60601",
-    loan_requested: "$500,000",
-    loan_type: "Commercial",
-    units: "10",
-    quotes: "5",
-  },
-  {
-    url: "/images/img2.jpg",
-    title: "Downtown Office Complex",
-    status: "active",
-    location: "123 Business Ave, Chicago, IL 60601",
-    loan_requested: "$750,000",
-    loan_type: "Residential",
-    units: "20",
-    quotes: "8",
-  },
-  {
-    url: "/images/img3.jpg",
-    title: "Downtown Office Complex",
-    status: "active",
-    location: "123 Business Ave, Chicago, IL 60601",
-    loan_requested: "750,000",
-    loan_type: "Residential",
-    units: "20",
-    quotes: "8",
-  },
-];
+// ── Types ────────────────────────────────────────────────────────────────────
 
-const customIcons = {
-    red: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
-    blue: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-    green: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png',
-};
+interface SponsorStats {
+  total_properties: number;
+  quotes_received: number;
+  documents_count: number;
+  portfolio_value: number;
+}
 
+interface Property {
+  id: number;
+  property_name: string;
+  property_address: string;
+  property_type: string;
+  latitude: string;
+  longitude: string;
+  property_image_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
 
-const markers = [
-  {
-    id: 1,
-    position: { lat: 40.6892, lng: -74.0445 },
-    title: "Statue of Liberty",
-    color: "red",
-    icon: customIcons.red,
-  },
-  {
-    id: 2,
-    position: { lat: 40.7484, lng: -73.9857 },
-    title: "Empire State Building",
-    color: "red",
-    icon: customIcons.red,
-  },
-  {
-    id: 3,
-    position: { lat: 40.758, lng: -73.9855 },
-    title: "Times Square",
-    color: "red",
-    icon: customIcons.red,
-  },
-  {
-    id: 4,
-    position: { lat: 40.7794, lng: -73.9632 },
-    title: "The Met Museum",
-    color: "blue",
-    icon: customIcons.blue,
-  },
-  {
-    id: 5,
-    position: { lat: 40.753, lng: -73.9772 },
-    title: "Grand Central Terminal",
-    color: "blue",
-    icon: customIcons.blue,
-  },
-  {
-    id: 6,
-    position: { lat: 40.7052, lng: -73.9967 },
-    title: "Brooklyn Bridge",
-    color: "blue",
-    icon: customIcons.blue,
-  },
-  {
-    id: 7,
-    position: { lat: 40.7115, lng: -74.0126 },
-    title: "9/11 Memorial",
-    color: "blue",
-    icon: customIcons.blue,
-  },
-  {
-    id: 8,
-    position: { lat: 40.7648, lng: -73.9723 },
-    title: "Central Park (South)",
-    color: "green",
-    icon: customIcons.green,
-  },
-  {
-    id: 9,
-    position: { lat: 40.7466, lng: -74.0055 },
-    title: "High Line Park",
-    color: "green",
-    icon: customIcons.green,
-  },
-  {
-    id: 10,
-    position: { lat: 40.8504, lng: -73.8763 },
-    title: "The Bronx Zoo",
-    color: "green",
-    icon: customIcons.green,
-  },
-];
+interface Marker {
+  id: number;
+  position: { lat: number; lng: number };
+  title: string;
+  icon: string;
+  color: string;
+}
 
-const page = () => {
+// ── Constants ────────────────────────────────────────────────────────────────
+
+const MARKER_ICON = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+
+// ── Skeleton helpers ─────────────────────────────────────────────────────────
+
+const StatsSkeleton = () => (
+  <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
+    {[...Array(4)].map((_, i) => (
+      <div key={i} className="h-28 w-44 rounded-xl bg-gray-100 animate-pulse" />
+    ))}
+  </div>
+);
+
+const PropertySkeleton = () => (
+  <div className="flex flex-col gap-5">
+    {[...Array(3)].map((_, i) => (
+      <div key={i} className="h-28 rounded-xl bg-gray-100 animate-pulse" />
+    ))}
+  </div>
+);
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
+const Page = () => {
+  const [stats, setStats] = useState<SponsorStats | null>(null);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [markers, setMarkers] = useState<Marker[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
+  const [propertiesLoading, setPropertiesLoading] = useState(true);
+
+  // Fetch sponsor dashboard stats
+  const fetchStats = useCallback(async () => {
+    setStatsLoading(true);
+    try {
+      const res = await api.get("/api/dashboard/sponsor/");
+      setStats(res.data?.data ?? null);
+    } catch (err) {
+      console.error("Failed to fetch dashboard stats", err);
+    } finally {
+      setStatsLoading(false);
+    }
+  }, []);
+
+  // Fetch properties + derive map markers from them
+  const fetchProperties = useCallback(async () => {
+    setPropertiesLoading(true);
+    try {
+      const res = await api.get("/api/properties/");
+      const data: Property[] = res.data?.data ?? [];
+      setProperties(data);
+
+      // Build markers from property coordinates
+      const derived: Marker[] = data
+        .filter((p) => p.latitude && p.longitude)
+        .map((p) => ({
+          id: p.id,
+          position: {
+            lat: parseFloat(p.latitude),
+            lng: parseFloat(p.longitude),
+          },
+          title: p.property_name,
+          icon: MARKER_ICON,
+          color: "red",
+        }));
+      setMarkers(derived);
+    } catch (err) {
+      console.error("Failed to fetch properties", err);
+    } finally {
+      setPropertiesLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+    fetchProperties();
+  }, [fetchStats, fetchProperties]);
+
   return (
     <div>
       <h1 className="text-xl lg:text-2xl my-2">Sponsor Dashboard</h1>
@@ -128,19 +121,37 @@ const page = () => {
         Manage your commercial real estate portfolio and generate professional
         offering memorandums
       </p>
-      {/* status card  */}
-      <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
-        <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
-        <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
-        <StatusCard type="documents" data={{ value: 156 }} />
-        <StatusCard type="value" data={{ value: 3 }} />
-      </div>
-      {/* google map  */}
-      {/* google map  */}
+
+      {/* ── Status Cards ── */}
+      {statsLoading ? (
+        <StatsSkeleton />
+      ) : (
+        <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
+          <StatusCard
+            type="Properties"
+            data={{ value: stats?.total_properties ?? 0 }}
+          />
+          <StatusCard
+            type="quotes"
+            data={{ value: stats?.quotes_received ?? 0 }}
+          />
+          <StatusCard
+            type="documents"
+            data={{ value: stats?.documents_count ?? 0 }}
+          />
+          <StatusCard
+            type="value"
+            data={{ value: stats?.portfolio_value ?? 0 }}
+          />
+        </div>
+      )}
+
+      {/* ── Google Map ── */}
       <div className="my-5">
         <GMAP markersList={markers} />
       </div>
 
+      {/* ── Property Portfolio ── */}
       <div className="flex flex-col-reverse xl:flex-row gap-5">
         <div className="rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
           <div className="flex items-center gap-2 lg:justify-between">
@@ -156,24 +167,27 @@ const page = () => {
               <p className="text-xs sm:text-sm lg:text-base">Add property</p>
             </Link>
           </div>
-          {/* property block  */}
+
           <div className="my-10 flex flex-col gap-5 mx-auto">
-            {propertyData.map((property, index) => (
-              <PropertyCard key={index} data={property} />
-            ))}
+            {propertiesLoading ? (
+              <PropertySkeleton />
+            ) : properties.length === 0 ? (
+              <div className="text-center py-16 text-[#6A7282]">
+                <p className="text-lg mb-2">No properties yet</p>
+                <p className="text-sm">
+                  Add your first property to get started.
+                </p>
+              </div>
+            ) : (
+              properties.map((property) => (
+                <PropertyCard key={property.id} data={property} />
+              ))
+            )}
           </div>
-        </div>
-        {/* notification block  */}
-        <div className="flex flex-col lg:flex-row xl:flex-col gap-10 mx-auto">
-          <div className="flex flex-col items-center gap-5">
-            <ChatCard type="message" />
-            {/* <ChatCard type="aiChat" /> */}
-          </div>
-          <RecentActivity />
         </div>
       </div>
     </div>
   );
 };
 
-export default page;
+export default Page;
