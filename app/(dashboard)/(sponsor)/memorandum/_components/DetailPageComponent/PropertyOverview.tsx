@@ -37,7 +37,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
 
   const handleFieldChange = (
     field: keyof PropertyOverviewData,
-    value: string | number | undefined
+    value: string | number | undefined,
   ) => {
     setEditedData({ ...editedData, [field]: value });
   };
@@ -50,7 +50,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
 
         <div className="flex items-center gap-2">
           {/* ====== Action Buttons ====== */}
-          {!isEditing ? (
+          {!isEditing ?
             <>
               <button
                 onClick={handleEdit}
@@ -69,8 +69,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
                 </button>
               )}
             </>
-          ) : (
-            <>
+          : <>
               <button
                 onClick={handleSave}
                 className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700"
@@ -86,12 +85,12 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
                 Cancel
               </button>
             </>
-          )}
+          }
         </div>
       </div>
 
       {/* ====== Property Details Grid ====== */}
-      {!isEditing ? (
+      {!isEditing ?
         <div className="space-y-3 bg-gray-100 p-4 rounded-lg text-sm md:text-base">
           <div className="flex flex-col sm:flex-row sm:gap-2">
             <span className="text-gray-900">Property Name:</span>
@@ -126,7 +125,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
           <div className="flex flex-col sm:flex-row sm:gap-2">
             <span className="text-gray-900">Rentable Area:</span>
             <span className="text-gray-700">
-              {editedData.rentableArea.toLocaleString()} SF
+              {editedData.rentableArea?.toLocaleString()} SF
             </span>
           </div>
 
@@ -140,8 +139,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
             <span className="text-gray-700">{editedData.parkingSpaces}</span>
           </div>
         </div>
-      ) : (
-        <div className="space-y-4 ">
+      : <div className="space-y-4 ">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-gray-700 mb-1">
@@ -214,7 +212,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
                 onChange={(e) =>
                   handleFieldChange(
                     "yearRenovated",
-                    e.target.value ? parseInt(e.target.value) : undefined
+                    e.target.value ? parseInt(e.target.value) : undefined,
                   )
                 }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
@@ -274,7 +272,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
             </div>
           </div>
         </div>
-      )}
+      }
     </div>
   );
 };

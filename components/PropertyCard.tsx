@@ -23,7 +23,8 @@ export interface PropertyDocument {
 
 export interface PropertyDetail {
   id: number;
-  property_name: string;
+  property: string;
+  title: string;
   property_address: string;
   property_type: string;
   number_of_units?: number;
@@ -40,6 +41,10 @@ export interface PropertyDetail {
   // list-only fields (map endpoint) — optional
   latitude?: string;
   longitude?: string;
+  location: string;
+  status: string;
+  link: string;
+  link2: string;
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -94,7 +99,7 @@ const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
       <div className="w-full h-48 relative">
         <Image
           src={data.property_image_url ?? "/images/SponsorDashboard.png"}
-          alt={data.property_name}
+          alt={"image"}
           fill
           className="rounded-t-lg object-cover object-center"
         />
@@ -110,15 +115,13 @@ const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
       <div className="p-3 2xl:p-5 flex flex-col gap-4">
         {/* Title row */}
         <div className="flex justify-between items-start gap-2">
-          <h1 className="text-lg font-semibold leading-tight">
-            {data.property_name}
-          </h1>
+          <h1 className="text-lg font-semibold leading-tight">{data.title}</h1>
         </div>
 
         {/* Address */}
         <div className="text-[#4A5565] flex items-center gap-1.5 text-sm">
           <IoLocationOutline className="text-base shrink-0" />
-          <span>{data.property_address}</span>
+          <span>{data.location}</span>
         </div>
 
         {/* ── Stats grid ── */}
@@ -222,14 +225,12 @@ const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
         {data.documents !== undefined && (
           <div className="flex items-center gap-2 text-sm text-[#4A5565] border-t pt-3 border-[#E5E7EB]">
             <LuFileText className="shrink-0 text-base" />
-            {hasDocuments ? (
+            {hasDocuments ?
               <span>
                 {data.documents!.length} document
                 {data.documents!.length !== 1 ? "s" : ""} attached
               </span>
-            ) : (
-              <span className="text-[#9CA3AF]">No documents uploaded</span>
-            )}
+            : <span className="text-[#9CA3AF]">No documents uploaded</span>}
           </div>
         )}
 
@@ -238,13 +239,13 @@ const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
           <Button
             text="View Document"
             size="medium"
-            onClick={() => router.push(`/memorandum/${data.id}`)}
+            onClick={() => router.push(data.link)}
           />
           <Button
             text="View Quotes"
             size="medium"
             className="button-outline"
-            onClick={() => router.push(`/loan?property=${data.id}`)}
+            onClick={() => router.push(data.link2)}
           />
         </div>
       </div>
