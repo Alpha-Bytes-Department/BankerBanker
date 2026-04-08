@@ -29,12 +29,14 @@ const SalesComparables: React.FC<SalesComparablesProps> = ({ data }) => {
 
       {/* ====== Map Visualization ====== */}
       <div className="mb-6 relative h-64 md:h-80 rounded-lg overflow-hidden">
-        <Image
-          src={data.mapImage}
-          alt="Sales Comparables Map"
-          fill
-          className="object-cover"
-        />
+        {data && (
+          <Image
+            src={data?.mapImage}
+            alt="Sales Comparables Map"
+            fill
+            className="object-cover"
+          />
+        )}
         {/* ====== Map Overlay Markers ====== */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="bg-purple-600 text-white px-4 py-2 rounded-full shadow-lg">
@@ -76,7 +78,7 @@ const SalesComparables: React.FC<SalesComparablesProps> = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {data.comparables.map((comp, index) => (
+            {data?.comparables.map((comp, index) => (
               <tr
                 key={comp.id}
                 className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}

@@ -55,7 +55,7 @@ const Disclaimer: React.FC<DisclaimerProps> = ({ data }) => {
 
         {/* ====== Disclaimer Notices ====== */}
         <div className="space-y-4">
-          {data.mainNotices.map((notice, index) => (
+          {data?.mainNotices.map((notice, index) => (
             <div key={index}>
               <h4 className="text-base text-gray-900 mb-2">{notice.title}</h4>
               <p className="text-sm text-gray-700 leading-relaxed">
@@ -68,7 +68,7 @@ const Disclaimer: React.FC<DisclaimerProps> = ({ data }) => {
 
       {/* ====== Information Cards Grid ====== */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {data.cards.map((card) => (
+        {data?.cards.map((card) => (
           <div
             key={card.id}
             className="bg-white border border-gray-200 rounded-lg p-6"
@@ -76,7 +76,7 @@ const Disclaimer: React.FC<DisclaimerProps> = ({ data }) => {
             {/* ====== Card Icon ====== */}
             <div
               className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${getIconColor(
-                card.icon
+                card.icon,
               )}`}
             >
               {getIcon(card.icon)}

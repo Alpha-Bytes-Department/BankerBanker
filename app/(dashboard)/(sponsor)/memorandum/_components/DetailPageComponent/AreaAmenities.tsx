@@ -58,17 +58,19 @@ const AreaAmenities: React.FC<AreaAmenitiesProps> = ({ data }) => {
 
       {/* ====== Hero Image ====== */}
       <div className="mb-6 relative h-64 md:h-80 rounded-lg overflow-hidden">
-        <Image
-          src={data.heroImage}
-          alt="Area Amenities"
-          fill
-          className="object-cover"
-        />
+        {data && (
+          <Image
+            src={data.heroImage}
+            alt="Area Amenities"
+            fill
+            className="object-cover"
+          />
+        )}
       </div>
 
       {/* ====== Amenities Grid ====== */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {data.amenities.map((amenity) => (
+        {data?.amenities.map((amenity) => (
           <div
             key={amenity.id}
             className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
@@ -86,7 +88,7 @@ const AreaAmenities: React.FC<AreaAmenitiesProps> = ({ data }) => {
                 {/* ====== Category Badge ====== */}
                 <span
                   className={`inline-block text-xs px-2 py-1 rounded mb-2 ${getCategoryColor(
-                    amenity.category
+                    amenity.category,
                   )}`}
                 >
                   {amenity.category}

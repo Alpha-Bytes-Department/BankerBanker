@@ -55,7 +55,7 @@ const LeaseComparables: React.FC<LeaseComparablesProps> = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {data.comparables.map((comp, index) => (
+            {data?.comparables.map((comp, index) => (
               <tr
                 key={comp.id}
                 className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -102,7 +102,7 @@ const LeaseComparables: React.FC<LeaseComparablesProps> = ({ data }) => {
             <h4 className="text-sm text-gray-700">Average Rent</h4>
           </div>
           <p className="text-2xl md:text-3xl text-blue-600 mt-2">
-            {data.stats.averageRent}
+            {data?.stats.averageRent}
           </p>
         </div>
 
@@ -115,7 +115,7 @@ const LeaseComparables: React.FC<LeaseComparablesProps> = ({ data }) => {
             <h4 className="text-sm text-gray-700">Avg Rent/SF</h4>
           </div>
           <p className="text-2xl md:text-3xl text-green-600 mt-2">
-            {data.stats.avgRentPsf}
+            {data?.stats.avgRentPsf}
           </p>
         </div>
 
@@ -128,7 +128,7 @@ const LeaseComparables: React.FC<LeaseComparablesProps> = ({ data }) => {
             <h4 className="text-sm text-gray-700">Market Trend</h4>
           </div>
           <p className="text-2xl md:text-3xl text-purple-600 mt-2">
-            {data.stats.marketTrend}
+            {data?.stats.marketTrend}
           </p>
         </div>
       </div>

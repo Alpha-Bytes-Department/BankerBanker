@@ -56,7 +56,7 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
               </tr>
             </thead>
             <tbody>
-              {data.loanQuotes.map((quote, index) => (
+              {data?.loanQuotes?.map((quote, index) => (
                 <tr
                   key={index}
                   className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -98,7 +98,7 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
 
         {/* ====== Loan Rating Note ====== */}
         <div className="mt-4 text-xs text-gray-600">
-          <p>{data.loanRatingNote}</p>
+          <p>{data?.loanRatingNote}</p>
         </div>
       </div>
 
@@ -117,54 +117,54 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">Loan Amount:</span>
               <span className="text-gray-900">
-                {data.loanRequest.loanAmount}
+                {data?.loanRequest.loanAmount}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">Estimated Value:</span>
               <span className="text-gray-900">
-                {data.loanRequest.estimatedValue}
+                {data?.loanRequest.estimatedValue}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">LTV:</span>
-              <span className="text-gray-900">{data.loanRequest.ltv}</span>
+              <span className="text-gray-900">{data?.loanRequest.ltv}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">Financing Type:</span>
               <span className="text-gray-900">
-                {data.loanRequest.financingType}
+                {data?.loanRequest.financingType}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">Term:</span>
-              <span className="text-gray-900">{data.loanRequest.term}</span>
+              <span className="text-gray-900">{data?.loanRequest.term}</span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">Interest Rate:</span>
               <span className="text-gray-900">
-                {data.loanRequest.interestRate}
+                {data?.loanRequest.interestRate}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">Amortization:</span>
               <span className="text-gray-900">
-                {data.loanRequest.amortization}
+                {data?.loanRequest.amortization}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">Prepayment:</span>
               <span className="text-gray-900">
-                {data.loanRequest.prepayment}
+                {data?.loanRequest.prepayment}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-blue-200">
               <span className="text-gray-700">DSCR (IOI):</span>
-              <span className="text-gray-900">{data.loanRequest.dscrIoi}</span>
+              <span className="text-gray-900">{data?.loanRequest.dscrIoi}</span>
             </div>
             <div className="flex justify-between py-2">
               <span className="text-gray-700">DY (NOI):</span>
-              <span className="text-gray-900">{data.loanRequest.dyNoi}</span>
+              <span className="text-gray-900">{data?.loanRequest.dyNoi}</span>
             </div>
           </div>
         </div>
@@ -182,31 +182,31 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
             <div className="flex justify-between py-2 border-b border-green-200">
               <span className="text-gray-700">Property Name:</span>
               <span className="text-gray-900">
-                {data.propertyDetails.propertyName}
+                {data?.propertyDetails.propertyName}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-green-200">
               <span className="text-gray-700">Address:</span>
               <span className="text-gray-900">
-                {data.propertyDetails.address}
+                {data?.propertyDetails.address}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-green-200">
               <span className="text-gray-700">City, State:</span>
               <span className="text-gray-900">
-                {data.propertyDetails.cityState}
+                {data?.propertyDetails.cityState}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-green-200">
               <span className="text-gray-700">Year Built:</span>
               <span className="text-gray-900">
-                {data.propertyDetails.yearBuilt}
+                {data?.propertyDetails.yearBuilt}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-green-200">
               <span className="text-gray-700">Year Built / Renovated:</span>
               <span className="text-gray-900">
-                {data.propertyDetails.yearRenovated}
+                {data?.propertyDetails.yearRenovated}
               </span>
             </div>
             <div className="flex justify-between py-2 border-b border-green-200">
@@ -214,13 +214,13 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
                 Rentable Area (square feet):
               </span>
               <span className="text-gray-900">
-                {data.propertyDetails.rentableArea}
+                {data?.propertyDetails.rentableArea}
               </span>
             </div>
             <div className="flex justify-between py-2">
               <span className="text-gray-700">Occupancy:</span>
               <span className="text-gray-900">
-                {data.propertyDetails.occupancy}
+                {data?.propertyDetails.occupancy}
               </span>
             </div>
           </div>
@@ -252,7 +252,7 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
                 </tr>
               </thead>
               <tbody>
-                {data.sources.map((source, index) => (
+                {data?.sources.map((source, index) => (
                   <tr
                     key={index}
                     className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -273,7 +273,7 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
                     <strong>Total Sources</strong>
                   </td>
                   <td className="border border-gray-300 px-3 py-2 text-right">
-                    <strong>{data.totalSources}</strong>
+                    <strong>{data?.totalSources}</strong>
                   </td>
                   <td className="border border-gray-300 px-3 py-2 text-right">
                     <strong>$148</strong>
@@ -301,7 +301,7 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
                 </tr>
               </thead>
               <tbody>
-                {data.uses.map((use, index) => (
+                {data?.uses.map((use, index) => (
                   <tr
                     key={index}
                     className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -322,7 +322,7 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
                     <strong>Total Uses</strong>
                   </td>
                   <td className="border border-gray-300 px-3 py-2 text-right">
-                    <strong>{data.totalUses}</strong>
+                    <strong>{data?.totalUses}</strong>
                   </td>
                   <td className="border border-gray-300 px-3 py-2 text-right">
                     <strong>$148</strong>
@@ -376,7 +376,7 @@ const FinancialAnalysis: React.FC<FinancialAnalysisProps> = ({ data }) => {
               </tr>
             </thead>
             <tbody>
-              {data.financialPerformance.map((item, index) => (
+              {data?.financialPerformance.map((item, index) => (
                 <tr
                   key={index}
                   className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}

@@ -40,7 +40,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
       {/* ====== Hero Image Container ====== */}
       <div className="relative w-full h-64 md:h-96 lg:h-[500px] rounded-xl overflow-hidden mb-4">
         <Image
-          src={selectedImage}
+          src={selectedImage?.trim() || "/images/SponsorDashboard.png"}
           alt={title}
           fill
           className="object-cover"
@@ -58,14 +58,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({
           <div
             key={index}
             className={`relative h-32 md:h-40 rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
-              selectedImage === image
-                ? "border-blue-600 shadow-lg"
-                : "border-transparent hover:border-gray-300"
+              selectedImage === image ?
+                "border-blue-600 shadow-lg"
+              : "border-transparent hover:border-gray-300"
             }`}
             onClick={() => setSelectedImage(image)}
           >
             <Image
-              src={image}
+              src={image?.trim() || "/images/SponsorDashboard.png"}
               alt={`Gallery image ${index + 1}`}
               fill
               className="object-cover"

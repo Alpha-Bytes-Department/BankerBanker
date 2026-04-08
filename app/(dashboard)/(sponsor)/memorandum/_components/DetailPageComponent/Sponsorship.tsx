@@ -33,9 +33,9 @@ const Sponsorship: React.FC<SponsorshipProps> = ({ data }) => {
           </div>
           <div>
             <h3 className="text-xl md:text-2xl text-gray-900">
-              {data.companyName}
+              {data?.companyName}
             </h3>
-            <p className="text-sm text-gray-600">{data.description}</p>
+            <p className="text-sm text-gray-600">{data?.description}</p>
           </div>
         </div>
 
@@ -44,7 +44,7 @@ const Sponsorship: React.FC<SponsorshipProps> = ({ data }) => {
           {/* ====== Total Assets ====== */}
           <div className="bg-blue-50 rounded-lg p-6 text-center">
             <p className="text-3xl md:text-4xl text-blue-600 mb-2">
-              {data.totalAssets}
+              {data?.totalAssets}
             </p>
             <p className="text-sm text-gray-700">
               Total Assets
@@ -58,7 +58,7 @@ const Sponsorship: React.FC<SponsorshipProps> = ({ data }) => {
           {/* ====== Properties Managed ====== */}
           <div className="bg-green-50 rounded-lg p-6 text-center">
             <p className="text-3xl md:text-4xl text-green-600 mb-2">
-              {data.propertiesManaged}
+              {data?.propertiesManaged}
             </p>
             <p className="text-sm text-gray-700">Properties Managed</p>
           </div>
@@ -66,7 +66,7 @@ const Sponsorship: React.FC<SponsorshipProps> = ({ data }) => {
           {/* ====== Year Established ====== */}
           <div className="bg-purple-50 rounded-lg p-6 text-center">
             <p className="text-3xl md:text-4xl text-purple-600 mb-2">
-              {data.yearEstablished}
+              {data?.yearEstablished}
             </p>
             <p className="text-sm text-gray-700">Year Established</p>
           </div>

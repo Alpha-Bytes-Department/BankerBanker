@@ -108,7 +108,7 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
           <div className="flex flex-col sm:flex-row gap-1">
             <span className="text-gray-900">Rentable Area:</span>
             <span className="text-gray-700">
-              {propertyOverview.rentableArea.toLocaleString()} SF
+              {propertyOverview.rentableArea?.toLocaleString()} SF
             </span>
           </div>
 
@@ -152,7 +152,7 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
               <div className="flex justify-between py-2 border-b border-blue-200">
                 <span className="text-gray-700">Rentable Area:</span>
                 <span className="text-gray-900">
-                  {propertyOverview.rentableArea.toLocaleString()} SF
+                  {propertyOverview.rentableArea?.toLocaleString()} SF
                 </span>
               </div>
               <div className="flex justify-between py-2">
@@ -249,7 +249,7 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
           <div className="mt-4">
             <p className="text-sm text-gray-900 mb-2">Key market indicators:</p>
             <ul className="space-y-2">
-              {marketSummary.keyIndicators.map((indicator, index) => (
+              {marketSummary.keyIndicators?.map((indicator, index) => (
                 <li key={index} className="flex gap-2 text-sm text-gray-700">
                   <span>•</span>
                   <span>
