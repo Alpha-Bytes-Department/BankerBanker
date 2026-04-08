@@ -32,6 +32,7 @@ const MakingMemorandumPage = () => {
             {currentStep === 1 && <FileUpload id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} propertyId={propertyId} />}
             {currentStep === 2 && <Processing id={steps[currentStep].id} title={steps[currentStep].title} description={steps[currentStep].description} setCurrentStep={setCurrentStep} propertyId={propertyId}/>}
             {currentStep === 3 && <SubmitSuccess />}
+            
         </div>
     );
 };
