@@ -56,34 +56,17 @@ const SignInForm: React.FC = () => {
       remember_me: false,
     },
   });
-
-
-  // <div className='relative'>
-  //   <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
-  //     First Name <span className="text-red-500">*</span>
-  //   </label>
-  //   <input
-  //     type="text"
-  //     value={formData.first_name}
-  //     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-  //     className="w-full px-4 py-3 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent rounded-full"
-  //     placeholder="enter your first name"
-  //   />
-  //   {errors.first_name && <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>}
-  // </div>
+ 
 
 
   // handling sign in action
-  const handleSign = (data: SignInFormValues) => {
-    login(data.email, data.password, data.remember_me);
+  const handleSign = async (data: SignInFormValues) => {
+    console.log("form data", data);
+    await login(data.email, data.password, data.remember_me);
+    
   };
 
-  // // handling google login
-  // const handleGoogleLogin = async () => {
-  //   const res = await fetch("http://localhost:8080/api/v1/users/google");
-  //   const data = await res.json();
-  //   console.log("checking google login", data);
-  // }
+
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">

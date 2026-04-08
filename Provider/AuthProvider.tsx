@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, type ReactNode } from "react";
 import type { AuthContextType, User, AuthState, signup } from "@/types/auth";
 import api from "./api";
+import axios from "axios";
 import { useRouter, usePathname } from "next/navigation"; // added usePathname
 import { toast } from "sonner";
 
@@ -205,12 +206,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const login = async (email: string, password: string, remember_me?: boolean) => {
     //  removed console.log with password
     try {
+      console.log("Attempting login for email:", email, "Remember me:", remember_me);
       setLoading(true);
-      const res = await api.post("/api/accounts/login/", {
-        email,
-        password,
-        remember_me,
-      });
+      const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000").replace(/\/+$/, "");
+      const res = await axios.post(
+        `${baseUrl}/api/accounts/login/`,
+        {
+          email,
+          password,
+          remember_me,
+        },
+        { withCredentials: true },
+      );
+      console.log("Login response:", res);
       if (res.status === 200) {
         const { user, access, refresh } = res.data.data;
         //  flat structure matches getTokensFromLocalStorage() in api.ts

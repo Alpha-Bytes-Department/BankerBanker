@@ -8,8 +8,19 @@ import axios, {
 // Declaration section
 let isRefreshing = false;
 let waitingQueue: ((token: string) => void)[] = [];
-// Declaring public routes
-const publicEndPoint = ["/register", "/signin", "/register/upload", "/verify_otp", "/reset_pass_one", "/reset_pass_one/reset_pass_two", "/reset_pass_one/reset_pass_two/reset_pass_three", "/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four"];
+// Endpoints that must never send bearer tokens and must not trigger refresh logic.
+const authBootstrapEndpoints = [
+  "/api/accounts/login/",
+  "/api/accounts/signup/",
+  "/api/accounts/resend-otp/",
+  "/api/accounts/verify-otp/",
+  "/api/accounts/forgot-password/",
+  "/api/accounts/forgot-password/verify-otp/",
+  "/accounts/token/refresh/",
+];
+
+const isPublicEndpoint = (url?: string) =>
+  authBootstrapEndpoints.some((endpoint) => url?.includes(endpoint));
 
 // Function to get tokens from localStorage
 const getTokensFromLocalStorage = () => {
@@ -53,10 +64,16 @@ const executingRoutes = (token: string) => {
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const { accessToken } = getTokensFromLocalStorage();
-    const isPublic = publicEndPoint.some((url) => config.url?.includes(url));
-    if (accessToken && !isPublic) {
+
+    if (isPublicEndpoint(config.url)) {
+      delete config.headers.Authorization;
+      return config;
+    }
+
+    if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
     return config;
   },
   (error) => Promise.reject(`Error in request: ${error}`),
@@ -72,6 +89,10 @@ api.interceptors.response.use(
 
     // Wait until original request completes
     if (error?.response?.status === 401 && !originalRequest._retry) {
+      if (isPublicEndpoint(originalRequest.url)) {
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           queuingFailedRoute((token) => {
@@ -90,7 +111,7 @@ api.interceptors.response.use(
       try {
         const { refreshToken } = getTokensFromLocalStorage();
         if (!refreshToken) {
-          window.location.href = "/signin";
+          window.location.replace("/signin");
           return Promise.reject("No refresh token");
         }
 
@@ -110,7 +131,7 @@ api.interceptors.response.use(
         executingRoutes(newToken);
         return api(originalRequest);
       } catch (refreshError) {
-        window.location.href = "/signin";
+        window.location.replace("/signin");
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
