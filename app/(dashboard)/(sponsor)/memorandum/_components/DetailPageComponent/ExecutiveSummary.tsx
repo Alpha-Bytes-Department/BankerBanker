@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ExecutiveSummaryProps } from "@/types/memorandum-detail";
 import { FiEdit, FiCheck, FiX } from "react-icons/fi";
 import { PiSparkle } from "react-icons/pi";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Executive Summary Component ===========
 
@@ -16,15 +17,25 @@ const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
 
+  useEffect(() => {
+    setEditedContent(content);
+  }, [content]);
+
   //========== Handlers ===========
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (editedContent.trim() === "") {
+      alert("Please enter executive summary content before saving.");
+      return;
+    }
+
+    if (onEdit) {
+      await onEdit(editedContent);
+    }
     setIsEditing(false);
-    console.log("Executive Summary saved:", editedContent);
-    if (onEdit) onEdit();
   };
 
   const handleCancel = () => {
@@ -82,9 +93,10 @@ const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({
 
       {/* ====== Content Section ====== */}
       {!isEditing ? (
-        <div className="text-gray-700 text-sm md:text-base leading-relaxed">
-          {editedContent}
-        </div>
+        <SectionMarkdown
+          content={editedContent}
+          className="text-gray-700 text-sm md:text-base leading-relaxed"
+        />
       ) : (
         <textarea
           value={editedContent}

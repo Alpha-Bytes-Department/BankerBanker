@@ -1,45 +1,72 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  PropertyOverviewProps,
-  PropertyOverviewData,
-} from "@/types/memorandum-detail";
+import React, { useEffect, useMemo, useState } from "react";
+import { PropertyOverviewProps } from "@/types/memorandum-detail";
 import { PiSparkle } from "react-icons/pi";
 import { FiEdit, FiCheck, FiX } from "react-icons/fi";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Property Overview Component ===========
 
 const PropertyOverview: React.FC<PropertyOverviewProps> = ({
   data,
+  markdownContent,
   onEdit,
   onAiGenerate,
 }) => {
   //========== State ===========
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState<PropertyOverviewData>(data);
+  const fallbackContent = useMemo(
+    () =>
+      [
+        "**Property Overview**",
+        "",
+        `- **Property Name:** ${data.propertyName || "N/A"}`,
+        `- **Address:** ${data.address || "N/A"}`,
+        `- **Zip Code:** ${data.zipCode || "N/A"}`,
+        `- **Year Built:** ${data.yearBuilt || "N/A"}`,
+        `- **Year Renovated:** ${data.yearRenovated || "N/A"}`,
+        `- **Property Type:** ${data.propertyType || "N/A"}`,
+        `- **Number of Units:** ${data.numberOfUnits || 0}`,
+        `- **Rentable Area:** ${data.rentableArea?.toLocaleString() || 0} SF`,
+        `- **Occupancy:** ${data.occupancy || 0}%`,
+        `- **Parking Spaces:** ${data.parkingSpaces || 0}`,
+      ].join("\n"),
+    [data],
+  );
+
+  const [editedContent, setEditedContent] = useState(
+    markdownContent?.trim() ? markdownContent : fallbackContent,
+  );
+
+  useEffect(() => {
+    setEditedContent(
+      markdownContent?.trim() ? markdownContent : fallbackContent,
+    );
+  }, [markdownContent, fallbackContent]);
 
   //========== Handlers ===========
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (editedContent.trim() === "") {
+      alert("Please enter property overview content before saving.");
+      return;
+    }
+
+    if (onEdit) {
+      await onEdit(editedContent);
+    }
     setIsEditing(false);
-    console.log("Property Overview saved:", editedData);
-    if (onEdit) onEdit();
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditedData(data);
-  };
-
-  const handleFieldChange = (
-    field: keyof PropertyOverviewData,
-    value: string | number | undefined,
-  ) => {
-    setEditedData({ ...editedData, [field]: value });
+    setEditedContent(
+      markdownContent?.trim() ? markdownContent : fallbackContent,
+    );
   };
 
   return (
@@ -50,7 +77,7 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
 
         <div className="flex items-center gap-2">
           {/* ====== Action Buttons ====== */}
-          {!isEditing ?
+          {!isEditing ? (
             <>
               <button
                 onClick={handleEdit}
@@ -59,17 +86,10 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
                 <FiEdit className="w-4 h-4" />
                 Edit
               </button>
-              {onAiGenerate && (
-                <button
-                  onClick={onAiGenerate}
-                  className="flex items-center gap-1 bg-blue-50 text-blue-600 hover:bg-blue-100 text-sm px-3 py-1.5 rounded-full border ml-0 md:ml-4 border-blue-200"
-                >
-                  <PiSparkle className="w-4 h-4" />
-                  AI Generate
-                </button>
-              )}
+              
             </>
-          : <>
+          ) : (
+            <>
               <button
                 onClick={handleSave}
                 className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700"
@@ -85,194 +105,26 @@ const PropertyOverview: React.FC<PropertyOverviewProps> = ({
                 Cancel
               </button>
             </>
-          }
+          )}
         </div>
       </div>
 
       {/* ====== Property Details Grid ====== */}
-      {!isEditing ?
-        <div className="space-y-3 bg-gray-100 p-4 rounded-lg text-sm md:text-base">
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Property Name:</span>
-            <span className="text-gray-700">{editedData.propertyName}</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Address:</span>
-            <span className="text-gray-700">
-              {editedData.address}, {editedData.zipCode}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Year Built/Renovated:</span>
-            <span className="text-gray-700">
-              {editedData.yearBuilt}
-              {editedData.yearRenovated && `/${editedData.yearRenovated}`}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Property Type:</span>
-            <span className="text-gray-700">{editedData.propertyType}</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Number of Units:</span>
-            <span className="text-gray-700">{editedData.numberOfUnits}</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Rentable Area:</span>
-            <span className="text-gray-700">
-              {editedData.rentableArea?.toLocaleString()} SF
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Occupancy:</span>
-            <span className="text-gray-700">{editedData.occupancy}%</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row sm:gap-2">
-            <span className="text-gray-900">Parking Spaces:</span>
-            <span className="text-gray-700">{editedData.parkingSpaces}</span>
-          </div>
+      {!isEditing ? (
+        <div className="bg-gray-100 p-4 rounded-lg text-sm md:text-base">
+          <SectionMarkdown
+            content={editedContent}
+            className="text-gray-700 leading-relaxed"
+          />
         </div>
-      : <div className="space-y-4 ">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Property Name
-              </label>
-              <input
-                type="text"
-                value={editedData.propertyName}
-                onChange={(e) =>
-                  handleFieldChange("propertyName", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Property Type
-              </label>
-              <input
-                type="text"
-                value={editedData.propertyType}
-                onChange={(e) =>
-                  handleFieldChange("propertyType", e.target.value)
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Address
-              </label>
-              <input
-                type="text"
-                value={editedData.address}
-                onChange={(e) => handleFieldChange("address", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Zip Code
-              </label>
-              <input
-                type="text"
-                value={editedData.zipCode}
-                onChange={(e) => handleFieldChange("zipCode", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Year Built
-              </label>
-              <input
-                type="number"
-                value={editedData.yearBuilt}
-                onChange={(e) =>
-                  handleFieldChange("yearBuilt", parseInt(e.target.value))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Year Renovated
-              </label>
-              <input
-                type="number"
-                value={editedData.yearRenovated || ""}
-                onChange={(e) =>
-                  handleFieldChange(
-                    "yearRenovated",
-                    e.target.value ? parseInt(e.target.value) : undefined,
-                  )
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Number of Units
-              </label>
-              <input
-                type="number"
-                value={editedData.numberOfUnits}
-                onChange={(e) =>
-                  handleFieldChange("numberOfUnits", parseInt(e.target.value))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Rentable Area (SF)
-              </label>
-              <input
-                type="number"
-                value={editedData.rentableArea}
-                onChange={(e) =>
-                  handleFieldChange("rentableArea", parseInt(e.target.value))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Occupancy (%)
-              </label>
-              <input
-                type="number"
-                value={editedData.occupancy}
-                onChange={(e) =>
-                  handleFieldChange("occupancy", parseInt(e.target.value))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                Parking Spaces
-              </label>
-              <input
-                type="number"
-                value={editedData.parkingSpaces}
-                onChange={(e) =>
-                  handleFieldChange("parkingSpaces", parseInt(e.target.value))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-              />
-            </div>
-          </div>
-        </div>
-      }
+      ) : (
+        <textarea
+          value={editedContent}
+          onChange={(e) => setEditedContent(e.target.value)}
+          className="w-full min-h-[220px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base resize-y"
+          placeholder="Write property overview in markdown format..."
+        />
+      )}
     </div>
   );
 };

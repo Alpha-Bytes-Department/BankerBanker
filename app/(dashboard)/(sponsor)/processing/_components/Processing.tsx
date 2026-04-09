@@ -133,10 +133,8 @@ const Processing = ({
                             {status === "success" && (
                                 <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
                                     <Check className="h-4 w-4" />
-                                    Memorandum generation started
-                                    {memorandumId && (
-                                        <span className="ml-1 text-green-500">(ID: {memorandumId})</span>
-                                    )}
+                                    Memorandum generation started , please allow a few minutes for processing. You will be notified once it's ready.
+                                   
                                 </div>
                             )}
                             {status === "error" && (

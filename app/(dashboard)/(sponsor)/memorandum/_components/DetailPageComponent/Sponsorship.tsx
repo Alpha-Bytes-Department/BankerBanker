@@ -4,6 +4,7 @@ import React from "react";
 import PreviewSection from "./PreviewSection";
 import { SponsorshipData } from "@/types/memorandum-detail";
 import { MdDescription } from "react-icons/md";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Sponsorship Component ===========
 
@@ -35,7 +36,10 @@ const Sponsorship: React.FC<SponsorshipProps> = ({ data }) => {
             <h3 className="text-xl md:text-2xl text-gray-900">
               {data?.companyName}
             </h3>
-            <p className="text-sm text-gray-600">{data?.description}</p>
+            <SectionMarkdown
+              content={data?.description}
+              className="text-sm text-gray-600"
+            />
           </div>
         </div>
 

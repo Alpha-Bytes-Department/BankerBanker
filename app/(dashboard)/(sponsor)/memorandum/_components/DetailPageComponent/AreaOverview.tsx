@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AreaOverviewProps, AreaOverviewData } from "@/types/memorandum-detail";
 import { PiSparkle } from "react-icons/pi";
 import { FiEdit, FiCheck, FiX } from "react-icons/fi";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Area Overview Component ===========
 
@@ -16,15 +17,31 @@ const AreaOverview: React.FC<AreaOverviewProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<AreaOverviewData>(data);
 
+  useEffect(() => {
+    setEditedData(data);
+  }, [data]);
+
   //========== Handlers ===========
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const sections = [
+      editedData.description.trim(),
+      editedData.neighborhoodDescription.trim(),
+      editedData.localAmenities.trim(),
+    ].filter(Boolean);
+
+    if (sections.length === 0) {
+      alert("Please add area overview content before saving.");
+      return;
+    }
+
+    if (onEdit) {
+      await onEdit(sections.join("\n\n"));
+    }
     setIsEditing(false);
-    console.log("Area Overview saved:", editedData);
-    if (onEdit) onEdit();
   };
 
   const handleCancel = () => {
@@ -84,9 +101,15 @@ const AreaOverview: React.FC<AreaOverviewProps> = ({
       {/* ====== Content Section ====== */}
       {!isEditing ? (
         <div className="space-y-4 text-sm md:text-base text-gray-700 leading-relaxed">
-          <p>{editedData.description}</p>
-          <p>{editedData.neighborhoodDescription}</p>
-          <p>{editedData.localAmenities}</p>
+          {editedData.description.trim() ? (
+            <SectionMarkdown content={editedData.description} />
+          ) : null}
+          {editedData.neighborhoodDescription.trim() ? (
+            <SectionMarkdown content={editedData.neighborhoodDescription} />
+          ) : null}
+          {editedData.localAmenities.trim() ? (
+            <SectionMarkdown content={editedData.localAmenities} />
+          ) : null}
         </div>
       ) : (
         <div className="space-y-4">

@@ -7,9 +7,10 @@ export interface MemorandumDetailData {
   galleryImages: string[];
   executiveSummary: string;
   propertyOverview: PropertyOverviewData;
-  propertyHighlights: string[];
+  propertyOverviewContent?: string;
+  propertyHighlights: string;
   areaOverview: AreaOverviewData;
-  areaHighlights: string[];
+  areaHighlights: string;
   marketSummary: MarketSummaryData;
   financingSummary: string;
   presentedBy: string;
@@ -71,6 +72,7 @@ export interface TableOfContentsItem {
   id: number;
   title: string;
   pageNumber: number;
+  anchorId?: string;
 }
 
 //========== Additional Section Types ===========
@@ -88,10 +90,17 @@ export type MemorandumTab = "editor" | "preview";
 //========== Component Props Types ===========
 
 export interface MemorandumHeaderProps {
+  memorandumId?: number | string;
   title: string;
   subtitle: string;
+  status?: string;
+  mode?: string;
   activeTab: MemorandumTab;
   onTabChange: (tab: MemorandumTab) => void;
+  canPublish?: boolean;
+  isPublishing?: boolean;
+  onPublish?: () => void;
+  onExport?: () => void;
 }
 
 export interface HeroSectionProps {
@@ -103,42 +112,45 @@ export interface HeroSectionProps {
 export interface ExecutiveSummaryProps {
   content: string;
   isAiGenerated: boolean;
-  onEdit?: () => void;
+  onEdit?: (content: string) => void | Promise<void>;
 }
 
 export interface PropertyOverviewProps {
   data: PropertyOverviewData;
-  onEdit?: () => void;
+  markdownContent?: string;
+  onEdit?: (content: string) => void | Promise<void>;
   onAiGenerate?: () => void;
 }
 
 export interface PropertyHighlightsProps {
-  highlights: string[];
+  highlights: string;
   isAiGenerated: boolean;
-  onEdit?: () => void;
+  onEdit?: (content: string) => void | Promise<void>;
 }
 
 export interface AreaOverviewProps {
   data: AreaOverviewData;
   isAiGenerated: boolean;
-  onEdit?: () => void;
+  onEdit?: (content: string) => void | Promise<void>;
 }
 
 export interface AreaHighlightsProps {
-  highlights: string[];
+  highlights: string;
   isAiGenerated: boolean;
-  onEdit?: () => void;
+  initialImageUrl?: string;
+  onEdit?: (content: string) => void | Promise<void>;
+  onImageUpload?: (file: File) => Promise<string | void>;
 }
 
 export interface MarketSummaryProps {
   data: MarketSummaryData;
   isAiGenerated: boolean;
-  onEdit?: () => void;
+  onEdit?: (content: string) => void | Promise<void>;
 }
 
 export interface FinancingSummaryProps {
   content: string;
-  onEdit?: () => void;
+  onEdit?: (content: string) => void | Promise<void>;
   onAiGenerate?: () => void;
 }
 
@@ -334,4 +346,5 @@ export interface PreviewSectionProps {
   sectionNumber: number;
   title: string;
   children: React.ReactNode;
+  anchorId?: string;
 }

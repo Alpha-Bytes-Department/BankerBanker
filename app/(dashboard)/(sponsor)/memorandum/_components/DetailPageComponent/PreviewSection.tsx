@@ -9,9 +9,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   sectionNumber,
   title,
   children,
+  anchorId,
 }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 mb-6">
+    <div
+      id={anchorId}
+      className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 mb-6 scroll-mt-28"
+    >
       {/* ====== Section Header ====== */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-2">

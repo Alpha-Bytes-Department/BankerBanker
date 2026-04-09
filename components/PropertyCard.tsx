@@ -13,6 +13,30 @@ import { MdOutlineOtherHouses } from "react-icons/md";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+const FALLBACK_IMAGE = "/images/SponsorDashboard.png";
+
+const normalizeImageUrl = (url?: string | null) => {
+  if (!url) return FALLBACK_IMAGE;
+
+  const trimmed = url.trim();
+  if (!trimmed) return FALLBACK_IMAGE;
+
+  if (
+    trimmed.startsWith("http://") ||
+    trimmed.startsWith("https://") ||
+    trimmed.startsWith("data:") ||
+    trimmed.startsWith("blob:") ||
+    trimmed.startsWith("/")
+  ) {
+    return trimmed;
+  }
+
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "").replace(/\/+$/, "");
+  if (!baseUrl) return trimmed;
+
+  return `${baseUrl}/${trimmed.replace(/^\/+/, "")}`;
+};
+
 // ── API shape (full detail response) ────────────────────────────────────────
 
 export interface PropertyDocument {
@@ -52,6 +76,9 @@ export interface PropertyDetail {
 type PropertyCardProps = {
   data: PropertyDetail;
   size?: "small" | "large";
+  secondaryButtonText?: string;
+  secondaryButtonClassName?: string;
+  onSecondaryAction?: () => void;
 };
 
 const sizeStyles = {
@@ -68,8 +95,15 @@ const typePillColor: Record<string, string> = {
   Mixed: "bg-teal-100 text-teal-700",
 };
 
-const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
+const PropertyCard = ({
+  data,
+  size = "large",
+  secondaryButtonText = "View Quotes",
+  secondaryButtonClassName = "button-outline",
+  onSecondaryAction,
+}: PropertyCardProps) => {
   const router = useRouter();
+  const propertyImageSrc = normalizeImageUrl(data.property_image_url);
 
   const pillColor =
     typePillColor[data.property_type?.trim()] ?? "bg-gray-100 text-gray-700";
@@ -98,10 +132,11 @@ const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
       {/* ── Image ── */}
       <div className="w-full h-48 relative">
         <Image
-          src={data.property_image_url ?? "/images/SponsorDashboard.png"}
+          src={propertyImageSrc}
           alt={"image"}
           fill
           className="rounded-t-lg object-cover object-center"
+          unoptimized
         />
         {/* Property type badge overlaid on image */}
         <span
@@ -225,12 +260,14 @@ const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
         {data.documents !== undefined && (
           <div className="flex items-center gap-2 text-sm text-[#4A5565] border-t pt-3 border-[#E5E7EB]">
             <LuFileText className="shrink-0 text-base" />
-            {hasDocuments ?
+            {hasDocuments ? (
               <span>
                 {data.documents!.length} document
                 {data.documents!.length !== 1 ? "s" : ""} attached
               </span>
-            : <span className="text-[#9CA3AF]">No documents uploaded</span>}
+            ) : (
+              <span className="text-[#9CA3AF]">No documents uploaded</span>
+            )}
           </div>
         )}
 
@@ -242,10 +279,17 @@ const PropertyCard = ({ data, size = "large" }: PropertyCardProps) => {
             onClick={() => router.push(data.link)}
           />
           <Button
-            text="View Quotes"
             size="medium"
-            className="button-outline"
-            onClick={() => router.push(data.link2)}
+            text={secondaryButtonText}
+            className={secondaryButtonClassName}
+            onClick={() => {
+              if (onSecondaryAction) {
+                onSecondaryAction();
+                return;
+              }
+
+              router.push(data.link2);
+            }}
           />
         </div>
       </div>

@@ -10,6 +10,7 @@ import LeaseComparables from "./LeaseComparables";
 import AreaAmenities from "./AreaAmenities";
 import Sponsorship from "./Sponsorship";
 import Disclaimer from "./Disclaimer";
+import SectionMarkdown from "./SectionMarkdown";
 import {
   PropertyOverviewData,
   FinancialAnalysisData,
@@ -26,13 +27,14 @@ import {
 interface PreviewSectionsProps {
   executiveSummary: string;
   propertyOverview: PropertyOverviewData;
-  propertyHighlights: string[];
+  propertyOverviewContent?: string;
+  propertyHighlights: string;
   areaOverview: {
     description: string;
     neighborhoodDescription: string;
     localAmenities: string;
   };
-  areaHighlights: string[];
+  areaHighlights: string;
   marketSummary: MarketSummaryData;
   financingSummary: string;
   financialAnalysis: FinancialAnalysisData;
@@ -46,6 +48,7 @@ interface PreviewSectionsProps {
 const PreviewSections: React.FC<PreviewSectionsProps> = ({
   executiveSummary,
   propertyOverview,
+  propertyOverviewContent,
   propertyHighlights,
   areaOverview,
   areaHighlights,
@@ -63,189 +66,211 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
       {/* ====== Executive Summary Section ====== */}
       <PreviewSection sectionNumber={1} title="Executive Summary">
         <div className="bg-gray-50 rounded-lg p-6">
-          <p className="text-gray-700 leading-relaxed">{executiveSummary}</p>
+          <SectionMarkdown
+            content={executiveSummary}
+            className="text-gray-700 leading-relaxed"
+          />
         </div>
       </PreviewSection>
 
       {/* ====== Property Overview Section ====== */}
       <PreviewSection sectionNumber={2} title="Property Overview">
-        <div className="bg-gray-50 rounded-lg p-6 space-y-3">
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Property Name:</span>
-            <span className="text-gray-700">
-              {propertyOverview.propertyName}
-            </span>
+        {propertyOverviewContent?.trim() ? (
+          <div className="bg-gray-50 rounded-lg p-6">
+            <SectionMarkdown
+              content={propertyOverviewContent}
+              className="text-gray-700 leading-relaxed"
+            />
           </div>
-
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Address:</span>
-            <span className="text-gray-700">{propertyOverview.address}</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Year Built/Renovated:</span>
-            <span className="text-gray-700">
-              {propertyOverview.yearBuilt}
-              {propertyOverview.yearRenovated &&
-                `/${propertyOverview.yearRenovated}`}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Property Type:</span>
-            <span className="text-gray-700">
-              {propertyOverview.propertyType}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Number of Units:</span>
-            <span className="text-gray-700">
-              {propertyOverview.numberOfUnits}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Rentable Area:</span>
-            <span className="text-gray-700">
-              {propertyOverview.rentableArea?.toLocaleString()} SF
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Occupancy:</span>
-            <span className="text-gray-700">{propertyOverview.occupancy}%</span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-1">
-            <span className="text-gray-900">Parking Spaces:</span>
-            <span className="text-gray-700">
-              {propertyOverview.parkingSpaces}
-            </span>
-          </div>
-        </div>
-
-        {/* ====== Property Details and Performance Metrics Grid ====== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-          {/* ====== Property Details Card ====== */}
-          <div className="bg-blue-50 rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 rounded flex items-center justify-center">
-                <LuBuilding2 size={28} className="font-bold text-blue-600" />
+        ) : (
+          <>
+            <div className="bg-gray-50 rounded-lg p-6 space-y-3">
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Property Name:</span>
+                <span className="text-gray-700">
+                  {propertyOverview.propertyName}
+                </span>
               </div>
-              <h4 className="text-base text-gray-900">Property Details</h4>
-            </div>
 
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between py-2 border-b border-blue-200">
-                <span className="text-gray-700">Property Type:</span>
-                <span className="text-gray-900">
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Address:</span>
+                <span className="text-gray-700">
+                  {propertyOverview.address}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Year Built/Renovated:</span>
+                <span className="text-gray-700">
+                  {propertyOverview.yearBuilt}
+                  {propertyOverview.yearRenovated &&
+                    `/${propertyOverview.yearRenovated}`}
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Property Type:</span>
+                <span className="text-gray-700">
                   {propertyOverview.propertyType}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-blue-200">
-                <span className="text-gray-700">Number of Units:</span>
-                <span className="text-gray-900">
+
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Number of Units:</span>
+                <span className="text-gray-700">
                   {propertyOverview.numberOfUnits}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-blue-200">
-                <span className="text-gray-700">Rentable Area:</span>
-                <span className="text-gray-900">
+
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Rentable Area:</span>
+                <span className="text-gray-700">
                   {propertyOverview.rentableArea?.toLocaleString()} SF
                 </span>
               </div>
-              <div className="flex justify-between py-2">
-                <span className="text-gray-700">Parking Spaces:</span>
-                <span className="text-gray-900">
+
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Occupancy:</span>
+                <span className="text-gray-700">
+                  {propertyOverview.occupancy}%
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-1">
+                <span className="text-gray-900">Parking Spaces:</span>
+                <span className="text-gray-700">
                   {propertyOverview.parkingSpaces}
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* ====== Performance Metrics Card ====== */}
-          <div className="bg-green-50 rounded-lg p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6  rounded flex items-center justify-center">
-                <FaArrowTrendUp size={28} className=" text-blue-600" />
-              </div>
-              <h4 className="text-base text-gray-900">Performance Metrics</h4>
-            </div>
+            {/* ====== Property Details and Performance Metrics Grid ====== */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+              {/* ====== Property Details Card ====== */}
+              <div className="bg-blue-50 rounded-lg p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-6 h-6 rounded flex items-center justify-center">
+                    <LuBuilding2
+                      size={28}
+                      className="font-bold text-blue-600"
+                    />
+                  </div>
+                  <h4 className="text-base text-gray-900">Property Details</h4>
+                </div>
 
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between py-2 border-b border-green-200">
-                <span className="text-gray-700">Current Occupancy:</span>
-                <span className="text-green-600 bg-green-100 px-3 py-1 rounded">
-                  {propertyOverview.occupancy}%
-                </span>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between py-2 border-b border-blue-200">
+                    <span className="text-gray-700">Property Type:</span>
+                    <span className="text-gray-900">
+                      {propertyOverview.propertyType}
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-blue-200">
+                    <span className="text-gray-700">Number of Units:</span>
+                    <span className="text-gray-900">
+                      {propertyOverview.numberOfUnits}
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-blue-200">
+                    <span className="text-gray-700">Rentable Area:</span>
+                    <span className="text-gray-900">
+                      {propertyOverview.rentableArea?.toLocaleString()} SF
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-700">Parking Spaces:</span>
+                    <span className="text-gray-900">
+                      {propertyOverview.parkingSpaces}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between py-2 border-b border-green-200">
-                <span className="text-gray-700">Year Built:</span>
-                <span className="text-gray-900">
-                  {propertyOverview.yearBuilt}
-                </span>
-              </div>
-              <div className="flex justify-between py-2">
-                <span className="text-gray-700">Year Renovated:</span>
-                <span className="text-gray-900">
-                  {propertyOverview.yearRenovated || "N/A"}
-                </span>
+
+              {/* ====== Performance Metrics Card ====== */}
+              <div className="bg-green-50 rounded-lg p-6">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-6 h-6  rounded flex items-center justify-center">
+                    <FaArrowTrendUp size={28} className=" text-blue-600" />
+                  </div>
+                  <h4 className="text-base text-gray-900">
+                    Performance Metrics
+                  </h4>
+                </div>
+
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between py-2 border-b border-green-200">
+                    <span className="text-gray-700">Current Occupancy:</span>
+                    <span className="text-green-600 bg-green-100 px-3 py-1 rounded">
+                      {propertyOverview.occupancy}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-green-200">
+                    <span className="text-gray-700">Year Built:</span>
+                    <span className="text-gray-900">
+                      {propertyOverview.yearBuilt}
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-700">Year Renovated:</span>
+                    <span className="text-gray-900">
+                      {propertyOverview.yearRenovated || "N/A"}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </PreviewSection>
 
       {/* ====== Property Highlights Section ====== */}
       <PreviewSection sectionNumber={3} title="Property Highlights">
         <div className="bg-gray-50 rounded-lg p-6">
-          <ul className="space-y-3">
-            {propertyHighlights.map((highlight, index) => (
-              <li key={index} className="flex gap-3 text-gray-700">
-                <span className="text-gray-900">•</span>
-                <p>{highlight}</p>
-              </li>
-            ))}
-          </ul>
+          <SectionMarkdown
+            content={propertyHighlights}
+            className="text-gray-700"
+          />
         </div>
       </PreviewSection>
 
       {/* ====== Area Overview Section ====== */}
       <PreviewSection sectionNumber={4} title="Area Overview">
         <div className="bg-gray-50 rounded-lg p-6 space-y-4">
-          <p className="text-gray-700 leading-relaxed">
-            {areaOverview.description}
-          </p>
-          <p className="text-gray-700 leading-relaxed">
-            {areaOverview.neighborhoodDescription}
-          </p>
-          <p className="text-gray-700 leading-relaxed">
-            {areaOverview.localAmenities}
-          </p>
+          {areaOverview.description ? (
+            <SectionMarkdown
+              content={areaOverview.description}
+              className="text-gray-700 leading-relaxed"
+            />
+          ) : null}
+          {areaOverview.neighborhoodDescription ? (
+            <SectionMarkdown
+              content={areaOverview.neighborhoodDescription}
+              className="text-gray-700 leading-relaxed"
+            />
+          ) : null}
+          {areaOverview.localAmenities ? (
+            <SectionMarkdown
+              content={areaOverview.localAmenities}
+              className="text-gray-700 leading-relaxed"
+            />
+          ) : null}
         </div>
       </PreviewSection>
 
       {/* ====== Area Highlights Section ====== */}
       <PreviewSection sectionNumber={5} title="Area Highlights">
         <div className="bg-gray-50 rounded-lg p-6">
-          <ul className="space-y-3">
-            {areaHighlights.map((highlight, index) => (
-              <li key={index} className="flex gap-3 text-gray-700">
-                <span className="text-gray-900">•</span>
-                <p>{highlight}</p>
-              </li>
-            ))}
-          </ul>
+          <SectionMarkdown content={areaHighlights} className="text-gray-700" />
         </div>
       </PreviewSection>
 
       {/* ====== Market Summary Section ====== */}
       <PreviewSection sectionNumber={6} title="Market Summary">
         <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6">
-          <p className="text-gray-700 leading-relaxed mb-4">
-            {marketSummary.description}
-          </p>
+          <SectionMarkdown
+            content={marketSummary.description}
+            className="text-gray-700 leading-relaxed mb-4"
+          />
           <div className="mt-4">
             <p className="text-sm text-gray-900 mb-2">Key market indicators:</p>
             <ul className="space-y-2">
@@ -265,7 +290,10 @@ const PreviewSections: React.FC<PreviewSectionsProps> = ({
       {/* ====== Financing Summary Section ====== */}
       <PreviewSection sectionNumber={7} title="Financing Summary">
         <div className="bg-gray-50 rounded-lg p-6">
-          <p className="text-gray-700 leading-relaxed">{financingSummary}</p>
+          <SectionMarkdown
+            content={financingSummary}
+            className="text-gray-700 leading-relaxed"
+          />
         </div>
       </PreviewSection>
 

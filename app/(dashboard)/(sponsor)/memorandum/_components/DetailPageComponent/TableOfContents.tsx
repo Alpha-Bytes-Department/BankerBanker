@@ -6,6 +6,13 @@ import { TableOfContentsProps } from "@/types/memorandum-detail";
 //========== Table of Contents Component ===========
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ items }) => {
+  const handleScrollToSection = (anchorId?: string) => {
+    if (!anchorId) return;
+
+    const targetSection = document.getElementById(anchorId);
+    targetSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 md:p-8 mb-6">
       {/* ====== Header Section ====== */}
@@ -24,9 +31,11 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ items }) => {
       {/* ====== Contents List ====== */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         {items.map((item, index) => (
-          <div
+          <button
             key={item.id}
-            className={`flex items-center justify-between p-4 md:p-5 hover:bg-gray-50 transition-colors cursor-pointer ${
+            type="button"
+            onClick={() => handleScrollToSection(item.anchorId)}
+            className={`w-full text-left flex items-center justify-between p-4 md:p-5 hover:bg-gray-50 transition-colors cursor-pointer ${
               index !== items.length - 1 ? "border-b border-gray-200" : ""
             }`}
           >
@@ -39,12 +48,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ items }) => {
                 {item.title}
               </span>
             </div>
-
-            {/* ====== Page Number ====== */}
-            <span className="text-gray-500 text-sm md:text-base">
-              {item.pageNumber}
-            </span>
-          </div>
+          </button>
         ))}
       </div>
     </div>

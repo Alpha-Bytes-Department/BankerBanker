@@ -4,6 +4,7 @@ import React from "react";
 import PreviewSection from "./PreviewSection";
 import { DisclaimerData } from "@/types/memorandum-detail";
 import { FiAlertTriangle, FiLock, FiShield, FiFileText } from "react-icons/fi";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Disclaimer Component ===========
 
@@ -58,9 +59,10 @@ const Disclaimer: React.FC<DisclaimerProps> = ({ data }) => {
           {data?.mainNotices.map((notice, index) => (
             <div key={index}>
               <h4 className="text-base text-gray-900 mb-2">{notice.title}</h4>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                {notice.content}
-              </p>
+              <SectionMarkdown
+                content={notice.content}
+                className="text-sm text-gray-700 leading-relaxed"
+              />
             </div>
           ))}
         </div>
@@ -84,7 +86,10 @@ const Disclaimer: React.FC<DisclaimerProps> = ({ data }) => {
 
             {/* ====== Card Content ====== */}
             <h4 className="text-base text-gray-900 mb-2">{card.title}</h4>
-            <p className="text-sm text-gray-600">{card.description}</p>
+            <SectionMarkdown
+              content={card.description}
+              className="text-sm text-gray-600"
+            />
           </div>
         ))}
       </div>

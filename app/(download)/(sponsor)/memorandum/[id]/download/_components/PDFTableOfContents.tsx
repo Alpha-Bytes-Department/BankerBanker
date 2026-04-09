@@ -60,9 +60,6 @@ const PDFTableOfContents: React.FC<PDFTableOfContentsProps> = ({ items }) => {
             <span className="ml-4 flex-1 text-sm text-gray-800 font-medium">
               {item.title}
             </span>
-            <span className="text-sm text-gray-500 tabular-nums">
-              {item.pageNumber}
-            </span>
           </div>
         ))}
       </div>

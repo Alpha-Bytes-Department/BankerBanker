@@ -1,58 +1,55 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AreaHighlightsProps } from "@/types/memorandum-detail";
 import { PiSparkle } from "react-icons/pi";
-import {
-  FiUpload,
-  FiEdit,
-  FiCheck,
-  FiX,
-  FiPlus,
-  FiTrash2,
-} from "react-icons/fi";
+import { FiUpload, FiEdit, FiCheck, FiX } from "react-icons/fi";
+import SectionMarkdown from "./SectionMarkdown";
+import { toast } from "sonner";
 
 //========== Area Highlights Component ===========
 
 const AreaHighlights: React.FC<AreaHighlightsProps> = ({
   highlights,
   isAiGenerated,
+  initialImageUrl,
   onEdit,
+  onImageUpload,
 }) => {
   //========== State ===========
   const [isEditing, setIsEditing] = useState(false);
-  const [editedHighlights, setEditedHighlights] =
-    useState<string[]>(highlights);
-  const [galleryImages, setGalleryImages] = useState<string[]>([
-    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
-    "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800",
-    "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800",
-  ]);
+  const [editedHighlights, setEditedHighlights] = useState<string>(highlights);
+  const [galleryImages, setGalleryImages] = useState<string[]>(
+    initialImageUrl ? [initialImageUrl] : [],
+  );
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const hasUploadedImage = galleryImages.length >= 1;
+
+  useEffect(() => {
+    setEditedHighlights(highlights);
+  }, [highlights]);
+
+  useEffect(() => {
+    setGalleryImages(initialImageUrl ? [initialImageUrl] : []);
+  }, [initialImageUrl]);
 
   //========== Handlers ===========
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    
-    const hasEmptyFields = editedHighlights.some(
-      (highlight) => highlight.trim() === ""
-    );
-
-    if (hasEmptyFields) {
-      alert("Please fill in all highlights before saving.");
+  const handleSave = async () => {
+    if (editedHighlights.trim() === "") {
+      alert("Please add area highlights before saving.");
       return;
     }
 
+    if (onEdit) {
+      await onEdit(editedHighlights);
+    }
     setIsEditing(false);
-    console.log("Area Highlights saved:", {
-      highlights: editedHighlights,
-      images: galleryImages,
-    });
-    if (onEdit) onEdit();
   };
 
   const handleCancel = () => {
@@ -60,34 +57,43 @@ const AreaHighlights: React.FC<AreaHighlightsProps> = ({
     setEditedHighlights(highlights);
   };
 
-  const handleAddField = () => {
-    setEditedHighlights([...editedHighlights, ""]);
-  };
-
-  const handleRemoveField = (index: number) => {
-    setEditedHighlights(editedHighlights.filter((_, i) => i !== index));
-  };
-
-  const handleFieldChange = (index: number, value: string) => {
-    const updated = [...editedHighlights];
-    updated[index] = value;
-    setEditedHighlights(updated);
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) {
+      return;
+    }
+
+    try {
+      setIsUploadingImage(true);
+      if (onImageUpload) {
+        const uploadedImageUrl = await onImageUpload(file);
+        if (uploadedImageUrl) {
+          setGalleryImages([uploadedImageUrl]);
+          return;
+        }
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         const newImage = reader.result as string;
-        setGalleryImages([...galleryImages, newImage]);
-        console.log("Area photo uploaded:", file.name);
+        setGalleryImages([newImage]);
       };
       reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Area image upload failed:", error);
+      alert("Failed to upload area image. Please try again.");
+    } finally {
+      setIsUploadingImage(false);
+      e.target.value = "";
     }
   };
 
   const handleUploadClick = () => {
+    if (hasUploadedImage) {
+      toast.error("Only one image is allowed for this section.");
+      return;
+    }
+
     fileInputRef.current?.click();
   };
 
@@ -139,47 +145,17 @@ const AreaHighlights: React.FC<AreaHighlightsProps> = ({
 
       {/* ====== Highlights List ====== */}
       {!isEditing ? (
-        <div className="space-y-3 mb-6">
-          {editedHighlights.map((highlight, index) => (
-            <div
-              key={index}
-              className="flex gap-3 text-sm md:text-base text-gray-700"
-            >
-              <span className="text-gray-900">•</span>
-              <p className="flex-1">{highlight}</p>
-            </div>
-          ))}
-        </div>
+        <SectionMarkdown
+          content={editedHighlights}
+          className="text-sm md:text-base text-gray-700 mb-6"
+        />
       ) : (
-        <div className="space-y-3 mb-6">
-          {editedHighlights.map((highlight, index) => (
-            <div key={index} className="flex gap-2 items-start">
-              <span className="text-gray-900 mt-2">•</span>
-              <input
-                type="text"
-                value={highlight}
-                onChange={(e) => handleFieldChange(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                placeholder={`Highlight ${index + 1}`}
-              />
-              <button
-                onClick={() => handleRemoveField(index)}
-                className="text-red-500 hover:text-red-700 p-2"
-                type="button"
-              >
-                <FiTrash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-          <button
-            onClick={handleAddField}
-            className="flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm"
-            type="button"
-          >
-            <FiPlus className="w-4 h-4" />
-            Add Highlight
-          </button>
-        </div>
+        <textarea
+          value={editedHighlights}
+          onChange={(e) => setEditedHighlights(e.target.value)}
+          className="w-full min-h-[150px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-y mb-6"
+          placeholder="Use markdown list format, e.g. - Near transit and retail hubs"
+        />
       )}
 
       {/* ====== Area Photos Section ====== */}
@@ -196,6 +172,7 @@ const AreaHighlights: React.FC<AreaHighlightsProps> = ({
                 alt={`Area photo ${index + 1}`}
                 fill
                 className="object-cover"
+                unoptimized
               />
             </div>
           ))}
@@ -203,11 +180,21 @@ const AreaHighlights: React.FC<AreaHighlightsProps> = ({
           {/* ====== Upload New Photo Button ====== */}
           <div
             onClick={handleUploadClick}
-            className="relative h-32 md:h-40 rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-600 cursor-pointer transition-colors flex items-center justify-center bg-gray-50 hover:bg-gray-100"
+            className={`relative h-32 md:h-40 rounded-lg border-2 border-dashed transition-colors flex items-center justify-center bg-gray-50 ${
+              isUploadingImage || hasUploadedImage
+                ? "border-gray-200 cursor-not-allowed opacity-70"
+                : "border-gray-300 hover:border-blue-600 cursor-pointer hover:bg-gray-100"
+            }`}
           >
             <div className="text-center">
               <FiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-xs text-gray-500">Upload</p>
+              <p className="text-xs text-gray-500">
+                {isUploadingImage
+                  ? "Uploading..."
+                  : hasUploadedImage
+                    ? "1 image max"
+                    : "Upload"}
+              </p>
             </div>
             <input
               ref={fileInputRef}
@@ -215,6 +202,7 @@ const AreaHighlights: React.FC<AreaHighlightsProps> = ({
               accept="image/*"
               onChange={handleImageUpload}
               className="hidden"
+              disabled={isUploadingImage || hasUploadedImage}
             />
           </div>
         </div>

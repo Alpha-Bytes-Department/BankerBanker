@@ -230,9 +230,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setUser(user);
         toast.success("Logged in successfully!");
         // removed duplicate setLoading(false) here — finally handles it
-        if (user?.role === "Sponsor") {
+
+        if (user?.customer_type === "Sponsor") {
+          console.log("Redirecting to sponsor dashboard for user:", user);
           router.push("/sponsor");
         } else {
+          console.log("Redirecting to lender dashboard for user:", user);
           router.push("/lender");
         }
       }

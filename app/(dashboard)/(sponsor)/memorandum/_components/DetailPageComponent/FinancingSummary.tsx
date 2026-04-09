@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FinancingSummaryProps } from "@/types/memorandum-detail";
 import { PiSparkle } from "react-icons/pi";
 import { FiEdit, FiCheck, FiX } from "react-icons/fi";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Financing Summary Component ===========
 
@@ -16,15 +17,25 @@ const FinancingSummary: React.FC<FinancingSummaryProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
 
+  useEffect(() => {
+    setEditedContent(content);
+  }, [content]);
+
   //========== Handlers ===========
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (editedContent.trim() === "") {
+      alert("Please enter financing summary content before saving.");
+      return;
+    }
+
+    if (onEdit) {
+      await onEdit(editedContent);
+    }
     setIsEditing(false);
-    console.log("Financing Summary saved:", editedContent);
-    if (onEdit) onEdit();
   };
 
   const handleCancel = () => {
@@ -82,9 +93,10 @@ const FinancingSummary: React.FC<FinancingSummaryProps> = ({
 
       {/* ====== Content Section ====== */}
       {!isEditing ? (
-        <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-          {editedContent}
-        </p>
+        <SectionMarkdown
+          content={editedContent}
+          className="text-sm md:text-base text-gray-700 leading-relaxed"
+        />
       ) : (
         <textarea
           value={editedContent}

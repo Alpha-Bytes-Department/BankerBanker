@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MarketSummaryProps,
   MarketSummaryData,
@@ -8,6 +8,7 @@ import {
 } from "@/types/memorandum-detail";
 import { PiSparkle } from "react-icons/pi";
 import { FiEdit, FiCheck, FiX, FiPlus, FiTrash2 } from "react-icons/fi";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Market Summary Component ===========
 
@@ -20,12 +21,16 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<MarketSummaryData>(data);
 
+  useEffect(() => {
+    setEditedData(data);
+  }, [data]);
+
   //========== Handlers ===========
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Validate: Check if description or any indicator field is empty
     const hasEmptyDescription = editedData.description.trim() === "";
     const hasEmptyIndicators = editedData.keyIndicators.some(
@@ -38,9 +43,23 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
       return;
     }
 
+    const indicatorLines = editedData.keyIndicators
+      .map((indicator) => ({
+        label: indicator.label.trim(),
+        value: indicator.value.trim(),
+      }))
+      .filter((indicator) => indicator.label && indicator.value)
+      .map((indicator) => `- **${indicator.label}:** ${indicator.value}`);
+
+    const content =
+      indicatorLines.length > 0
+        ? `${editedData.description.trim()}\n\n### Key Market Indicators\n\n${indicatorLines.join("\n")}`
+        : editedData.description.trim();
+
+    if (onEdit) {
+      await onEdit(content);
+    }
     setIsEditing(false);
-    console.log("Market Summary saved:", editedData);
-    if (onEdit) onEdit();
   };
 
   const handleCancel = () => {
@@ -93,7 +112,7 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
 
         {/* ====== Action Buttons ====== */}
         <div className="flex items-center gap-2">
-          {!isEditing ?
+          {!isEditing ? (
             <button
               onClick={handleEdit}
               className="flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm"
@@ -101,7 +120,8 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
               <FiEdit className="w-4 h-4" />
               Edit
             </button>
-          : <>
+          ) : (
+            <>
               <button
                 onClick={handleSave}
                 className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700"
@@ -117,16 +137,18 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
                 Cancel
               </button>
             </>
-          }
+          )}
         </div>
       </div>
 
       {/* ====== Description Section ====== */}
-      {!isEditing ?
-        <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
-          {editedData.description}
-        </p>
-      : <div className="mb-4">
+      {!isEditing ? (
+        <SectionMarkdown
+          content={editedData.description}
+          className="text-sm md:text-base text-gray-700 leading-relaxed mb-4"
+        />
+      ) : (
+        <div className="mb-4">
           <label className="block text-sm text-gray-700 mb-1">
             Description
           </label>
@@ -136,12 +158,12 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
             className="w-full min-h-[100px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-y"
           />
         </div>
-      }
+      )}
 
       {/* ====== Key Market Indicators ====== */}
       <div className="mt-4">
         <h4 className="text-base text-gray-900 mb-3">Key market indicators:</h4>
-        {!isEditing ?
+        {!isEditing ? (
           <div className="space-y-2">
             {editedData.keyIndicators?.map((indicator, index) => (
               <div
@@ -155,7 +177,8 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
               </div>
             ))}
           </div>
-        : <div className="space-y-3">
+        ) : (
+          <div className="space-y-3">
             {editedData.keyIndicators?.map((indicator, index) => (
               <div key={index} className="flex gap-2 items-start">
                 <span className="text-gray-900 mt-2">•</span>
@@ -197,7 +220,7 @@ const MarketSummary: React.FC<MarketSummaryProps> = ({
               Add Indicator
             </button>
           </div>
-        }
+        )}
       </div>
     </div>
   );

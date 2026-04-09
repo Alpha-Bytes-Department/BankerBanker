@@ -193,22 +193,10 @@ const SignInForm: React.FC = () => {
                 className="button-primary w-full md:w-[593px] h-14"
               />
 
-              {/* Divider */}
-              <div className="flex items-center gap-4 my-4 w-full md:w-[593px] justify-center">
-                <hr className="flex-1 border-gray-300" />
-                <span className="text-gray-400">OR</span>
-                <hr className="flex-1 border-gray-300" />
-              </div>
+              
             </form>
           </Form>
-          {/* Google Button */}
-          <Link
-            href={"http://10.10.12.95:8000/api/v1/users/google"}
-            className="w-full md:w-[593px] h-14 rounded-4xl border flex items-center justify-center gap-2 hover:bg-gray-100 cursor-pointer"
-          >
-            <FcGoogle className="text-2xl" />
-            Continue with Google
-          </Link>
+         
         </div>
       </div>
 

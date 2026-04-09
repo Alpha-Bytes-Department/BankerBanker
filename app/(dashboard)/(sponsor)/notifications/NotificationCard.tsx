@@ -11,8 +11,9 @@ interface NotificationCardProps {
   description: string;
   is_read: boolean;
   created_at: string;
-  onMarkRead: (id: string) => void;
-  onDelete: (id: string) => void;
+  onRequestMarkRead: (id: string) => void;
+  onRequestDelete: (id: string) => void;
+  onClickNotification: () => void | Promise<void>;
 }
 
 function timeAgo(dateStr: string): string {
@@ -30,25 +31,24 @@ export default function NotificationCard({
   description,
   is_read,
   created_at,
-  onMarkRead,
-  onDelete,
+  onRequestMarkRead,
+  onRequestDelete,
+  onClickNotification,
 }: NotificationCardProps) {
   const handleMarkRead = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!is_read) onMarkRead(id);
+    if (!is_read) onRequestMarkRead(id);
   };
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
-    onDelete(id);
+    onRequestDelete(id);
   };
 
   return (
     <div
       className={`${is_read ? "bg-white" : "bg-[#EFF6FF]"} border-t border-b px-2 py-3 flex gap-2 border border-[#0000001A] cursor-pointer`}
-      onClick={() => {
-        if (!is_read) onMarkRead(id);
-      }}
+      onClick={onClickNotification}
     >
       <div className="w-8 h-8 rounded-full bg-[#DBEAFE] flex items-center justify-center shrink-0">
         <LuMessageCircle className="w-5 h-5 text-[#155DFC]" />

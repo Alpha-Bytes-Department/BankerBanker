@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PropertyHighlightsProps } from "@/types/memorandum-detail";
 import { PiSparkle } from "react-icons/pi";
-import { FiEdit, FiCheck, FiX, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiCheck, FiX } from "react-icons/fi";
+import SectionMarkdown from "./SectionMarkdown";
 
 //========== Property Highlights Component ===========
 
@@ -14,47 +15,32 @@ const PropertyHighlights: React.FC<PropertyHighlightsProps> = ({
 }) => {
   //========== State ===========
   const [isEditing, setIsEditing] = useState(false);
-  const [editedHighlights, setEditedHighlights] =
-    useState<string[]>(highlights);
+  const [editedHighlights, setEditedHighlights] = useState<string>(highlights);
+
+  useEffect(() => {
+    setEditedHighlights(highlights);
+  }, [highlights]);
 
   //========== Handlers ===========
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    // Validate: Check if any field is empty
-    const hasEmptyFields = editedHighlights.some(
-      (highlight) => highlight.trim() === ""
-    );
-
-    if (hasEmptyFields) {
-      alert("Please fill in all highlights before saving.");
+  const handleSave = async () => {
+    if (editedHighlights.trim() === "") {
+      alert("Please add highlights before saving.");
       return;
     }
 
+    if (onEdit) {
+      await onEdit(editedHighlights);
+    }
     setIsEditing(false);
-    console.log("Property Highlights saved:", editedHighlights);
-    if (onEdit) onEdit();
   };
 
   const handleCancel = () => {
     setIsEditing(false);
     setEditedHighlights(highlights);
-  };
-
-  const handleAddField = () => {
-    setEditedHighlights([...editedHighlights, ""]);
-  };
-
-  const handleRemoveField = (index: number) => {
-    setEditedHighlights(editedHighlights.filter((_, i) => i !== index));
-  };
-
-  const handleFieldChange = (index: number, value: string) => {
-    const updated = [...editedHighlights];
-    updated[index] = value;
-    setEditedHighlights(updated);
   };
 
   return (
@@ -107,48 +93,17 @@ const PropertyHighlights: React.FC<PropertyHighlightsProps> = ({
 
       {/* ====== Content Section ====== */}
       {!isEditing ? (
-        <div className="space-y-3">
-          {editedHighlights.map((highlight, index) => (
-            <div
-              key={index}
-              className="flex gap-3 text-sm md:text-base text-gray-700"
-            >
-              <span className="text-gray-900">•</span>
-              <p className="flex-1">{highlight}</p>
-            </div>
-          ))}
-        </div>
+        <SectionMarkdown
+          content={editedHighlights}
+          className="text-sm md:text-base text-gray-700"
+        />
       ) : (
-        <div className="space-y-3">
-          {editedHighlights.map((highlight, index) => (
-            <div key={index} className="flex gap-2 items-start">
-              <span className="text-gray-900 mt-2">•</span>
-              <input
-                type="text"
-                value={highlight}
-                onChange={(e) => handleFieldChange(index, e.target.value)}
-                required={true}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                placeholder={`Highlight ${index + 1}`}
-              />
-              <button
-                onClick={() => handleRemoveField(index)}
-                className="text-red-500 hover:text-red-700 p-2"
-                type="button"
-              >
-                <FiTrash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-          <button
-            onClick={handleAddField}
-            className="flex items-center gap-2 border-2 border-blue-300 rounded-full py-0.5 px-2 bg-blue-100 shadow-md text-blue-600 hover:text-blue-700 text-sm mt-2"
-            type="button"
-          >
-            <FiPlus className="w-4 h-4" />
-            Add Highlight
-          </button>
-        </div>
+        <textarea
+          value={editedHighlights}
+          onChange={(e) => setEditedHighlights(e.target.value)}
+          className="w-full min-h-[150px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm resize-y"
+          placeholder="Use markdown list format, e.g. - Strong in-place cash flow"
+        />
       )}
     </div>
   );

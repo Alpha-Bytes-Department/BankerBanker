@@ -58,7 +58,7 @@ const sponsor: LinkProps = [
     icon: <FiFileText className="text-lg" />,
   },
   {
-    text: "Document Processing",
+    text: "Making Memorandum",
     href: "/processing",
     icon: <FiUpload className="text-lg" />,
   },

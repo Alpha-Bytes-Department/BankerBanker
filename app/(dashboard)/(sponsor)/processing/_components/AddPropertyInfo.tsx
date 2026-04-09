@@ -86,19 +86,24 @@ const AddPropertyInfo = ({
       return;
     }
     try {
-      const response = await api.post("/api/properties/", {
-        property_name: data.property_name,
-        property_address: data.property_address,
-        property_type: data.property_type,
-        number_of_units: data.number_of_units,
-        rentable_area: String(data.rentable_area),
-        year_built: data.year_built,
-        occupancy: String(data.occupancy),
-        year_renovated: data.year_renovated,
-        parking_spaces: data.parking_spaces,
-        latitude: parseFloat(location.lat.toFixed(6)),
-        longitude: parseFloat(location.lng.toFixed(6)),
+      const formData = new FormData();
+      formData.append("property_name", data.property_name);
+      formData.append("property_address", data.property_address);
+      formData.append("property_type", data.property_type);
+      formData.append("number_of_units", String(data.number_of_units));
+      formData.append("rentable_area", String(data.rentable_area));
+      formData.append("year_built", String(data.year_built));
+      formData.append("occupancy", String(data.occupancy));
+      formData.append("year_renovated", String(data.year_renovated));
+      formData.append("parking_spaces", String(data.parking_spaces));
+      formData.append("latitude", location.lat.toFixed(6));
+      formData.append("longitude", location.lng.toFixed(6));
+
+      propertyImages.forEach((image) => {
+        formData.append("property_image", image);
       });
+
+      const response = await api.post("/api/properties/", formData);
 
       if (response.status === 200 || response.status === 201) {
         toast.success("Property info added");
