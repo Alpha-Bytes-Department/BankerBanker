@@ -28,6 +28,23 @@ interface Property {
   updated_at: string;
 }
 
+interface MemorandumSummary {
+  id: number;
+  property: number;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+interface PropertyCardData extends Property {
+  property: string;
+  title: string;
+  location: string;
+  status: string;
+  link?: string;
+  link2?: string;
+}
+
 interface Marker {
   id: number;
   position: { lat: number; lng: number };
@@ -40,6 +57,36 @@ interface Marker {
 
 const MARKER_ICON = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
 
+const getTimestamp = (value?: string) => {
+  if (!value) return 0;
+  const parsed = Date.parse(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+
+const isPublished = (status?: string) =>
+  (status || "").trim().toLowerCase() === "published";
+
+const pickPreferredMemorandum = (
+  current: MemorandumSummary | undefined,
+  candidate: MemorandumSummary,
+) => {
+  if (!current) return candidate;
+
+  const currentPublished = isPublished(current.status);
+  const candidatePublished = isPublished(candidate.status);
+
+  if (candidatePublished !== currentPublished) {
+    return candidatePublished ? candidate : current;
+  }
+
+  const currentStamp = getTimestamp(current.updated_at || current.created_at);
+  const candidateStamp = getTimestamp(
+    candidate.updated_at || candidate.created_at,
+  );
+
+  return candidateStamp > currentStamp ? candidate : current;
+};
+
 // ── Skeleton helpers ─────────────────────────────────────────────────────────
 
 const StatsSkeleton = () => (
@@ -51,8 +98,8 @@ const StatsSkeleton = () => (
 );
 
 const PropertySkeleton = () => (
-  <div className="flex flex-col gap-5">
-    {[...Array(3)].map((_, i) => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+    {[...Array(4)].map((_, i) => (
       <div key={i} className="h-28 rounded-xl bg-gray-100 animate-pulse" />
     ))}
   </div>
@@ -62,7 +109,7 @@ const PropertySkeleton = () => (
 
 const Page = () => {
   const [stats, setStats] = useState<SponsorStats | null>(null);
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [properties, setProperties] = useState<PropertyCardData[]>([]);
   const [markers, setMarkers] = useState<Marker[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
   const [propertiesLoading, setPropertiesLoading] = useState(true);
@@ -84,12 +131,46 @@ const Page = () => {
   const fetchProperties = useCallback(async () => {
     setPropertiesLoading(true);
     try {
-      const res = await api.get("/api/properties/");
-      const data: Property[] = res.data?.data ?? [];
-      setProperties(data);
+      const [propertyRes, memorandumRes] = await Promise.all([
+        api.get("/api/properties/"),
+        api.get("/api/memorandums/"),
+      ]);
+
+      const propertyData: Property[] = propertyRes.data?.data ?? [];
+      const memorandumData: MemorandumSummary[] =
+        memorandumRes.data?.data ?? [];
+
+      const memorandumByProperty = new Map<number, MemorandumSummary>();
+      for (const memorandum of memorandumData) {
+        const propertyId = Number(memorandum.property);
+        if (!Number.isFinite(propertyId) || propertyId <= 0) continue;
+
+        const current = memorandumByProperty.get(propertyId);
+        const preferred = pickPreferredMemorandum(current, memorandum);
+        memorandumByProperty.set(propertyId, preferred);
+      }
+
+      const enrichedProperties: PropertyCardData[] = propertyData.map(
+        (property) => {
+          const matchedMemorandum = memorandumByProperty.get(property.id);
+
+          return {
+            ...property,
+            property: String(property.id),
+            title: property.property_name,
+            location: property.property_address,
+            status: property.property_type,
+            link: matchedMemorandum
+              ? `/memorandum/${matchedMemorandum.id}`
+              : undefined,
+          };
+        },
+      );
+
+      setProperties(enrichedProperties);
 
       // Build markers from property coordinates
-      const derived: Marker[] = data
+      const derived: Marker[] = enrichedProperties
         .filter((p) => p.latitude && p.longitude)
         .map((p) => ({
           id: p.id,
@@ -113,6 +194,9 @@ const Page = () => {
     fetchStats();
     fetchProperties();
   }, [fetchStats, fetchProperties]);
+
+  const visibleProperties = properties.slice(0, 4);
+  const hasMoreProperties = properties.length > 4;
 
   return (
     <div>
@@ -168,7 +252,7 @@ const Page = () => {
             </Link>
           </div>
 
-          <div className="my-10 flex flex-col gap-5 mx-auto">
+          <div className="my-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
             {propertiesLoading ? (
               <PropertySkeleton />
             ) : properties.length === 0 ? (
@@ -179,11 +263,22 @@ const Page = () => {
                 </p>
               </div>
             ) : (
-              properties.map((property) => (
+              visibleProperties.map((property) => (
                 <PropertyCard key={property.id} data={property} />
               ))
             )}
           </div>
+
+          {!propertiesLoading && hasMoreProperties ? (
+            <div className="flex justify-center">
+              <Link
+                href="/memorandum"
+                className="button-outline rounded-full px-5 py-2 text-sm font-medium"
+              >
+                Show More
+              </Link>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

@@ -67,8 +67,8 @@ export interface PropertyDetail {
   longitude?: string;
   location: string;
   status: string;
-  link: string;
-  link2: string;
+  link?: string;
+  link2?: string;
 }
 
 // ── Component ────────────────────────────────────────────────────────────────
@@ -104,6 +104,7 @@ const PropertyCard = ({
 }: PropertyCardProps) => {
   const router = useRouter();
   const propertyImageSrc = normalizeImageUrl(data.property_image_url);
+  const hasPrimaryLink = Boolean(data.link);
 
   const pillColor =
     typePillColor[data.property_type?.trim()] ?? "bg-gray-100 text-gray-700";
@@ -274,9 +275,13 @@ const PropertyCard = ({
         {/* ── Actions ── */}
         <div className="flex justify-between items-center">
           <Button
-            text="View Document"
+            text={hasPrimaryLink ? "View Document" : "No Memorandum"}
             size="medium"
-            onClick={() => router.push(data.link)}
+            isDisabled={!hasPrimaryLink}
+            onClick={() => {
+              if (!data.link) return;
+              router.push(data.link);
+            }}
           />
           <Button
             size="medium"
@@ -288,7 +293,9 @@ const PropertyCard = ({
                 return;
               }
 
-              router.push(data.link2);
+              if (data.link2) {
+                router.push(data.link2);
+              }
             }}
           />
         </div>
