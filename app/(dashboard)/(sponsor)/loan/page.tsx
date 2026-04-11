@@ -1,152 +1,298 @@
-"use client"
-import { useState } from 'react';
-import LoanCard from './_components/LoanCard';
-import StatusCard from '@/components/StatusCard';
-import Comparison from './_components/Comparison';
+"use client";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import LoanCard from "./_components/LoanCard";
+import StatusCard from "@/components/StatusCard";
+import Comparison from "./_components/Comparison";
+import ConfirmActionModal from "@/components/ConfirmActionModal";
+import api from "@/Provider/api";
+import { toast } from "sonner";
+import type {
+  LoanQuote,
+  SponsorLoanDashboardData,
+  SponsorLoanHeaderStats,
+} from "./_components/loan-types";
 
-
-export type Loan = {
-  id: number;
-  name: string;
-  rating: number;
-  amount: string;
-  interest: string;
-  fee: string;
-  ltv: string;
-  term: string;
-  dscr: string;
-  document: string;
-  expiresIn: string;
-  active: boolean;
-  highlighted: boolean;
+const DEFAULT_HEADER_STATS: SponsorLoanHeaderStats = {
+  total_properties: 0,
+  quotes_received: 0,
+  documents_count: 0,
+  portfolio_value: 0,
 };
 
-
-const loans: Loan[] = [
-  {
-    id: 1,
-    name: "Argentic Capital",
-    rating: 4.5,
-    amount: "$12,000,000",
-    interest: "SOFR + 3.95%",
-    fee: "1.00%",
-    ltv: "75.0%",
-    term: "3 years + 2 ext",
-    dscr: "1.25x",
-    document: "Financial_Statements_Q3_2024.pdf",
-    expiresIn: "336 days",
-    active: true,
-    highlighted: true,
+const DEFAULT_DASHBOARD_DATA: SponsorLoanDashboardData = {
+  header_stats: DEFAULT_HEADER_STATS,
+  quote_card_view: [],
+  quote_comparison: {
+    total_quotes: 0,
+    best_rate: 0,
+    highest_ltv: 0,
+    quotes: [],
   },
-  {
-    id: 2,
-    name: "BlueRock Finance",
-    rating: 4.2,
-    amount: "$8,500,000",
-    interest: "SOFR + 4.10%",
-    fee: "0.90%",
-    ltv: "70.0%",
-    term: "5 years",
-    dscr: "1.30x",
-    document: "Financials_2024.pdf",
-    expiresIn: "120 days",
-    active: true,
-    highlighted: false,
-  },
-  {
-    id: 3,
-    name: "Summit Lending",
-    rating: 4.7,
-    amount: "$15,250,000",
-    interest: "SOFR + 3.75%",
-    fee: "1.10%",
-    ltv: "78.0%",
-    term: "10 years",
-    dscr: "1.40x",
-    document: "Summit_Report_2024.pdf",
-    expiresIn: "210 days",
-    active: true,
-    highlighted: true,
-  },
-  {
-    id: 4,
-    name: "Atlas Credit",
-    rating: 4.1,
-    amount: "$6,750,000",
-    interest: "SOFR + 4.35%",
-    fee: "0.85%",
-    ltv: "68.5%",
-    term: "3 years",
-    dscr: "1.20x",
-    document: "Atlas_Financials.pdf",
-    expiresIn: "95 days",
-    active: false,
-    highlighted: false,
-  },
-  {
-    id: 5,
-    name: "NorthPeak Financial",
-    rating: 4.6,
-    amount: "$10,000,000",
-    interest: "SOFR + 3.90%",
-    fee: "1.00%",
-    ltv: "72.0%",
-    term: "7 years",
-    dscr: "1.35x",
-    document: "NorthPeak_Q2_2024.pdf",
-    expiresIn: "180 days",
-    active: true,
-    highlighted: false,
-  },
-  {
-    id: 6,
-    name: "IronGate Capital",
-    rating: 4.3,
-    amount: "$9,200,000",
-    interest: "SOFR + 4.00%",
-    fee: "0.95%",
-    ltv: "71.0%",
-    term: "5 years + 1 ext",
-    dscr: "1.28x",
-    document: "IronGate_Statements.pdf",
-    expiresIn: "260 days",
-    active: true,
-    highlighted: true,
-  },
-];
-
-
+};
 
 const Page = () => {
-  const [view, setView] = useState<"Card View" | "Comparison">("Card View")
+  const router = useRouter();
+  const [view, setView] = useState<"Card View" | "Comparison">("Card View");
+  const [dashboardData, setDashboardData] = useState<SponsorLoanDashboardData>(
+    DEFAULT_DASHBOARD_DATA,
+  );
+  const [loading, setLoading] = useState(true);
+  const [mutatingQuoteId, setMutatingQuoteId] = useState<number | null>(null);
+  const [pendingAction, setPendingAction] = useState<{
+    type: "accept" | "decline" | "delete";
+    quote: LoanQuote;
+  } | null>(null);
+
+  const loadDashboardData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("/api/loans/dashboard/sponsor/");
+      const data = response.data?.data;
+
+      setDashboardData({
+        header_stats: {
+          ...DEFAULT_HEADER_STATS,
+          ...(data?.header_stats || {}),
+        },
+        quote_card_view: data?.quote_card_view || [],
+        quote_comparison: {
+          ...DEFAULT_DASHBOARD_DATA.quote_comparison,
+          ...(data?.quote_comparison || {}),
+          quotes: data?.quote_comparison?.quotes || [],
+        },
+      });
+    } catch (error) {
+      console.error("Failed to load sponsor loan dashboard", error);
+      toast.error("Unable to load loan dashboard data right now.");
+      setDashboardData(DEFAULT_DASHBOARD_DATA);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, [loadDashboardData]);
+
+  const executeAcceptQuote = async (quote: LoanQuote) => {
+    try {
+      setMutatingQuoteId(quote.id);
+      await api.post(`/api/loans/quotes/${quote.id}/accept/`);
+      toast.success("Quote accepted successfully.");
+      await loadDashboardData();
+    } catch (error) {
+      console.error("Failed to accept quote", error);
+      toast.error("Failed to accept quote.");
+    } finally {
+      setMutatingQuoteId(null);
+    }
+  };
+
+  const executeDeclineQuote = async (quote: LoanQuote) => {
+    try {
+      setMutatingQuoteId(quote.id);
+      await api.post(`/api/loans/quotes/${quote.id}/decline/`);
+      toast.success("Quote declined successfully.");
+      await loadDashboardData();
+    } catch (error) {
+      console.error("Failed to decline quote", error);
+      toast.error("Failed to decline quote.");
+    } finally {
+      setMutatingQuoteId(null);
+    }
+  };
+
+  const resolveLoanRequestId = async (quote: LoanQuote) => {
+    if (quote.loan_request) {
+      return quote.loan_request;
+    }
+
+    const detailResponse = await api.get(`/api/loans/quotes/${quote.id}/`);
+    const derivedRequestId = Number(detailResponse.data?.data?.loan_request);
+    return Number.isFinite(derivedRequestId) ? derivedRequestId : null;
+  };
+
+  const executeDeleteQuoteRequest = async (quote: LoanQuote) => {
+    try {
+      setMutatingQuoteId(quote.id);
+      const loanRequestId = await resolveLoanRequestId(quote);
+
+      if (!loanRequestId) {
+        toast.error("Unable to resolve loan request for deletion.");
+        return;
+      }
+
+      await api.delete(`/api/loans/requests/${loanRequestId}/`);
+      toast.success("Loan request deleted successfully.");
+      await loadDashboardData();
+    } catch (error) {
+      console.error("Failed to delete loan request", error);
+      toast.error("Failed to delete loan request.");
+    } finally {
+      setMutatingQuoteId(null);
+    }
+  };
+
+  const handleViewQuote = (quote: LoanQuote) => {
+    router.push(`/loan/${quote.id}`);
+  };
+
+  const openConfirmAction = (
+    type: "accept" | "decline" | "delete",
+    quote: LoanQuote,
+  ) => {
+    setPendingAction({ type, quote });
+  };
+
+  const closeConfirmAction = () => {
+    if (mutatingQuoteId !== null) return;
+    setPendingAction(null);
+  };
+
+  const handleConfirmAction = async () => {
+    if (!pendingAction) return;
+
+    if (pendingAction.type === "accept") {
+      await executeAcceptQuote(pendingAction.quote);
+    }
+
+    if (pendingAction.type === "decline") {
+      await executeDeclineQuote(pendingAction.quote);
+    }
+
+    if (pendingAction.type === "delete") {
+      await executeDeleteQuoteRequest(pendingAction.quote);
+    }
+
+    setPendingAction(null);
+  };
+
+  const modalConfig = useMemo(() => {
+    if (!pendingAction) {
+      return {
+        title: "",
+        description: "",
+        confirmText: "Confirm",
+        destructive: false,
+      };
+    }
+
+    const lenderName = pendingAction.quote.lender_name;
+
+    if (pendingAction.type === "accept") {
+      return {
+        title: "Accept quote?",
+        description: `This will accept the quote from ${lenderName} and close the related request.`,
+        confirmText: "Accept Quote",
+        destructive: false,
+      };
+    }
+
+    if (pendingAction.type === "decline") {
+      return {
+        title: "Decline quote?",
+        description: `This will decline the quote from ${lenderName}. You can not undo this action.`,
+        confirmText: "Decline Quote",
+        destructive: true,
+      };
+    }
+
+    return {
+      title: "Delete loan request?",
+      description: `This will permanently delete the related loan request for ${lenderName}.`,
+      confirmText: "Delete Request",
+      destructive: true,
+    };
+  }, [pendingAction]);
+
+  const quoteCards = useMemo(
+    () => dashboardData.quote_card_view || [],
+    [dashboardData],
+  );
+
   return (
     <div>
       {/* status card  */}
       <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
-        <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
-        <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
-        <StatusCard type="documents" data={{ value: 156 }} />
-        <StatusCard type="value" data={{ value: 3, }} />
+        <StatusCard
+          type="Properties"
+          data={{ value: dashboardData.header_stats.total_properties ?? 0 }}
+        />
+        <StatusCard
+          type="quotes"
+          data={{ value: dashboardData.header_stats.quotes_received ?? 0 }}
+        />
+        <StatusCard
+          type="documents"
+          data={{ value: dashboardData.header_stats.documents_count ?? 0 }}
+        />
+        <StatusCard
+          type="value"
+          data={{ value: dashboardData.header_stats.portfolio_value ?? 0 }}
+        />
       </div>
       {/* view selection  */}
       <div className="relative inline-flex rounded-full bg-[#ECECF0] p-1 mb-5">
-        <span className={`absolute top-1 bottom-1 w-1/2 rounded-full bg-primary transition-all duration-300 ease-in-out ${view === "Card View" ? "left-1" : "left-1/2"}`} />
+        <span
+          className={`absolute top-1 bottom-1 w-1/2 rounded-full bg-primary transition-all duration-300 ease-in-out ${view === "Card View" ? "left-1" : "left-1/2"}`}
+        />
         <button
           onClick={() => setView("Card View")}
-          className={`relative z-10 px-4 py-2 rounded-full transition-colors duration-300 ${view === "Card View" ? "text-white" : "text-gray-600"}`}>
+          className={`relative z-10 px-4 py-2 rounded-full transition-colors duration-300 ${view === "Card View" ? "text-white" : "text-gray-600"}`}
+        >
           Card View
         </button>
         <button
-          onClick={() => setView("Comparison")} className={`relative z-10 px-4 py-2 rounded-full transition-colors duration-300 ${view === "Comparison" ? "text-white" : "text-gray-600"}`}>
+          onClick={() => setView("Comparison")}
+          className={`relative z-10 px-4 py-2 rounded-full transition-colors duration-300 ${view === "Comparison" ? "text-white" : "text-gray-600"}`}
+        >
           Comparison
         </button>
       </div>
       {/* view randaring  */}
-      {view==="Card View" ? <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 ">
-        {loans.map((loan) => (
-          <LoanCard key={loan.id} loan={loan} />
-        ))}
-      </div> : <Comparison/>}
+      {view === "Card View" ? (
+        loading ? (
+          <p className="text-sm text-[#6A7282] py-8">Loading quote cards...</p>
+        ) : quoteCards.length === 0 ? (
+          <p className="text-sm text-[#6A7282] py-8">
+            No quote cards available.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5 ">
+            {quoteCards.map((loan) => (
+              <LoanCard
+                key={loan.id}
+                loan={loan}
+                isMutating={mutatingQuoteId === loan.id}
+                onAccept={(item) => openConfirmAction("accept", item)}
+                onDecline={(item) => openConfirmAction("decline", item)}
+                onDelete={(item) => openConfirmAction("delete", item)}
+                onView={handleViewQuote}
+              />
+            ))}
+          </div>
+        )
+      ) : (
+        <Comparison
+          comparison={dashboardData.quote_comparison}
+          loading={loading}
+          mutatingQuoteId={mutatingQuoteId}
+          onAccept={(item) => openConfirmAction("accept", item)}
+          onView={handleViewQuote}
+        />
+      )}
+
+      <ConfirmActionModal
+        open={Boolean(pendingAction)}
+        onOpenChange={closeConfirmAction}
+        title={modalConfig.title}
+        description={modalConfig.description}
+        confirmText={modalConfig.confirmText}
+        destructive={modalConfig.destructive}
+        isLoading={mutatingQuoteId !== null}
+        onConfirm={handleConfirmAction}
+      />
     </div>
   );
 };

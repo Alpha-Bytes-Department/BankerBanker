@@ -7,11 +7,7 @@ import { MdClose } from "react-icons/md";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CiGrid42, CiSearch } from "react-icons/ci";
-import {
-  FiFileText,
-  FiLogOut,
-  FiUpload,
-} from "react-icons/fi";
+import { FiFileText, FiLogOut, FiUpload } from "react-icons/fi";
 import { FaRegChartBar } from "react-icons/fa";
 import { IoBagHandleOutline } from "react-icons/io5";
 import Notifications from "../(sponsor)/notifications/page";
@@ -38,8 +34,6 @@ type UserData = {
   first_name: string;
   last_name: string;
 };
-
-
 
 const sponsor: LinkProps = [
   {
@@ -77,7 +71,7 @@ const sponsor: LinkProps = [
 const lander: LinkProps = [
   {
     text: "Lender Dashboard",
-    href: "/sponsor",
+    href: "/lender",
     icon: <CiGrid42 className="text-lg" />,
   },
   {
@@ -114,18 +108,16 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
 
   console.log("checking user data", user);
 
-
   const handleLogOut = () => {
     logout();
-  }
-
-
-
+  };
 
   return (
     <nav className="flex items-start">
-      <div className={`fixed top-0 left-0 h-screen w-72 z-50 bg-black shadow-xl transform transition-transform duration-300 ease-in-out  ${isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+      <div
+        className={`fixed top-0 left-0 h-screen w-72 z-50 bg-black shadow-xl transform transition-transform duration-300 ease-in-out  ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="flex justify-center  flex-col h-full">
           {/* Menu Header */}
@@ -154,24 +146,32 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
             <div className="cursor-pointer">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Avatar>
-                    <AvatarImage src={process.env.NEXT_PUBLIC_BASE_URL + (user?.profile_photo || "")} alt="profile"/>
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
+                  <div className="flex items-center gap-3 ">
+                    <Avatar>
+                      <AvatarImage
+                        src={
+                          process.env.NEXT_PUBLIC_BASE_URL +
+                          (user?.profile_photo || "")
+                        }
+                        alt="profile"
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p
+                        className="overflow-y-hidden"
+                        title={user?.first_name + " " + user?.last_name}
+                      >
+                        {user?.first_name + " " + user?.last_name}
+                      </p>
+                      <p className="overflow-y-hidden" title={user?.email}>
+                        {user?.email}
+                      </p>
+                    </div>
+                  </div>
                 </DialogTrigger>
                 <ProfilePopUp user={user} />
               </Dialog>
-            </div>
-            <div>
-              <p
-                className="overflow-y-hidden"
-                title={user?.first_name + " " + user?.last_name}
-              >
-                {user?.first_name + " " + user?.last_name}
-              </p>
-              <p className="overflow-y-hidden" title={user?.email}>
-                {user?.email}
-              </p>
             </div>
           </div>
           {/* Navigation Links */}
@@ -179,25 +179,27 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
             <div className="flex flex-col space-y-2 text-white">
               {user?.role === "Lender"
                 ? lander.map((link, idx) => (
-                  <div
-                    className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""
+                    <div
+                      className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
+                        link.href === pathName ? "button-primary" : ""
                       }`}
-                    key={idx}
-                  >
-                    {link.icon && <span>{link.icon}</span>}
-                    <Link href={link.href}>{link.text}</Link>
-                  </div>
-                ))
+                      key={idx}
+                    >
+                      {link.icon && <span>{link.icon}</span>}
+                      <Link href={link.href}>{link.text}</Link>
+                    </div>
+                  ))
                 : sponsor.map((link, idx) => (
-                  <div
-                    className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${link.href === pathName ? "button-primary" : ""
+                    <div
+                      className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
+                        link.href === pathName ? "button-primary" : ""
                       }`}
-                    key={idx}
-                  >
-                    {link.icon && <span>{link.icon}</span>}
-                    <Link href={link.href}>{link.text}</Link>
-                  </div>
-                ))}
+                      key={idx}
+                    >
+                      {link.icon && <span>{link.icon}</span>}
+                      <Link href={link.href}>{link.text}</Link>
+                    </div>
+                  ))}
             </div>
           </nav>
           {/* bottom */}
@@ -217,20 +219,22 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
       {/* top section with children*/}
       <div className="flex-1 flex flex-col lg:ml-72 min-h-screen">
         <div className="sticky top-0 z-30 border-b border-[#E5E7EB] bg-white text-black">
-          <div className={`flex justify-between items-center px-5 lg:px-8 py-3 max-w-[1550px] mx-auto`}>
+          <div
+            className={`flex justify-between items-center px-5 lg:px-8 py-3 max-w-[1550px] mx-auto`}
+          >
             <div>
               <div className="hidden lg:flex">
                 {user?.role === "Lender"
                   ? lander.map((Link) => {
-                    if (Link.href === pathName) {
-                      return Link.text;
-                    }
-                  })
+                      if (Link.href === pathName) {
+                        return Link.text;
+                      }
+                    })
                   : sponsor.map((Link) => {
-                    if (Link.href === pathName) {
-                      return Link.text;
-                    }
-                  })}
+                      if (Link.href === pathName) {
+                        return Link.text;
+                      }
+                    })}
               </div>
               <RxHamburgerMenu
                 onClick={() => setIsMenuOpen(true)}

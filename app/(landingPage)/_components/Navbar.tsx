@@ -47,12 +47,7 @@ const Links: LinkProps = [
             icon: <BsBank className='text-lg' />
 
         },
-        {
-            text: 'Broker',
-            href: '/broker',
-            icon: <BsBank className='text-lg' />
-
-        },
+        
         {
             text: 'Contact',
             href: '/contact',

@@ -1,8 +1,8 @@
 "use client";
 import StatCard from "./StatCard";
 import { FiCheck, FiEye } from "react-icons/fi";
-import { FaStar } from "react-icons/fa";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
+import type { LoanComparisonSummary, LoanQuote } from "./loan-types";
 
 //========== Type Definitions ===========
 
@@ -15,83 +15,138 @@ type QuoteStat = {
   type: StatType;
 };
 
-type LoanRecommendation = {
-  id: number;
-  lenderName: string;
-  rating: number;
-  isRecommended: boolean;
-  amount: string;
-  rate: string;
-  ltv: string;
-  term: string;
-  dscr: string;
+interface ComparisonProps {
+  comparison: LoanComparisonSummary | null;
+  loading: boolean;
+  mutatingQuoteId: number | null;
+  onAccept: (quote: LoanQuote) => void;
+  onView: (quote: LoanQuote) => void;
+}
+
+const toNumber = (value: string | number | undefined) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
 };
 
-//========== Sample Data ===========
+const formatCurrency = (value: string | number | undefined) => {
+  const parsed = toNumber(value);
+  if (parsed === null) return "-";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(parsed);
+};
 
-const quoteStats: QuoteStat[] = [
-  {
-    id: 1,
-    title: "Total Quotes",
-    value: "5",
-    type: "primary",
-  },
-  {
-    id: 2,
-    title: "Best Rate",
-    value: "SOFR + 3.85%",
-    type: "success",
-  },
-  {
-    id: 3,
-    title: "Highest LTV",
-    value: "76.0%",
-    type: "info",
-  },
-  {
-    id: 4,
-    title: "Avg Amount",
-    value: "$11.80M",
-    type: "warning",
-  },
-];
+const formatPercent = (value: string | number | undefined) => {
+  const parsed = toNumber(value);
+  if (parsed === null) return "-";
+  return `${parsed.toFixed(2)}%`;
+};
 
-const topRecommendations: LoanRecommendation[] = [
-  {
-    id: 1,
-    lenderName: "Argentic Capital",
-    rating: 4.5,
-    isRecommended: true,
-    amount: "$12,000,000",
-    rate: "SOFR + 3.95%",
-    ltv: "75.0%",
-    term: "3 years + 2 ext",
-    dscr: "1.25x",
-  },
-  {
-    id: 2,
-    lenderName: "Prime Commercial",
-    rating: 4.7,
-    isRecommended: true,
-    amount: "$12,200,000",
-    rate: "SOFR + 3.85%",
-    ltv: "76.0%",
-    term: "3 years + 1 ext",
-    dscr: "1.22x",
-  },
-];
+const formatTerm = (value: string | number | undefined) => {
+  if (value === undefined || value === null || value === "") return "-";
+  if (typeof value === "number" || /^\d+$/.test(String(value))) {
+    return `${value} months`;
+  }
+  return String(value);
+};
+
+const isFinalizedStatus = (status?: string) => {
+  const normalized = (status || "").toLowerCase();
+  return (
+    normalized === "accepted" ||
+    normalized === "declined" ||
+    normalized === "decline"
+  );
+};
 
 //========== Comparison Component ===========
 
-const Comparison = () => {
-  //========== Event Handlers ===========
-  const handleAccept = (lenderId: number) => {
-    console.log("Accepted loan from lender:", lenderId);
-  };
+const Comparison = ({
+  comparison,
+  loading,
+  mutatingQuoteId,
+  onAccept,
+  onView,
+}: ComparisonProps) => {
+  const quoteStats: QuoteStat[] = [
+    {
+      id: 1,
+      title: "Total Quotes",
+      value: String(comparison?.total_quotes ?? 0),
+      type: "primary",
+    },
+    {
+      id: 2,
+      title: "Best Rate",
+      value: formatPercent(comparison?.best_rate),
+      type: "success",
+    },
+    {
+      id: 3,
+      title: "Highest LTV",
+      value: formatPercent(comparison?.highest_ltv),
+      type: "info",
+    },
+  ];
 
-  const handleView = (lenderId: number) => {
-    console.log("Viewing details for lender:", lenderId);
-  };
+  const comparisonQuotes = comparison?.quotes ?? [];
+  const metricRows: Array<{
+    key: string;
+    label: string;
+    getValue: (quote: LoanQuote) => string;
+  }> = [
+    {
+      key: "amount",
+      label: "Amount",
+      getValue: (quote) => formatCurrency(quote.loan_amount),
+    },
+    {
+      key: "rate",
+      label: "Rate",
+      getValue: (quote) => formatPercent(quote.interest_rate),
+    },
+    {
+      key: "ltv",
+      label: "LTV",
+      getValue: (quote) => formatPercent(quote.max_as_is_ltv),
+    },
+    {
+      key: "term",
+      label: "Term",
+      getValue: (quote) => formatTerm(quote.term),
+    },
+    {
+      key: "dscr",
+      label: "DSCR",
+      getValue: (quote) => `${toNumber(quote.dscr)?.toFixed(2) ?? "-"}x`,
+    },
+    {
+      key: "originationFee",
+      label: "Origination Fee",
+      getValue: (quote) => formatPercent(quote.origination_fee),
+    },
+    {
+      key: "status",
+      label: "Status",
+      getValue: (quote) => quote.status || "-",
+    },
+    {
+      key: "expires",
+      label: "Expires",
+      getValue: (quote) => {
+        if (!quote.expires_at) return "-";
+        const parsed = new Date(quote.expires_at);
+        if (Number.isNaN(parsed.getTime())) return "-";
+        return parsed.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      },
+    },
+  ];
 
   return (
     <div className="p-5 border border-[#0000001A] rounded-lg">
@@ -106,116 +161,109 @@ const Comparison = () => {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.45, delay: idx * 0.06 }}
           >
-            <StatCard
-              title={stat.title}
-              value={stat.value}
-              type={stat.type}
-            />
+            <StatCard title={stat.title} value={stat.value} type={stat.type} />
           </motion.div>
         ))}
       </div>
 
       {/* ====== Top Recommendations Section ====== */}
       <div className="mt-10 mb-5">
-        <h1 className="text-lg">Top Recommendations</h1>
+        <h1 className="text-lg">Quotes</h1>
       </div>
 
-      <div className="space-y-4">
-        {topRecommendations.map((recommendation, idx) => (
-          <motion.div
-            key={recommendation.id}
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.5, delay: 0.08 + idx * 0.06 }}
-            className="border border-gray-200 rounded-lg p-4 md:p-6"
-          >
-            {/* ====== Lender Header ====== */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-              <div className="flex items-center gap-3">
-                <h3 className="text-base md:text-lg text-gray-900">
-                  {recommendation.lenderName}
-                </h3>
+      {loading ? (
+        <p className="text-sm text-[#6A7282] py-6">Loading quotes...</p>
+      ) : comparisonQuotes.length === 0 ? (
+        <p className="text-sm text-[#6A7282] py-6">
+          No quotes available for comparison.
+        </p>
+      ) : (
+        <div className="overflow-x-auto rounded-lg border border-gray-200">
+          <table className="min-w-[980px] w-full text-sm border-separate border-spacing-0">
+            <thead>
+              <tr>
+                <th className="sticky left-0 z-20 min-w-[200px] bg-gray-50 px-4 py-3 text-left font-semibold text-gray-800 border-b border-r border-gray-200">
+                  Metrics
+                </th>
+                {comparisonQuotes.map((quote) => (
+                  <th
+                    key={quote.id}
+                    className="min-w-[220px] bg-gray-50 px-4 py-3 text-left border-b border-gray-200"
+                  >
+                    <p className="text-gray-900 font-semibold">
+                      {quote.lender_name}
+                    </p>
+                    <p className="text-xs text-blue-600 mt-1">
+                      Quote #{quote.id}
+                    </p>
+                  </th>
+                ))}
+              </tr>
+            </thead>
 
-                {/* ====== Star Rating ====== */}
-                <div className="flex items-center gap-1">
-                  {[...Array(5)].map((_, index) => (
-                    <FaStar
-                      key={index}
-                      className={`w-4 h-4 ${
-                        index < Math.floor(recommendation.rating)
-                          ? "text-yellow-400"
-                          : "text-gray-300"
+            <tbody>
+              {metricRows.map((metric, rowIndex) => (
+                <tr key={metric.key}>
+                  <th
+                    scope="row"
+                    className={`sticky left-0 z-10 min-w-[200px] px-4 py-3 text-left font-medium border-r border-b border-gray-200 ${
+                      rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    }`}
+                  >
+                    {metric.label}
+                  </th>
+
+                  {comparisonQuotes.map((quote) => (
+                    <td
+                      key={`${metric.key}-${quote.id}`}
+                      className={`px-4 py-3 border-b border-gray-200 text-gray-900 ${
+                        rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
                       }`}
-                    />
+                    >
+                      {metric.getValue(quote)}
+                    </td>
                   ))}
-                  <span className="text-sm text-gray-600 ml-1">
-                    {recommendation.rating}
-                  </span>
-                </div>
+                </tr>
+              ))}
 
-                {/* ====== Recommended Badge ====== */}
-                {recommendation.isRecommended && (
-                  <span className="bg-blue-100 text-blue-600 text-xs px-3 py-1 rounded">
-                    Recommended
-                  </span>
-                )}
-              </div>
-
-              {/* ====== Action Buttons ====== */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleAccept(recommendation.id)}
-                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors"
+              <tr>
+                <th
+                  scope="row"
+                  className="sticky left-0 z-10 min-w-[200px] bg-white px-4 py-3 text-left font-medium border-r border-b border-gray-200"
                 >
-                  <FiCheck className="w-4 h-4" />
-                  Accept
-                </button>
-                <button
-                  onClick={() => handleView(recommendation.id)}
-                  className="flex items-center gap-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors"
-                >
-                  <FiEye className="w-4 h-4" />
-                  View
-                </button>
-              </div>
-            </div>
-
-            {/* ====== Loan Details Grid ====== */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-sm">
-              {/* ====== Amount ====== */}
-              <div>
-                <p className="text-gray-600 mb-1">Amount</p>
-                <p className="text-gray-900">{recommendation.amount}</p>
-              </div>
-
-              {/* ====== Rate ====== */}
-              <div>
-                <p className="text-gray-600 mb-1">Rate</p>
-                <p className="text-gray-900">{recommendation.rate}</p>
-              </div>
-
-              {/* ====== LTV ====== */}
-              <div>
-                <p className="text-gray-600 mb-1">LTV</p>
-                <p className="text-gray-900">{recommendation.ltv}</p>
-              </div>
-
-              {/* ====== Term ====== */}
-              <div>
-                <p className="text-gray-600 mb-1">Term</p>
-                <p className="text-gray-900">{recommendation.term}</p>
-              </div>
-
-              {/* ====== DSCR ====== */}
-              <div>
-                <p className="text-gray-600 mb-1">DSCR</p>
-                <p className="text-gray-900">{recommendation.dscr}</p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+                  Actions
+                </th>
+                {comparisonQuotes.map((quote) => (
+                  <td
+                    key={`actions-${quote.id}`}
+                    className="bg-white px-4 py-3 border-b border-gray-200"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      {!isFinalizedStatus(quote.status) ? (
+                        <button
+                          onClick={() => onAccept(quote)}
+                          disabled={mutatingQuoteId === quote.id}
+                          className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors disabled:opacity-60"
+                        >
+                          <FiCheck className="w-4 h-4" />
+                          Accept
+                        </button>
+                      ) : null}
+                      <button
+                        onClick={() => onView(quote)}
+                        className="inline-flex items-center gap-2 border border-gray-300 text-gray-700 px-3 py-2 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                      >
+                        <FiEye className="w-4 h-4" />
+                        View
+                      </button>
+                    </div>
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
