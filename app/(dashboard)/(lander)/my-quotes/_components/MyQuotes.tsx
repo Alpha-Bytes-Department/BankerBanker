@@ -19,6 +19,7 @@ import {
 import StatsCardsQuotes from "./StatsCardsQuotes";
 import QuotesList from "./QuotesList";
 import QuoteDetailsModal from "./QuoteDetailsModal";
+import { property } from "zod";
 
 type ApiEnvelope<T> = {
   data?: T;
@@ -177,6 +178,8 @@ const MyQuotes: React.FC = () => {
       const propertyItems = propertiesResponse.data?.data || [];
       const dashboardLoanRequests = dashboard?.available_loan_requests || [];
 
+      
+
       const statsCards: QuoteStat[] = [
         {
           id: 1,
@@ -315,7 +318,7 @@ const MyQuotes: React.FC = () => {
           raw: quote,
         };
       });
-
+      console.log("Mapped Quotes:", mappedQuotes);
       setAllQuotes(mappedQuotes);
     } catch (error) {
       console.error("Failed to load lender quotes", error);
@@ -371,7 +374,7 @@ const MyQuotes: React.FC = () => {
             quote.city.toLowerCase().includes(query)
           );
         }
-
+    
         return true;
       }),
     [activeFilter, allQuotes, searchQuery],
