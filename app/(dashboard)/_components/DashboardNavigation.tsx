@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { MdClose } from "react-icons/md";
 import { usePathname } from "next/navigation";
@@ -16,6 +16,7 @@ import ProfilePopUp from "./ProfilePopUp";
 import ChatWidget from "./ChatWidget";
 import { MapPin, School } from "lucide-react";
 import { useAuth } from "@/Provider/AuthProvider";
+import ConfirmActionModal from "@/components/ConfirmActionModal";
 
 type NavbarProps = {
   links?: { text: string; href: string }[];
@@ -94,22 +95,65 @@ const lander: LinkProps = [
     href: "/market-analytics",
     icon: <FaRegChartBar className="text-lg" />,
   },
-  // {
-  //   text: "Message",
-  //   href: "/message",
-  //   icon: <FiMessageCircle className="text-lg" />,
-  // },
 ];
+
+const normalizeRole = (value?: string) => {
+  const normalized = String(value || "").toLowerCase();
+  if (normalized === "lender" || normalized === "lander") return "Lender";
+  if (normalized === "sponsor") return "Sponsor";
+  return null;
+};
 
 const DashboardNavigation = ({ children }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [storedRole, setStoredRole] = useState<"Lender" | "Sponsor" | null>(
+    null,
+  );
   const pathName = usePathname();
   const { loading, user, logout } = useAuth();
+  const userRole =
+    normalizeRole(user?.customer_type || user?.role) || storedRole;
+  const isLender = userRole === "Lender";
+  const isSponsor = userRole === "Sponsor";
+  const navigationLinks = isLender ? lander : isSponsor ? sponsor : [];
 
-  console.log("checking user data", user);
+  useEffect(() => {
+    try {
+      const rawCreds = localStorage.getItem("userCredentials");
+      if (!rawCreds) {
+        setStoredRole(null);
+        return;
+      }
 
-  const handleLogOut = () => {
-    logout();
+      const parsedCreds = JSON.parse(rawCreds);
+      const storedUser =
+        parsedCreds?.user && typeof parsedCreds.user === "object"
+          ? parsedCreds.user
+          : parsedCreds;
+
+      const normalized = normalizeRole(
+        storedUser?.customer_type || storedUser?.role,
+      );
+      setStoredRole((normalized as "Lender" | "Sponsor" | null) ?? null);
+    } catch {
+      setStoredRole(null);
+    }
+  }, []);
+
+  const handleLogOutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const handleConfirmLogOut = async () => {
+    try {
+      setIsLoggingOut(true);
+      logout();
+    } finally {
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+    }
   };
 
   return (
@@ -177,41 +221,31 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
           {/* Navigation Links */}
           <nav className="grow p-4">
             <div className="flex flex-col space-y-2 text-white">
-              {user?.role === "Lender"
-                ? lander.map((link, idx) => (
-                    <div
-                      className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
-                        link.href === pathName ? "button-primary" : ""
-                      }`}
-                      key={idx}
-                    >
-                      {link.icon && <span>{link.icon}</span>}
-                      <Link href={link.href}>{link.text}</Link>
-                    </div>
-                  ))
-                : sponsor.map((link, idx) => (
-                    <div
-                      className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
-                        link.href === pathName ? "button-primary" : ""
-                      }`}
-                      key={idx}
-                    >
-                      {link.icon && <span>{link.icon}</span>}
-                      <Link href={link.href}>{link.text}</Link>
-                    </div>
-                  ))}
+              {navigationLinks.map((link, idx) => (
+                <div
+                  className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${
+                    link.href === pathName ? "button-primary" : ""
+                  }`}
+                  key={idx}
+                >
+                  {link.icon && <span>{link.icon}</span>}
+                  <Link href={link.href}>{link.text}</Link>
+                </div>
+              ))}
             </div>
           </nav>
           {/* bottom */}
           <div className="p-4 border border-[#314158] flex flex-col gap-2  text-white">
             {/* <div className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer ${pathName === "/settings" ? "button-primary" : ""}`}><CiSettings className='text-lg' /><Link href={"/settings"}>Settings</Link></div> */}
             <button
-              onClick={handleLogOut}
+              onClick={handleLogOutClick}
               className={`flex items-center gap-5 py-2 px-5 rounded-lg cursor-pointer `}
-              disabled={loading}
+              disabled={loading || isLoggingOut}
             >
               <FiLogOut className="text-lg" />
-              <span>{loading ? "Logging out..." : "Logout"}</span>
+              <span>
+                {loading || isLoggingOut ? "Logging out..." : "Logout"}
+              </span>
             </button>
           </div>
         </div>
@@ -224,17 +258,11 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
           >
             <div>
               <div className="hidden lg:flex">
-                {user?.role === "Lender"
-                  ? lander.map((Link) => {
-                      if (Link.href === pathName) {
-                        return Link.text;
-                      }
-                    })
-                  : sponsor.map((Link) => {
-                      if (Link.href === pathName) {
-                        return Link.text;
-                      }
-                    })}
+                {navigationLinks.map((Link) => {
+                  if (Link.href === pathName) {
+                    return Link.text;
+                  }
+                })}
               </div>
               <RxHamburgerMenu
                 onClick={() => setIsMenuOpen(true)}
@@ -242,16 +270,18 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
               />
             </div>
             <div className="flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer">
-              {user?.role === "Lender" ? (
+              {isLender ? (
                 <>
                   <School size={18} />
                   <span>Lender</span>
                 </>
-              ) : (
+              ) : isSponsor ? (
                 <>
                   <IoBagHandleOutline className="text-lg" />
                   <span>Sponsor</span>
                 </>
+              ) : (
+                <span>User</span>
               )}
             </div>
             {/*----------- notification -------- */}
@@ -268,6 +298,17 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
           )}
         </div>
       </div>
+
+      <ConfirmActionModal
+        open={isLogoutModalOpen}
+        onOpenChange={setIsLogoutModalOpen}
+        title="Logout?"
+        description="Are you sure you want to log out from your account?"
+        confirmText="Logout"
+        destructive
+        isLoading={loading || isLoggingOut}
+        onConfirm={handleConfirmLogOut}
+      />
     </nav>
   );
 };

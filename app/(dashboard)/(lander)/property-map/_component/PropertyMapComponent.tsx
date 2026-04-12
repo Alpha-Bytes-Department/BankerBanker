@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { GoogleMap, LoadScript, OverlayView } from "@react-google-maps/api";
+import { GoogleMap, OverlayView, useJsApiLoader } from "@react-google-maps/api";
 import { PropertyMapData } from "@/types/loan-request";
 import { FaMapMarkedAlt, FaGlobeAmericas } from "react-icons/fa";
 //========== Property Map Component ===========
@@ -18,6 +18,10 @@ const PropertyMapComponent: React.FC<PropertyMapComponentProps> = ({
   onPropertySelect,
 }) => {
   const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: "lender-property-map",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+  });
 
   //========== Map Styling ===========
   const mapContainerStyle = {
@@ -25,21 +29,32 @@ const PropertyMapComponent: React.FC<PropertyMapComponentProps> = ({
     height: "100%",
   };
 
+  const validProperties = React.useMemo(
+    () =>
+      properties.filter(
+        (property) =>
+          Number.isFinite(property.location.lat) &&
+          Number.isFinite(property.location.lng) &&
+          !(property.location.lat === 0 && property.location.lng === 0),
+      ),
+    [properties],
+  );
+
   //========== Calculate Map Center ===========
   const center = React.useMemo(() => {
-    if (properties.length === 0) {
+    if (validProperties.length === 0) {
       return { lat: 40.7128, lng: -74.006 }; // Default to NYC
     }
 
     const avgLat =
-      properties.reduce((sum, prop) => sum + prop.location.lat, 0) /
-      properties.length;
+      validProperties.reduce((sum, prop) => sum + prop.location.lat, 0) /
+      validProperties.length;
     const avgLng =
-      properties.reduce((sum, prop) => sum + prop.location.lng, 0) /
-      properties.length;
+      validProperties.reduce((sum, prop) => sum + prop.location.lng, 0) /
+      validProperties.length;
 
     return { lat: avgLat, lng: avgLng };
-  }, [properties]);
+  }, [validProperties]);
 
   //========== Marker Color Based on Urgency ===========
   const getMarkerColor = (urgency: PropertyMapData["urgencyLevel"]): string => {
@@ -100,42 +115,55 @@ const PropertyMapComponent: React.FC<PropertyMapComponentProps> = ({
   };
 
   //========== Map Options ===========
-  const mapOptions = {
-    disableDefaultUI: true,
-    zoomControl: false,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-    gestureHandling: "greedy",
-  };
+  const mapOptions = React.useMemo(
+    () => ({
+      disableDefaultUI: true,
+      zoomControl: false,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      gestureHandling: "greedy" as const,
+    }),
+    [],
+  );
+
+  if (loadError) {
+    return (
+      <div className="w-full h-full rounded-2xl border-2 border-gray-200 bg-gray-50 flex items-center justify-center text-sm text-gray-600">
+        Unable to load map.
+      </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className="w-full h-full rounded-2xl border-2 border-gray-200 bg-gray-50 animate-pulse" />
+    );
+  }
 
   return (
     <div className="relative w-full h-full rounded-2xl overflow-hidden">
-      <LoadScript
-        googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ""}
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={center}
+        zoom={validProperties.length > 0 ? 5 : 4}
+        mapTypeId={mapType}
+        options={mapOptions}
       >
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={center}
-          zoom={12}
-          mapTypeId={mapType}
-          options={mapOptions}
-        >
-          {/* ====== Property Markers ====== */}
-          {properties.map((property) => (
-            <OverlayView
-              key={property.id}
-              position={property.location}
-              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-            >
-              <CustomMarker
-                property={property}
-                isSelected={selectedProperty?.id === property.id}
-              />
-            </OverlayView>
-          ))}
-        </GoogleMap>
-      </LoadScript>
+        {/* ====== Property Markers ====== */}
+        {validProperties.map((property) => (
+          <OverlayView
+            key={property.id}
+            position={property.location}
+            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+          >
+            <CustomMarker
+              property={property}
+              isSelected={selectedProperty?.id === property.id}
+            />
+          </OverlayView>
+        ))}
+      </GoogleMap>
 
       {/* ====== Map Controls ====== */}
       <div className="absolute top-2 md:top-4 left-2 md:left-4 flex flex-col gap-2">

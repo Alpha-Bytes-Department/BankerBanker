@@ -41,6 +41,36 @@ export interface LoanRequestCardProps {
   onViewDocuments: (id: number) => void;
 }
 
+export interface LoanRequestMemorandumLink {
+  id: number;
+  title: string;
+  url: string;
+}
+
+export interface LoanRequestDocumentLink {
+  id: number;
+  url: string;
+}
+
+export interface LoanRequestDetail {
+  id: number;
+  property: number;
+  property_name: string;
+  property_address: string;
+  property_type: string;
+  occupancy?: string;
+  year_built?: number;
+  property_image_url?: string | null;
+  requested_amount: string;
+  loan_term: number;
+  ltv: string;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
+  memorandum_links?: LoanRequestMemorandumLink[];
+  document_links?: LoanRequestDocumentLink[];
+}
+
 //========== Property Map Types ===========
 
 export interface PropertyMapStats {

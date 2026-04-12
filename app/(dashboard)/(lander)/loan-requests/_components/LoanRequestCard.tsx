@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { LoanRequestCardProps } from "@/types/loan-request";
 import { FiMapPin, FiSend, FiEye, FiFile } from "react-icons/fi";
+
+const FALLBACK_PROPERTY_IMAGE = "/images/SponsorDashboard.png";
 
 //========== Loan Request Card Component ===========
 
@@ -11,8 +13,16 @@ const LoanRequestCard: React.FC<LoanRequestCardProps> = ({
   loanRequest,
   onSubmitQuote,
   onViewDetails,
-  onViewDocuments,
+  
 }) => {
+  const [imageSrc, setImageSrc] = useState(
+    loanRequest.propertyImage || FALLBACK_PROPERTY_IMAGE,
+  );
+
+  useEffect(() => {
+    setImageSrc(loanRequest.propertyImage || FALLBACK_PROPERTY_IMAGE);
+  }, [loanRequest.propertyImage]);
+
   //========== Format Currency ===========
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
@@ -53,17 +63,19 @@ const LoanRequestCard: React.FC<LoanRequestCardProps> = ({
         {/* ====== Property Image Section ====== */}
         <div className="relative h-64 lg:h-auto">
           <Image
-            src={loanRequest.propertyImage}
+            src={imageSrc}
             alt={loanRequest.propertyName}
             fill
             className="object-cover"
+            unoptimized
+            onError={() => setImageSrc(FALLBACK_PROPERTY_IMAGE)}
           />
 
           {/* ====== Badges Overlay ====== */}
           <div className="absolute top-3 left-3 flex gap-2">
             <span
               className={`text-xs px-3 py-1 rounded ${getPropertyTypeColor(
-                loanRequest.propertyType
+                loanRequest.propertyType,
               )}`}
             >
               {loanRequest.propertyType}
@@ -150,13 +162,7 @@ const LoanRequestCard: React.FC<LoanRequestCardProps> = ({
                 <FiEye className="w-4 h-4" />
                 View Details
               </button>
-              <button
-                onClick={() => onViewDocuments(loanRequest.id)}
-                className="flex items-center justify-center gap-2 border border-gray-300 text-gray-700 px-6 py-2.5 rounded-lg text-sm hover:bg-gray-50 transition-colors"
-              >
-                <FiFile className="w-4 h-4" />
-                Documents
-              </button>
+              
             </div>
           </div>
         </div>

@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { PropertyMapData } from "@/types/loan-request";
 import { FiMapPin, FiSend, FiEye, FiX } from "react-icons/fi";
+
+const FALLBACK_PROPERTY_IMAGE = "/images/SponsorDashboard.png";
 
 //========== Property Details Panel Component ===========
 
@@ -20,6 +22,17 @@ const PropertyDetailsPanel: React.FC<PropertyDetailsPanelProps> = ({
   onSubmitQuote,
   onViewFullDetails,
 }) => {
+  const [imageSrc, setImageSrc] = useState(FALLBACK_PROPERTY_IMAGE);
+
+  useEffect(() => {
+    if (!property) {
+      setImageSrc(FALLBACK_PROPERTY_IMAGE);
+      return;
+    }
+
+    setImageSrc(property.propertyImage || FALLBACK_PROPERTY_IMAGE);
+  }, [property]);
+
   //========== Format Currency ===========
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat("en-US", {
@@ -53,7 +66,9 @@ const PropertyDetailsPanel: React.FC<PropertyDetailsPanelProps> = ({
         <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 rounded-full flex items-center justify-center mb-2 md:mb-3">
           <FiMapPin className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
         </div>
-        <h3 className="text-sm md:text-base text-gray-900 mb-2">Select a Property</h3>
+        <h3 className="text-sm md:text-base text-gray-900 mb-2">
+          Select a Property
+        </h3>
         <p className="text-xs md:text-sm text-gray-600">
           Click on any marker to view property details
           <br />
@@ -76,10 +91,12 @@ const PropertyDetailsPanel: React.FC<PropertyDetailsPanelProps> = ({
       {/* ====== Property Image ====== */}
       <div className="relative h-32 sm:h-40 shrink-0">
         <Image
-          src={property.propertyImage}
+          src={imageSrc}
           alt={property.propertyName}
           fill
           className="object-cover rounded-lg"
+          unoptimized
+          onError={() => setImageSrc(FALLBACK_PROPERTY_IMAGE)}
         />
 
         {/* ====== Urgency Badge ====== */}
@@ -95,19 +112,23 @@ const PropertyDetailsPanel: React.FC<PropertyDetailsPanelProps> = ({
       {/* ====== Scrollable Content ====== */}
       <div className="flex-1 p-3 md:p-4 overflow-hidden">
         {/* ====== Property Name ====== */}
-        <h2 className="text-base md:text-lg text-gray-900 mb-2 wrap-break-words">{property.propertyName}</h2>
+        <h2 className="text-base md:text-lg text-gray-900 mb-2 wrap-break-words">
+          {property.propertyName}
+        </h2>
 
         {/* ====== Address ====== */}
         <div className="flex items-center gap-2 text-gray-600 text-xs md:text-sm mb-3 min-w-0">
           <FiMapPin className="w-3 h-3 md:w-4 md:h-4 shrink-0" />
-          <span className="wrap-break-wordbreak-words flex-1 min-w-0">{property.address}</span>
+          <span className="wrap-break-wordbreak-words flex-1 min-w-0">
+            {property.address}
+          </span>
         </div>
 
         {/* ====== Property Type and Status ====== */}
         <div className="flex items-center gap-2 mb-4 flex-wrap">
           <span
             className={`text-xs px-2 md:px-3 py-1 rounded ${getPropertyTypeColor(
-              property.propertyType
+              property.propertyType,
             )}`}
           >
             {property.propertyType}
@@ -121,7 +142,9 @@ const PropertyDetailsPanel: React.FC<PropertyDetailsPanelProps> = ({
 
         {/* ====== Requested Loan Amount ====== */}
         <div className="mb-4 overflow-hidden">
-          <p className="text-xs md:text-sm text-gray-600 mb-1">Requested Loan Amount</p>
+          <p className="text-xs md:text-sm text-gray-600 mb-1">
+            Requested Loan Amount
+          </p>
           <p className="text-xl md:text-2xl text-blue-600 wrap-break-words">
             {formatCurrency(property.requestedAmount)}
           </p>

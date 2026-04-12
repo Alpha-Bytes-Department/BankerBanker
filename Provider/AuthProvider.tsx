@@ -1,6 +1,11 @@
 "use client";
 
-import React, { createContext, useContext, useState, type ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  type ReactNode,
+} from "react";
 import type { AuthContextType, User, AuthState, signup } from "@/types/auth";
 import api from "./api";
 import axios from "axios";
@@ -9,8 +14,22 @@ import { toast } from "sonner";
 
 // Public routes that don't need profile fetch
 const PUBLIC_ROUTES = [
-  "/register", "/signin", "/register/upload", "/verify_otp", "/reset_pass_one", "/reset_pass_one/reset_pass_two", "/reset_pass_one/reset_pass_two/reset_pass_three", "/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four"
+  "/register",
+  "/signin",
+  "/register/upload",
+  "/verify_otp",
+  "/reset_pass_one",
+  "/reset_pass_one/reset_pass_two",
+  "/reset_pass_one/reset_pass_two/reset_pass_three",
+  "/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four",
 ];
+
+const normalizeRole = (value?: string) => {
+  const normalized = String(value || "").toLowerCase();
+  if (normalized === "sponsor") return "Sponsor";
+  if (normalized === "lender" || normalized === "lander") return "Lender";
+  return null;
+};
 
 //------------ Auth Context ------------
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,7 +54,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const signup = async (userData: signup) => {
     setSignupData(userData);
 
-    if (userData?.customer_type === "Lender" && userData?.media_files === undefined) {
+    if (
+      userData?.customer_type === "Lender" &&
+      userData?.media_files === undefined
+    ) {
       toast.info("Please upload media files to proceed.");
       router.push("/register/upload");
       return;
@@ -67,7 +89,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         setAuthState(newAuthState);
         localStorage.setItem("Authstate", JSON.stringify(newAuthState));
         toast.success("Successfully signed up! Please verify your email.");
-        router.push('/verify_otp?from=signup');
+        router.push("/verify_otp?from=signup");
       }
     } catch (error) {
       console.error("Signup error:", error);
@@ -95,7 +117,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           setAuthState(newAuthState);
           localStorage.setItem("Authstate", JSON.stringify(newAuthState));
           toast.success("OTP resent successfully!");
-          router.push('/verify_otp?from=resendOtp');
+          router.push("/verify_otp?from=resendOtp");
         }
       } else {
         toast.error("Email is required to resend OTP.");
@@ -144,7 +166,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const AuthState = localStorage.getItem("Authstate");
     if (!AuthState) {
       toast.error("No pending signup found. Please sign up first.");
-      router.push('/register');
+      router.push("/register");
       return;
     }
 
@@ -153,7 +175,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const email = parsedState?.email;
     if (!email) {
       toast.error("Session expired. Please sign up again.");
-      router.push('/register');
+      router.push("/register");
       return;
     }
 
@@ -168,7 +190,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
           if (res.status === 200) {
             localStorage.removeItem("Authstate");
             toast.success("Email verified successfully! You can now log in.");
-            router.push('/signin');
+            router.push("/signin");
           }
         } catch (error) {
           console.error("Verify email error:", error);
@@ -181,14 +203,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       case "forgotPassword":
         try {
           setLoading(true);
-          const res = await api.post("/api/accounts/forgot-password/verify-otp/", {
-            email,
-            otp_code: otp.trim(),
-          });
+          const res = await api.post(
+            "/api/accounts/forgot-password/verify-otp/",
+            {
+              email,
+              otp_code: otp.trim(),
+            },
+          );
           if (res.status === 200) {
             localStorage.removeItem("Authstate");
             toast.success("OTP verified! Please set your new password.");
-            router.push('/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four');
+            router.push(
+              "/reset_pass_one/reset_pass_two/reset_pass_three/reset_pass_four",
+            );
           }
         } catch (error) {
           console.error("Verify email error:", error);
@@ -203,12 +230,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   /*----------------------------------------
             Login Function 
   ----------------------------------------------*/
-  const login = async (email: string, password: string, remember_me?: boolean) => {
+  const login = async (
+    email: string,
+    password: string,
+    remember_me?: boolean,
+  ) => {
     //  removed console.log with password
     try {
-      console.log("Attempting login for email:", email, "Remember me:", remember_me);
+      console.log(
+        "Attempting login for email:",
+        email,
+        "Remember me:",
+        remember_me,
+      );
       setLoading(true);
-      const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000").replace(/\/+$/, "");
+      const baseUrl = (
+        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000"
+      ).replace(/\/+$/, "");
       const res = await axios.post(
         `${baseUrl}/api/accounts/login/`,
         {
@@ -222,16 +260,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
       if (res.status === 200) {
         const { user, access, refresh } = res.data.data;
         //  flat structure matches getTokensFromLocalStorage() in api.ts
-        localStorage.setItem("userCredentials", JSON.stringify({
-          access_token: access,
-          refresh_token: refresh,
-          user,
-        }));
+        localStorage.setItem(
+          "userCredentials",
+          JSON.stringify({
+            access_token: access,
+            refresh_token: refresh,
+            user,
+          }),
+        );
         setUser(user);
         toast.success("Logged in successfully!");
         // removed duplicate setLoading(false) here — finally handles it
 
-        if (user?.customer_type === "Sponsor") {
+        const role = normalizeRole(user?.customer_type || user?.role);
+
+        if (role === "Sponsor") {
           console.log("Redirecting to sponsor dashboard for user:", user);
           router.push("/sponsor");
         } else {
@@ -263,16 +306,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   React.useEffect(() => {
     const fetchUserProfile = async () => {
       // Skip profile fetch on public routes — this was causing the 401 loop
-      const isPublicRoute = PUBLIC_ROUTES.some(route => pathname?.startsWith(route));
+      const isPublicRoute = PUBLIC_ROUTES.some((route) =>
+        pathname?.startsWith(route),
+      );
       if (isPublicRoute) return;
 
       try {
         const userCredentials = localStorage.getItem("userCredentials");
         if (!userCredentials) return; // exit early if no credentials
 
+        const parsedCredentials = JSON.parse(userCredentials);
+        const storedUser: User | null = parsedCredentials?.user ?? null;
+
+        if (storedUser) {
+          setUser((prev) => prev ?? storedUser);
+        }
+
         const res = await api.get("/api/accounts/profile/");
         if (res.status === 200) {
-          setUser(res.data.data);
+          const profileUser: User = res.data.data;
+          const mergedUser: User = {
+            ...(storedUser || {}),
+            ...profileUser,
+          };
+
+          if (!mergedUser.customer_type && mergedUser.role) {
+            mergedUser.customer_type = mergedUser.role;
+          }
+
+          setUser(mergedUser);
         }
       } catch (error) {
         console.error("Failed to fetch user profile:", error);

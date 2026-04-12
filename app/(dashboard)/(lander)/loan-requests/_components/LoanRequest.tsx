@@ -1,82 +1,67 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useRouter } from "next/navigation";
 import { LoanRequestData } from "@/types/loan-request";
 import LoanRequestCard from "./LoanRequestCard";
 import LoanRequestsMap from "./LoanRequestsMap";
 import { FiRefreshCw } from "react-icons/fi";
+import { toast } from "sonner";
+import { fetchLenderCombinedData } from "../../_utils/lenderLoanData";
+import {
+  getSubmitQuotePath,
+  saveLoanQuotePrefillState,
+} from "@/lib/quote-submit-state";
 
 //========== Loan Request Component ===========
 
 const LoanRequest = () => {
+  const router = useRouter();
   //========== State ===========
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [activeRequestsCount] = useState(3);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loanRequests, setLoanRequests] = useState<LoanRequestData[]>([]);
   const cardRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
-  //========== Sample Data ===========
-  const [loanRequests] = useState<LoanRequestData[]>([
-    {
-      id: 1,
-      propertyName: "Downtown Office Complex",
-      address: "123 Business Ave, Chicago, IL 60601",
-      location: { lat: 41.8781, lng: -87.6298 },
-      propertyType: "Office",
-      urgencyLevel: "high",
-      isActive: true,
-      requestedAmount: 15500000,
-      loanTerm: "30 years",
-      occupancy: 95,
-      yearBuilt: 1985,
-      ltv: 75,
-      sponsor: "Johnson Real Estate Group",
-      propertyImage:
-        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800",
-    },
-    {
-      id: 2,
-      propertyName: "Banner Gardens Apartments",
-      address: "456 Residential Dr, New York, NY 10001",
-      location: { lat: 40.7484, lng: -73.9857 },
-      propertyType: "Multifamily",
-      urgencyLevel: "standard",
-      isActive: true,
-      requestedAmount: 8000000,
-      loanTerm: "25 years",
-      occupancy: 92,
-      yearBuilt: 1992,
-      ltv: 70,
-      sponsor: "Acme Properties LLC",
-      propertyImage:
-        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800",
-    },
-    {
-      id: 3,
-      propertyName: "Riverside Shopping Center",
-      address: "789 Commerce Blvd, Miami, FL 33101",
-      location: { lat: 25.7617, lng: -80.1918 },
-      propertyType: "Retail",
-      urgencyLevel: "medium",
-      isActive: true,
-      requestedAmount: 22300000,
-      loanTerm: "20 years",
-      occupancy: 88,
-      yearBuilt: 2005,
-      ltv: 65,
-      sponsor: "Riverside Capital Partners",
-      propertyImage:
-        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800",
-    },
-  ]);
+  const loadLoanRequests = useCallback(async (manualRefresh = false) => {
+    if (manualRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoading(true);
+    }
+
+    try {
+      const { loanRequests: mergedLoanRequests } =
+        await fetchLenderCombinedData();
+      setLoanRequests(mergedLoanRequests);
+    } catch (error) {
+      console.error("Failed to load lender loan requests", error);
+      toast.error("Unable to load loan requests right now.");
+      setLoanRequests([]);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadLoanRequests();
+  }, [loadLoanRequests]);
+
+  const activeRequestsCount = useMemo(
+    () => loanRequests.filter((request) => request.isActive).length,
+    [loanRequests],
+  );
 
   //========== Event Handlers ===========
   const handleRefresh = () => {
-    setIsRefreshing(true);
-    console.log("Refreshing loan requests...");
-    // Simulate API call
-    setTimeout(() => {
-      setIsRefreshing(false);
-    }, 1000);
+    loadLoanRequests(true);
   };
 
   const handleMarkerClick = (id: number) => {
@@ -93,15 +78,32 @@ const LoanRequest = () => {
   };
 
   const handleSubmitQuote = (id: number) => {
-    console.log("Submit quote for loan request:", id);
+    const selectedRequest = loanRequests.find((request) => request.id === id);
+
+    if (selectedRequest) {
+      saveLoanQuotePrefillState(id, {
+        requestId: selectedRequest.id,
+        propertyName: selectedRequest.propertyName,
+        propertyAddress: selectedRequest.address,
+        propertyType: selectedRequest.propertyType,
+        requestedAmount: selectedRequest.requestedAmount,
+        loanTerm: Number(selectedRequest.loanTerm),
+        ltv: selectedRequest.ltv,
+        occupancy: selectedRequest.occupancy,
+        yearBuilt: selectedRequest.yearBuilt,
+        propertyImageUrl: selectedRequest.propertyImage,
+      });
+    }
+
+    router.push(getSubmitQuotePath(id));
   };
 
   const handleViewDetails = (id: number) => {
-    console.log("View details for loan request:", id);
+    router.push(`/loan-requests/${id}`);
   };
 
   const handleViewDocuments = (id: number) => {
-    console.log("View documents for loan request:", id);
+    router.push(`/loan-requests/${id}#documents`);
   };
 
   return (
@@ -137,31 +139,50 @@ const LoanRequest = () => {
 
       {/* ====== Map Section ====== */}
       <div className="mb-6">
-        <LoanRequestsMap
-          loanRequests={loanRequests}
-          onMarkerClick={handleMarkerClick}
-        />
+        {isLoading ? (
+          <div className="h-[400px] md:h-[500px] rounded-lg border border-gray-200 bg-gray-50 animate-pulse" />
+        ) : (
+          <LoanRequestsMap
+            loanRequests={loanRequests}
+            onMarkerClick={handleMarkerClick}
+          />
+        )}
       </div>
 
       {/* ====== Loan Request Cards ====== */}
-      <div className="space-y-6">
-        {loanRequests.map((request) => (
-          <div
-            key={request.id}
-            ref={(el) => {
-              cardRefs.current[request.id] = el;
-            }}
-            className="transition-all duration-300"
-          >
-            <LoanRequestCard
-              loanRequest={request}
-              onSubmitQuote={handleSubmitQuote}
-              onViewDetails={handleViewDetails}
-              onViewDocuments={handleViewDocuments}
+      {isLoading ? (
+        <div className="space-y-4">
+          {[...Array(2)].map((_, index) => (
+            <div
+              key={index}
+              className="h-64 rounded-lg border border-gray-200 bg-gray-50 animate-pulse"
             />
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : loanRequests.length === 0 ? (
+        <div className="rounded-lg border border-gray-200 bg-white p-8 text-center text-sm text-gray-600">
+          No loan requests available.
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {loanRequests.map((request) => (
+            <div
+              key={request.id}
+              ref={(el) => {
+                cardRefs.current[request.id] = el;
+              }}
+              className="transition-all duration-300"
+            >
+              <LoanRequestCard
+                loanRequest={request}
+                onSubmitQuote={handleSubmitQuote}
+                onViewDetails={handleViewDetails}
+                onViewDocuments={handleViewDocuments}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

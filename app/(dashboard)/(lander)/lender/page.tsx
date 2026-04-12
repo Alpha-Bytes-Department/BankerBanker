@@ -74,10 +74,7 @@ const page = () => {
                 <StatusCard type="documents" data={{ value: 156 }} />
                 <StatusCard type="value" data={{ value: 3, }} />
             </div>
-             {/* google map  */}
-            <div className="my-5">
-                <GMAP markersList={markers} />
-            </div>
+            
             
             <div className="flex flex-col-reverse xl:flex-row gap-5">
                 <div className=" rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
@@ -98,14 +95,7 @@ const page = () => {
                         ))}
                     </div>
                 </div>
-                {/* notification block  */}
-                <div className="flex flex-col lg:flex-row xl:flex-col gap-10 mx-auto">
-                    <div className="flex flex-col items-center gap-5">
-                        <ChatCard type="message" link="/message" />
-                        {/* <ChatCard type="aiChat" /> */}
-                    </div>
-                    <RecentActivity />
-                </div>
+               
             </div>
         </div>
     );

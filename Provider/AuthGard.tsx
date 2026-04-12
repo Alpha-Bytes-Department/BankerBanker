@@ -45,6 +45,25 @@ const isRouteMatch = (pathname: string, routes: string[]) =>
     (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
 
+const getRoleFromCredentials = (
+  parsedCreds: Record<string, unknown>,
+  payload: Record<string, unknown>,
+) => {
+  const userData =
+    parsedCreds?.user && typeof parsedCreds.user === "object"
+      ? (parsedCreds.user as Record<string, unknown>)
+      : null;
+
+  return normalizeRole(
+    (userData?.customer_type as string | undefined) ||
+      (userData?.role as string | undefined) ||
+      (parsedCreds?.customer_type as string | undefined) ||
+      (parsedCreds?.role as string | undefined) ||
+      (payload?.customer_type as string | undefined) ||
+      (payload?.role as string | undefined),
+  );
+};
+
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -90,12 +109,21 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        const role = normalizeRole(
-          parsedCreds?.user?.role ||
-            parsedCreds?.user?.customer_type ||
-            payload?.role ||
-            payload?.customer_type,
+        const role = getRoleFromCredentials(
+          parsedCreds as Record<string, unknown>,
+          payload as Record<string, unknown>,
         );
+
+        if (
+          pathname &&
+          !role &&
+          (isRouteMatch(pathname, SPONSOR_ONLY_ROUTES) ||
+            isRouteMatch(pathname, LENDER_ONLY_ROUTES))
+        ) {
+          setIsMounted(true);
+          router.replace("/signin");
+          return;
+        }
 
         if (
           pathname &&

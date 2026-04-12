@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { PropertyMapData, PropertyMapStats } from "@/types/loan-request";
 import PropertyDetailsPanel from "./PropertyDetailsPanel";
 import PropertyMapComponent from "./PropertyMapComponent";
 import PropertyList from "./PropertyList";
+import { toast } from "sonner";
 import {
   FiSearch,
   FiRefreshCw,
@@ -13,117 +14,20 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
+import { fetchLenderCombinedData } from "../../_utils/lenderLoanData";
 
 //========== Property Map Page ===========
 
 const PropertyMap: React.FC = () => {
-  //========== Sample Data ===========
-  const [properties] = useState<PropertyMapData[]>([
-    {
-      id: 1,
-      propertyName: "Harbor Point Plaza",
-      propertyType: "Office",
-      address: "123 Harbor Blvd, Los Angeles, CA 90017",
-      location: { lat: 34.0522, lng: -118.2437 },
-      requestedAmount: 8500000,
-      loanTerm: "5 years",
-      occupancy: 92,
-      yearBuilt: 2015,
-      ltv: 65,
-      targetLtv: 65,
-      sponsor: "Pacific Commercial Group",
-      urgencyLevel: "high",
-      isActive: true,
-      units: 24,
-      squareFeet: 85000,
-      propertyImage:
-        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop",
-    },
-    {
-      id: 2,
-      propertyName: "Riverside Apartments",
-      propertyType: "Multifamily",
-      address: "456 River St, San Diego, CA 92101",
-      location: { lat: 32.7157, lng: -117.1611 },
-      requestedAmount: 12000000,
-      loanTerm: "7 years",
-      occupancy: 88,
-      yearBuilt: 2018,
-      ltv: 70,
-      targetLtv: 70,
-      sponsor: "Urban Living Partners",
-      urgencyLevel: "medium",
-      isActive: true,
-      units: 156,
-      squareFeet: 145000,
-      propertyImage:
-        "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=600&fit=crop",
-    },
-    {
-      id: 3,
-      propertyName: "Gateway Shopping Center",
-      propertyType: "Retail",
-      address: "789 Commerce Way, San Francisco, CA 94102",
-      location: { lat: 37.7749, lng: -122.4194 },
-      requestedAmount: 6750000,
-      loanTerm: "10 years",
-      occupancy: 95,
-      yearBuilt: 2012,
-      ltv: 60,
-      targetLtv: 60,
-      sponsor: "Retail Ventures LLC",
-      urgencyLevel: "standard",
-      isActive: true,
-      squareFeet: 125000,
-      propertyImage:
-        "https://images.unsplash.com/photo-1567449303183-434ac2ea8c2c?w=800&h=600&fit=crop",
-    },
-    {
-      id: 4,
-      propertyName: "Tech Hub Tower",
-      propertyType: "Office",
-      address: "321 Innovation Dr, San Jose, CA 95110",
-      location: { lat: 37.3382, lng: -121.8863 },
-      requestedAmount: 15000000,
-      loanTerm: "5 years",
-      occupancy: 98,
-      yearBuilt: 2020,
-      ltv: 65,
-      targetLtv: 65,
-      sponsor: "Silicon Valley Properties",
-      urgencyLevel: "high",
-      isActive: true,
-      squareFeet: 200000,
-      propertyImage:
-        "https://images.unsplash.com/photo-1577415124269-fc1140a69e91?w=800&h=600&fit=crop",
-    },
-    {
-      id: 5,
-      propertyName: "Warehouse District Complex",
-      propertyType: "Industrial",
-      address: "555 Logistics Ln, Oakland, CA 94607",
-      location: { lat: 37.8044, lng: -122.2712 },
-      requestedAmount: 9200000,
-      loanTerm: "7 years",
-      occupancy: 85,
-      yearBuilt: 2016,
-      ltv: 70,
-      targetLtv: 70,
-      sponsor: "Industrial Realty Group",
-      urgencyLevel: "medium",
-      isActive: true,
-      squareFeet: 180000,
-      propertyImage:
-        "https://images.unsplash.com/photo-1553268643-e7d3b51b2c0c?w=800&h=600&fit=crop",
-    },
-  ]);
-
-  const [stats] = useState<PropertyMapStats>({
-    totalProperties: 5,
-    totalLoanValue: 51450000,
-    avgLoanSize: 10290000,
-    urgentRequests: 2,
+  const [properties, setProperties] = useState<PropertyMapData[]>([]);
+  const [stats, setStats] = useState<PropertyMapStats>({
+    totalProperties: 0,
+    totalLoanValue: 0,
+    avgLoanSize: 0,
+    urgentRequests: 0,
   });
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   //========== State ===========
   const [selectedProperty, setSelectedProperty] =
@@ -131,17 +35,62 @@ const PropertyMap: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState<string>("all");
 
+  const loadPropertyData = useCallback(async (manualRefresh = false) => {
+    if (manualRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsLoading(true);
+    }
+
+    try {
+      const mergedData = await fetchLenderCombinedData();
+      setProperties(mergedData.properties);
+      setStats(mergedData.stats);
+      setSelectedProperty((previousSelection) => {
+        if (!previousSelection) return null;
+        return (
+          mergedData.properties.find(
+            (property) => property.id === previousSelection.id,
+          ) || null
+        );
+      });
+    } catch (error) {
+      console.error("Failed to load property map data", error);
+      toast.error("Unable to load property map data right now.");
+      setProperties([]);
+      setStats({
+        totalProperties: 0,
+        totalLoanValue: 0,
+        avgLoanSize: 0,
+        urgentRequests: 0,
+      });
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPropertyData();
+  }, [loadPropertyData]);
+
   //========== Filter Properties ===========
-  const filteredProperties = properties.filter((property) => {
-    const matchesSearch =
-      property.propertyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      property.address.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredProperties = useMemo(
+    () =>
+      properties.filter((property) => {
+        const matchesSearch =
+          property.propertyName
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          property.address.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesFilter =
-      selectedFilter === "all" || property.propertyType === selectedFilter;
+        const matchesFilter =
+          selectedFilter === "all" || property.propertyType === selectedFilter;
 
-    return matchesSearch && matchesFilter;
-  });
+        return matchesSearch && matchesFilter;
+      }),
+    [properties, searchQuery, selectedFilter],
+  );
 
   //========== Format Currency ===========
   const formatCurrency = (amount: number): string => {
@@ -157,14 +106,13 @@ const PropertyMap: React.FC = () => {
   };
 
   //========== Property Type Filters ===========
-  const propertyTypes = [
-    "all",
-    "Office",
-    "Multifamily",
-    "Retail",
-    "Industrial",
-    "Mixed-Use",
-  ];
+  const propertyTypes = useMemo(
+    () => [
+      "all",
+      ...new Set(properties.map((property) => property.propertyType)),
+    ],
+    [properties],
+  );
 
   //========== Handle Actions ===========
   const handleSubmitQuote = (id: number) => {
@@ -178,8 +126,7 @@ const PropertyMap: React.FC = () => {
   };
 
   const handleRefresh = () => {
-    console.log("Refreshing property data...");
-    // TODO: Implement data refresh logic
+    loadPropertyData(true);
   };
 
   return (
@@ -197,10 +144,13 @@ const PropertyMap: React.FC = () => {
           </div>
           <button
             onClick={handleRefresh}
+            disabled={isRefreshing || isLoading}
             className="flex items-center gap-2 border border-gray-300 text-gray-700 px-4 py-2 rounded-xl text-sm hover:bg-gray-50 transition-colors w-full sm:w-auto justify-center"
           >
-            <FiRefreshCw className="w-4 h-4" />
-            Refresh
+            <FiRefreshCw
+              className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
+            />
+            {isRefreshing ? "Refreshing..." : "Refresh"}
           </button>
         </div>
       </div>
@@ -210,7 +160,7 @@ const PropertyMap: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {/* ====== Total Properties ====== */}
           <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-blue-200 gap-3 md:gap-5 min-w-0">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
               <HiOutlineOfficeBuilding
                 size={24}
                 className="md:w-7 md:h-7 text-blue-600"
@@ -229,7 +179,7 @@ const PropertyMap: React.FC = () => {
           {/* ====== Total Loan Value ====== */}
 
           <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-green-200 gap-3 md:gap-5 min-w-0">
-            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
               <FiDollarSign
                 size={24}
                 className="md:w-7 md:h-7 text-green-600"
@@ -247,7 +197,7 @@ const PropertyMap: React.FC = () => {
 
           {/* ====== Avg Loan Size ====== */}
           <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-blue-200 gap-3 min-w-0">
-            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center shrink-0">
               <FiTrendingUp
                 size={24}
                 className="md:w-7 md:h-7 text-violet-600"
@@ -263,7 +213,7 @@ const PropertyMap: React.FC = () => {
 
           {/* ====== Urgent Requests ====== */}
           <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-red-200 gap-3 min-w-0">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
               <FiAlertCircle size={24} className="md:w-7 md:h-7 text-red-600" />
             </div>
             <div className="min-w-0 flex-1">
@@ -319,11 +269,15 @@ const PropertyMap: React.FC = () => {
                 </div>
               </div>
               <div className="h-100 sm:h-[500px] lg:h-[700px]">
-                <PropertyMapComponent
-                  properties={filteredProperties}
-                  selectedProperty={selectedProperty}
-                  onPropertySelect={setSelectedProperty}
-                />
+                {isLoading ? (
+                  <div className="h-full rounded-2xl border-2 border-gray-200 bg-gray-50 animate-pulse" />
+                ) : (
+                  <PropertyMapComponent
+                    properties={filteredProperties}
+                    selectedProperty={selectedProperty}
+                    onPropertySelect={setSelectedProperty}
+                  />
+                )}
               </div>
             </div>
 
@@ -345,11 +299,15 @@ const PropertyMap: React.FC = () => {
 
               {/* ====== All Properties List Section ====== */}
               <div className="flex-1 border-2 border-gray-200 rounded-lg p-3 max-h-[300px] sm:max-h-[400px] lg:max-h-[500px] overflow-y-auto">
-                <PropertyList
-                  properties={filteredProperties}
-                  selectedProperty={selectedProperty}
-                  onPropertySelect={setSelectedProperty}
-                />
+                {isLoading ? (
+                  <div className="h-full rounded-lg bg-gray-50 animate-pulse" />
+                ) : (
+                  <PropertyList
+                    properties={filteredProperties}
+                    selectedProperty={selectedProperty}
+                    onPropertySelect={setSelectedProperty}
+                  />
+                )}
               </div>
             </div>
           </div>
