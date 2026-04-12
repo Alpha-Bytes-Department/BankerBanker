@@ -16,17 +16,23 @@ const page = () => {
       <Banner />
       <ComponentAnimation />
       <div className="text-center flex flex-col gap-5 my-20">
-        <Headline text="Our Network of Partners"  />
+        <Headline text="Our Network of Partners" />
         <Partners />
       </div>
-      <Features />
+      <section className="relative z-0 bg-slate-100/40">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(#D1D5DB_0.8px,transparent_0.8px)] bg-size-[24px_24px] opacity-45" />
+        <Features />
+      </section>
       <div className="text-center">
         <Headline text="How It Works" />
       </div>
       <Description text="Simple 3-step process to transform your CRE financing" />
       <HowItWorksOne />
       <HowItWorksTwo />
-      <Carousel />
+
+      <section className="relative py-5 z-0 bg-slate-100/40">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(#D1D5DB_0.8px,transparent_0.8px)] bg-size-[24px_24px] opacity-45" />
+        <Carousel />
       <div className="my-16">
         <div className="text-center">
           <Headline text="Join the BANCre Capital Markets Network" />
@@ -44,6 +50,8 @@ const page = () => {
           />
         </div>
       </div>
+      </section>
+     
     </div>
   );
 };
