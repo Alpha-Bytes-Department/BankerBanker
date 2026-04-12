@@ -20,9 +20,29 @@ type AssistantMessage = {
   content: string;
 };
 
+type ApiEnvelope<T> = {
+  data?: T;
+};
+
+type LenderDashboardHeaderStats = {
+  active_requests: number;
+  quotes_provided: number;
+  pending_review: number;
+  accepted_quotes: number;
+};
+
+const DEFAULT_HEADER_STATS: LenderDashboardHeaderStats = {
+  active_requests: 0,
+  quotes_provided: 0,
+  pending_review: 0,
+  accepted_quotes: 0,
+};
+
 const Page = () => {
   const router = useRouter();
   const [requests, setRequests] = useState<LoanRequestData[]>([]);
+  const [headerStats, setHeaderStats] =
+    useState<LenderDashboardHeaderStats>(DEFAULT_HEADER_STATS);
   const [loading, setLoading] = useState(true);
   const [assistantStarted, setAssistantStarted] = useState(false);
   const [assistantConversationId, setAssistantConversationId] = useState<
@@ -60,10 +80,28 @@ const Page = () => {
     try {
       const data = await fetchLenderCombinedData();
       setRequests(data.loanRequests);
+
+      try {
+        const headerResponse = await api.get<
+          ApiEnvelope<LenderDashboardHeaderStats>
+        >("/api/dashboard/lender/");
+
+        setHeaderStats({
+          ...DEFAULT_HEADER_STATS,
+          ...(headerResponse.data?.data || {}),
+        });
+      } catch (headerError) {
+        console.error(
+          "Failed to load lender dashboard header stats",
+          headerError,
+        );
+        setHeaderStats(DEFAULT_HEADER_STATS);
+      }
     } catch (error) {
       console.error("Failed to load lender dashboard requests", error);
       toast.error("Unable to load available loan requests right now.");
       setRequests([]);
+      setHeaderStats(DEFAULT_HEADER_STATS);
     } finally {
       setLoading(false);
     }
@@ -204,10 +242,42 @@ const Page = () => {
       </p>
 
       <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
-        <StatusCard type="Properties" data={{ value: 3, status: 2 }} />
-        <StatusCard type="quotes" data={{ value: 20, status: 12 }} />
-        <StatusCard type="documents" data={{ value: 156 }} />
-        <StatusCard type="value" data={{ value: 3 }} />
+        <StatusCard
+          type="Properties"
+          data={{
+            value: headerStats.active_requests,
+            status: headerStats.active_requests,
+          }}
+          titleOverride="Active Requests"
+          statusLabelOverride="currently active"
+        />
+        <StatusCard
+          type="quotes"
+          data={{
+            value: headerStats.quotes_provided,
+            status: headerStats.quotes_provided,
+          }}
+          titleOverride="Quotes Provided"
+          statusLabelOverride="submitted quotes"
+        />
+        <StatusCard
+          type="documents"
+          data={{
+            value: headerStats.pending_review,
+            status: headerStats.pending_review,
+          }}
+          titleOverride="Pending Review"
+          statusLabelOverride="awaiting decision"
+        />
+        <StatusCard
+          type="value"
+          data={{
+            value: headerStats.accepted_quotes,
+            status: headerStats.accepted_quotes,
+          }}
+          titleOverride="Accepted Quotes"
+          statusLabelOverride="approved quotes"
+        />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-5">

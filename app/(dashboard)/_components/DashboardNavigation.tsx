@@ -90,11 +90,11 @@ const lander: LinkProps = [
     href: "/property-map",
     icon: <MapPin size={18} />,
   },
-  {
-    text: "Market Analytics",
-    href: "/market-analytics",
-    icon: <FaRegChartBar className="text-lg" />,
-  },
+  // {
+  //   text: "Market Analytics",
+  //   href: "/market-analytics",
+  //   icon: <FaRegChartBar className="text-lg" />,
+  // },
 ];
 
 const normalizeRole = (value?: string) => {

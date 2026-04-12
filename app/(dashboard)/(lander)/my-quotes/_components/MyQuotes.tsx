@@ -9,6 +9,7 @@ import {
   LenderDashboardLoanRequest,
   LenderPropertyMapItem,
   LenderQuoteApiItem,
+  LenderQuoteStatsData,
   LoanRequestMinimal,
   Quote,
   QuoteFilter,
@@ -154,16 +155,24 @@ const MyQuotes: React.FC = () => {
     setLoading(true);
 
     try {
-      const [dashboardResponse, quotesResponse, propertiesResponse] =
-        await Promise.all([
-          api.get<ApiEnvelope<LenderDashboardApiData>>(
-            "/api/loans/dashboard/lender/",
-          ),
-          api.get<ApiEnvelope<LenderQuoteApiItem[]>>("/api/loans/quotes/"),
-          api.get<ApiEnvelope<LenderPropertyMapItem[]>>("/api/properties/map/"),
-        ]);
+      const [
+        dashboardResponse,
+        quoteStatsResponse,
+        quotesResponse,
+        propertiesResponse,
+      ] = await Promise.all([
+        api.get<ApiEnvelope<LenderDashboardApiData>>(
+          "/api/loans/dashboard/lender/",
+        ),
+        api.get<ApiEnvelope<LenderQuoteStatsData>>(
+          "/api/dashboard/lender/quote-stats/",
+        ),
+        api.get<ApiEnvelope<LenderQuoteApiItem[]>>("/api/loans/quotes/"),
+        api.get<ApiEnvelope<LenderPropertyMapItem[]>>("/api/properties/map/"),
+      ]);
 
       const dashboard = dashboardResponse.data?.data;
+      const quoteStats = quoteStatsResponse.data?.data;
       const quoteItems = quotesResponse.data?.data || [];
       const propertyItems = propertiesResponse.data?.data || [];
       const dashboardLoanRequests = dashboard?.available_loan_requests || [];
@@ -171,8 +180,8 @@ const MyQuotes: React.FC = () => {
       const statsCards: QuoteStat[] = [
         {
           id: 1,
-          label: "Active Requests",
-          value: String(dashboard?.header_stats?.active_requests ?? 0),
+          label: "Total Quotes",
+          value: String(quoteStats?.total_quotes ?? 0),
           icon: "file",
           bgColor: "bg-blue-50",
           iconColor: "bg-blue-600 text-white",
@@ -180,8 +189,8 @@ const MyQuotes: React.FC = () => {
         },
         {
           id: 2,
-          label: "Quotes Provided",
-          value: String(dashboard?.header_stats?.quotes_provided ?? 0),
+          label: "Under Review",
+          value: String(quoteStats?.under_review_quotes ?? 0),
           icon: "clock",
           bgColor: "bg-indigo-50",
           iconColor: "bg-indigo-600 text-white",
@@ -189,21 +198,21 @@ const MyQuotes: React.FC = () => {
         },
         {
           id: 3,
-          label: "Pending Review",
-          value: String(dashboard?.header_stats?.pending_review ?? 0),
-          icon: "trending",
-          bgColor: "bg-yellow-50",
-          iconColor: "bg-yellow-600 text-white",
-          borderColor: "border-yellow-200",
-        },
-        {
-          id: 4,
           label: "Accepted Quotes",
-          value: String(dashboard?.header_stats?.accepted_quotes ?? 0),
+          value: String(quoteStats?.accepted_quotes ?? 0),
           icon: "check",
           bgColor: "bg-green-50",
           iconColor: "bg-green-600 text-white",
           borderColor: "border-green-200",
+        },
+        {
+          id: 4,
+          label: "Total Value",
+          value: formatCurrency(quoteStats?.total_value ?? 0),
+          icon: "dollar",
+          bgColor: "bg-amber-50",
+          iconColor: "bg-amber-600 text-white",
+          borderColor: "border-amber-200",
         },
       ];
       setStats(statsCards);

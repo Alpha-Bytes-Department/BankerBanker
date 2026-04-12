@@ -66,6 +66,13 @@ export interface LenderDashboardApiData {
   available_loan_requests: LenderDashboardLoanRequest[];
 }
 
+export interface LenderQuoteStatsData {
+  total_quotes: number;
+  under_review_quotes: number;
+  accepted_quotes: number;
+  total_value: number;
+}
+
 export interface LenderDashboardLoanRequest {
   id: number;
   property_name: string;

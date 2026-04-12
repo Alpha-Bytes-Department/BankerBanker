@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/Provider/api";
-import { PropertyMapData, PropertyMapStats } from "@/types/loan-request";
+import { PropertyMapData } from "@/types/loan-request";
 import PropertyDetailsPanel from "./PropertyDetailsPanel";
 import PropertyMapComponent from "./PropertyMapComponent";
 import PropertyList from "./PropertyList";
@@ -13,7 +13,6 @@ import {
   FiRefreshCw,
   FiDollarSign,
   FiTrendingUp,
-  FiAlertCircle,
 } from "react-icons/fi";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
 import { fetchLenderCombinedData } from "../../_utils/lenderLoanData";
@@ -24,6 +23,12 @@ import {
 
 type ApiEnvelope<T> = {
   data?: T;
+};
+
+type LenderPropertyStatsData = {
+  total_properties: number;
+  total_loan_value: number;
+  average_loan_amount: number;
 };
 
 type LoanRequestDetailApi = {
@@ -43,11 +48,10 @@ type LoanRequestDetailApi = {
 };
 
 const FALLBACK_PROPERTY_IMAGE = "/images/SponsorDashboard.png";
-const STATIC_STATS: PropertyMapStats = {
-  totalProperties: 0,
-  totalLoanValue: 0,
-  avgLoanSize: 0,
-  urgentRequests: 0,
+const DEFAULT_PROPERTY_STATS: LenderPropertyStatsData = {
+  total_properties: 0,
+  total_loan_value: 0,
+  average_loan_amount: 0,
 };
 
 const toNumber = (value: string | number | undefined | null) => {
@@ -118,7 +122,9 @@ const resolveImageUrl = (value?: string | null) => {
 const PropertyMap: React.FC = () => {
   const router = useRouter();
   const [properties, setProperties] = useState<PropertyMapData[]>([]);
-  const [stats] = useState<PropertyMapStats>(STATIC_STATS);
+  const [stats, setStats] = useState<LenderPropertyStatsData>(
+    DEFAULT_PROPERTY_STATS,
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -138,6 +144,21 @@ const PropertyMap: React.FC = () => {
     try {
       const mergedData = await fetchLenderCombinedData();
       setProperties(mergedData.properties);
+
+      try {
+        const propertyStatsResponse = await api.get<
+          ApiEnvelope<LenderPropertyStatsData>
+        >("/api/dashboard/lender/property-stats/");
+
+        setStats({
+          ...DEFAULT_PROPERTY_STATS,
+          ...(propertyStatsResponse.data?.data || {}),
+        });
+      } catch (statsError) {
+        console.error("Failed to load lender property stats", statsError);
+        setStats(DEFAULT_PROPERTY_STATS);
+      }
+
       setSelectedProperty((previousSelection) => {
         if (!previousSelection) return null;
         return (
@@ -150,6 +171,7 @@ const PropertyMap: React.FC = () => {
       console.error("Failed to load property map data", error);
       toast.error("Unable to load property map data right now.");
       setProperties([]);
+      setStats(DEFAULT_PROPERTY_STATS);
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -329,7 +351,7 @@ const PropertyMap: React.FC = () => {
 
       {/* ====== Stats Cards Section ====== */}
       <div className="bg-white rounded-2xl mx-3 md:mx-6 mb-3 md:mb-6 max-w-full overflow-hidden">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           {/* ====== Total Properties ====== */}
           <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-blue-200 gap-3 md:gap-5 min-w-0">
             <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
@@ -343,7 +365,7 @@ const PropertyMap: React.FC = () => {
                 Total Properties
               </p>
               <p className="text-xl md:text-2xl text-gray-900">
-                {stats.totalProperties}
+                {stats.total_properties}
               </p>
             </div>
           </div>
@@ -362,12 +384,12 @@ const PropertyMap: React.FC = () => {
                 Total Loan Value
               </p>
               <p className="text-xl md:text-2xl text-gray-900">
-                {formatCurrency(stats.totalLoanValue)}
+                {formatCurrency(stats.total_loan_value)}
               </p>
             </div>
           </div>
 
-          {/* ====== Avg Loan Size ====== */}
+          {/* ====== Average Loan Amount ====== */}
           <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-blue-200 gap-3 min-w-0">
             <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center shrink-0">
               <FiTrendingUp
@@ -376,24 +398,11 @@ const PropertyMap: React.FC = () => {
               />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm text-gray-600">Avg Loan Size</p>
-              <p className="text-xl md:text-2xl text-gray-900">
-                {formatCurrency(stats.avgLoanSize)}
-              </p>
-            </div>
-          </div>
-
-          {/* ====== Urgent Requests ====== */}
-          <div className="flex items-center rounded-2xl p-3 md:p-4 border-2 border-red-200 gap-3 min-w-0">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
-              <FiAlertCircle size={24} className="md:w-7 md:h-7 text-red-600" />
-            </div>
-            <div className="min-w-0 flex-1">
               <p className="text-xs md:text-sm text-gray-600">
-                Urgent Requests
+                Average Loan Amount
               </p>
               <p className="text-xl md:text-2xl text-gray-900">
-                {stats.urgentRequests}
+                {formatCurrency(stats.average_loan_amount)}
               </p>
             </div>
           </div>
