@@ -14,6 +14,9 @@ interface QuotesListProps {
   onFilterChange: (filterId: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
+  onViewQuote: (quote: Quote) => void;
+  onEditQuote: (quote: Quote) => void;
+  onViewProperty: (quote: Quote) => void;
 }
 
 const QuotesList: React.FC<QuotesListProps> = ({
@@ -23,22 +26,33 @@ const QuotesList: React.FC<QuotesListProps> = ({
   onFilterChange,
   searchQuery,
   onSearchChange,
+  onViewQuote,
+  onEditQuote,
+  onViewProperty,
 }) => {
   return (
     <div>
       {/* ====== Search and Filters ====== */}
-      <SearchFilters
+      {/* <SearchFilters
         filters={filters}
         activeFilter={activeFilter}
         onFilterChange={onFilterChange}
         searchQuery={searchQuery}
         onSearchChange={onSearchChange}
-      />
+      /> */}
 
       {/* ====== Quotes List ====== */}
       <div className="space-y-4">
         {quotes.length > 0 ? (
-          quotes.map((quote) => <QuoteCard key={quote.id} quote={quote} />)
+          quotes.map((quote) => (
+            <QuoteCard
+              key={quote.id}
+              quote={quote}
+              onView={onViewQuote}
+              onEdit={onEditQuote}
+              onViewProperty={onViewProperty}
+            />
+          ))
         ) : (
           <div className="bg-white rounded-2xl border border-gray-200 p-8 md:p-12 text-center">
             <p className="text-gray-500 text-sm md:text-base">

@@ -125,13 +125,15 @@ const resolveImageUrl = (value?: string | null) => {
 
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "").replace(/\/+$/, "");
 
-  if (raw.startsWith("/")) {
-    return baseUrl ? `${baseUrl}${raw}` : raw;
-  }
-
   if (/^https?:\/\//i.test(raw)) {
     if (!baseUrl) return raw;
     return raw.replace(/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i, baseUrl);
+  }
+
+  const normalizedPath = raw.replace(/^\/+/, "");
+
+  if (raw.startsWith("/") || normalizedPath.startsWith("media/")) {
+    return baseUrl ? `${baseUrl}/${normalizedPath}` : `/${normalizedPath}`;
   }
 
   return FALLBACK_PROPERTY_IMAGE;

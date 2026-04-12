@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { GoogleMap, OverlayView, useJsApiLoader } from "@react-google-maps/api";
 import { PropertyMapData } from "@/types/loan-request";
 import { FaMapMarkedAlt, FaGlobeAmericas } from "react-icons/fa";
+import { LENDER_GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
 //========== Property Map Component ===========
 
 interface PropertyMapComponentProps {
@@ -18,10 +19,9 @@ const PropertyMapComponent: React.FC<PropertyMapComponentProps> = ({
   onPropertySelect,
 }) => {
   const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: "lender-property-map",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-  });
+  const { isLoaded, loadError } = useJsApiLoader(
+    LENDER_GOOGLE_MAPS_LOADER_OPTIONS,
+  );
 
   //========== Map Styling ===========
   const mapContainerStyle = {

@@ -1,20 +1,40 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Quote } from "@/types/my-quotes";
 import Image from "next/image";
-import { FiEye, FiEdit2, FiX, FiHome, FiMoreVertical, FiTrendingDown, FiTrendingUp } from "react-icons/fi";
+import { FiEye, FiEdit2, FiHome, FiTrendingUp } from "react-icons/fi";
+
+const FALLBACK_PROPERTY_IMAGE = "/images/SponsorDashboard.png";
 
 //========== Quote Card Component ===========
 
 interface QuoteCardProps {
   quote: Quote;
+  onView: (quote: Quote) => void;
+  onEdit: (quote: Quote) => void;
+  onViewProperty: (quote: Quote) => void;
 }
 
-const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
+const QuoteCard: React.FC<QuoteCardProps> = ({
+  quote,
+  onView,
+  onEdit,
+  onViewProperty,
+}) => {
+  const [imageSrc, setImageSrc] = useState(
+    quote.image || FALLBACK_PROPERTY_IMAGE,
+  );
+
+  useEffect(() => {
+    setImageSrc(quote.image || FALLBACK_PROPERTY_IMAGE);
+  }, [quote.image]);
+
   //========== Get Status Badge Color ===========
   const getStatusBadgeColor = () => {
     switch (quote.status) {
+      case "submitted":
+        return "bg-indigo-500";
       case "under_review":
         return "bg-blue-500";
       case "accepted":
@@ -29,6 +49,8 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
   //========== Get Status Text ===========
   const getStatusText = () => {
     switch (quote.status) {
+      case "submitted":
+        return "SUBMITTED";
       case "under_review":
         return "UNDER REVIEW";
       case "accepted":
@@ -58,10 +80,12 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
         {/* ====== Property Image ====== */}
         <div className="relative w-full lg:w-80 h-44 lg:h-auto shrink-0">
           <Image
-            src={quote.image}
+            src={imageSrc}
             alt={quote.propertyName}
             fill
             className="object-cover"
+            unoptimized
+            onError={() => setImageSrc(FALLBACK_PROPERTY_IMAGE)}
           />
           {getPriorityBadge()}
           <span className="absolute top-2 right-2 bg-purple-600 text-white text-xs font-medium px-2 py-1 rounded">
@@ -119,7 +143,9 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
             </div>
             <div>
               <p className="text-gray-500 mb-1">Expires in</p>
-              <p className="font-medium text-red-600">{quote.expiresIn} days</p>
+              <p className="font-medium text-red-600">
+                {quote.expiresIn >= 0 ? `${quote.expiresIn} days` : "Expired"}
+              </p>
             </div>
           </div>
 
@@ -132,7 +158,6 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
             <span className="flex items-center gap-1">
               Avg response: {quote.avgResponseTime}
             </span>
-            
           </div>
 
           {/* ====== Status Message ====== */}
@@ -150,36 +175,29 @@ const QuoteCard: React.FC<QuoteCardProps> = ({ quote }) => {
 
           {/* ====== Action Buttons ====== */}
           <div className="flex flex-wrap items-center gap-2 md:gap-3">
-            <button className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700">
+            <button
+              onClick={() => onView(quote)}
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700"
+            >
               <FiEye className="w-4 h-4" />
               View Quote
             </button>
 
-            {quote.status === "under_review" && (
-              <>
-                <button className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700">
-                  <FiEdit2 className="w-4 h-4" />
-                  Edit
-                </button>
-                <button className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-white border border-red-300 rounded-lg hover:bg-red-50 transition-colors text-xs md:text-sm font-medium text-red-600">
-                  <FiX className="w-4 h-4" />
-                  Withdraw
-                </button>
-              </>
-            )}
+            <button
+              onClick={() => onEdit(quote)}
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700"
+            >
+              <FiEdit2 className="w-4 h-4" />
+              Edit
+            </button>
 
-            {quote.status === "accepted" && (
-              <button className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-xs md:text-sm font-medium">
-                Contact Sponsor
-              </button>
-            )}
-
-            <button className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700">
+            <button
+              onClick={() => onViewProperty(quote)}
+              className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 md:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-xs md:text-sm font-medium text-gray-700"
+            >
               <FiHome className="w-4 h-4" />
               View Property
             </button>
-
-             
           </div>
         </div>
       </div>

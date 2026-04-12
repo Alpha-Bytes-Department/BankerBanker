@@ -81,6 +81,7 @@ export interface PropertyMapStats {
 }
 
 export interface PropertyMapData extends LoanRequestData {
+  loanRequestId?: number | null;
   units?: number;
   squareFeet?: number;
   targetLtv?: number;

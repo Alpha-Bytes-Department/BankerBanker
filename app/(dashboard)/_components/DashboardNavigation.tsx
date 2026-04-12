@@ -118,6 +118,10 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
   const isLender = userRole === "Lender";
   const isSponsor = userRole === "Sponsor";
   const navigationLinks = isLender ? lander : isSponsor ? sponsor : [];
+  const hideFloatingChatWidget =
+    pathName === "/message" ||
+    pathName === "/analytics" ||
+    pathName === "/lender";
 
   useEffect(() => {
     try {
@@ -291,11 +295,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
         {/* main content  */}
         <div className="flex-1 overflow-y-auto px-3 md:px-5 py-2 relative max-w-[1550px] mx-auto w-full">
           {children}
-          {pathName === "/message" || pathName === "/analytics" ? (
-            <></>
-          ) : (
-            <ChatWidget />
-          )}
+          {hideFloatingChatWidget ? <></> : <ChatWidget />}
         </div>
       </div>
 

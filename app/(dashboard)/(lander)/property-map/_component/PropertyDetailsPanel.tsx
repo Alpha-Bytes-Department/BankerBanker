@@ -12,8 +12,8 @@ const FALLBACK_PROPERTY_IMAGE = "/images/SponsorDashboard.png";
 interface PropertyDetailsPanelProps {
   property: PropertyMapData | null;
   onClose: () => void;
-  onSubmitQuote: (id: number) => void;
-  onViewFullDetails: (id: number) => void;
+  onSubmitQuote: (property: PropertyMapData) => void;
+  onViewFullDetails: (property: PropertyMapData) => void;
 }
 
 const PropertyDetailsPanel: React.FC<PropertyDetailsPanelProps> = ({
@@ -206,14 +206,14 @@ const PropertyDetailsPanel: React.FC<PropertyDetailsPanelProps> = ({
         {/* ====== Action Buttons ====== */}
         <div className="space-y-2">
           <button
-            onClick={() => onSubmitQuote(property.id)}
+            onClick={() => onSubmitQuote(property)}
             className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm hover:bg-blue-700 transition-colors"
           >
             <FiSend className="w-3 h-3 md:w-4 md:h-4" />
             Submit Quote
           </button>
           <button
-            onClick={() => onViewFullDetails(property.id)}
+            onClick={() => onViewFullDetails(property)}
             className="w-full flex items-center justify-center gap-2 border border-gray-300 text-gray-700 px-3 md:px-4 py-2 rounded-lg text-xs md:text-sm hover:bg-gray-50 transition-colors"
           >
             <FiEye className="w-4 h-4" />

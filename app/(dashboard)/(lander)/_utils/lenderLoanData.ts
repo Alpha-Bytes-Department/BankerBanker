@@ -48,19 +48,14 @@ const toNumber = (value: string | number | undefined | null) => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const resolveImageUrl = (value?: string | null) => {
+const normalizeImageUrl = (value?: string | null) => {
   if (!value || value === "null" || value === "undefined") {
-    return FALLBACK_PROPERTY_IMAGE;
+    return null;
   }
 
   const rawValue = String(value).trim();
   if (!rawValue) {
-    return FALLBACK_PROPERTY_IMAGE;
-  }
-
-  if (rawValue.startsWith("/")) {
-    if (!API_BASE_URL) return rawValue;
-    return `${API_BASE_URL}${rawValue}`;
+    return null;
   }
 
   if (/^https?:\/\//i.test(rawValue)) {
@@ -70,6 +65,24 @@ const resolveImageUrl = (value?: string | null) => {
       /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i,
       API_BASE_URL,
     );
+  }
+
+  const normalizedPath = rawValue.replace(/^\/+/, "");
+
+  if (rawValue.startsWith("/") || normalizedPath.startsWith("media/")) {
+    if (!API_BASE_URL) return `/${normalizedPath}`;
+    return `${API_BASE_URL}/${normalizedPath}`;
+  }
+
+  return null;
+};
+
+const resolveImageUrl = (...values: Array<string | null | undefined>) => {
+  for (const value of values) {
+    const normalized = normalizeImageUrl(value);
+    if (normalized) {
+      return normalized;
+    }
   }
 
   return FALLBACK_PROPERTY_IMAGE;
@@ -175,6 +188,7 @@ export const fetchLenderCombinedData =
 
       return {
         id: property.id,
+        loanRequestId: request?.id ?? null,
         propertyName: property.property_name,
         address: property.property_address,
         propertyType: toPropertyType(property.property_type),
@@ -192,7 +206,8 @@ export const fetchLenderCombinedData =
         targetLtv: ltv,
         sponsor: "N/A",
         propertyImage: resolveImageUrl(
-          property.property_image_url || request?.property_image_url,
+          property.property_image_url,
+          request?.property_image_url,
         ),
       };
     });
@@ -231,7 +246,8 @@ export const fetchLenderCombinedData =
         ltv: toNumber(request.ltv) ?? 0,
         sponsor: "N/A",
         propertyImage: resolveImageUrl(
-          property?.property_image_url || request.property_image_url,
+          property?.property_image_url,
+          request.property_image_url,
         ),
       };
     });

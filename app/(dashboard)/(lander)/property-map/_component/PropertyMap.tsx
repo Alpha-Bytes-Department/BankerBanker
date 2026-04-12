@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import api from "@/Provider/api";
 import { PropertyMapData, PropertyMapStats } from "@/types/loan-request";
 import PropertyDetailsPanel from "./PropertyDetailsPanel";
 import PropertyMapComponent from "./PropertyMapComponent";
@@ -15,17 +17,108 @@ import {
 } from "react-icons/fi";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
 import { fetchLenderCombinedData } from "../../_utils/lenderLoanData";
+import {
+  getSubmitQuotePath,
+  saveLoanQuotePrefillState,
+} from "@/lib/quote-submit-state";
+
+type ApiEnvelope<T> = {
+  data?: T;
+};
+
+type LoanRequestDetailApi = {
+  id: number;
+  property: number;
+  property_name: string;
+  property_address: string;
+  property_type: string;
+  occupancy?: string;
+  year_built?: number;
+  property_image_url?: string | null;
+  requested_amount: string;
+  loan_term: number;
+  ltv: string;
+  status: string;
+  created_at?: string;
+};
+
+const FALLBACK_PROPERTY_IMAGE = "/images/SponsorDashboard.png";
+const STATIC_STATS: PropertyMapStats = {
+  totalProperties: 0,
+  totalLoanValue: 0,
+  avgLoanSize: 0,
+  urgentRequests: 0,
+};
+
+const toNumber = (value: string | number | undefined | null) => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const toLoanTerm = (value: number | string | undefined) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) return "-";
+  return `${parsed} months`;
+};
+
+const toPropertyType = (
+  value: string | undefined,
+): PropertyMapData["propertyType"] => {
+  const normalized = String(value || "").toLowerCase();
+
+  if (normalized.includes("multi")) return "Multifamily";
+  if (normalized.includes("retail")) return "Retail";
+  if (normalized.includes("industrial")) return "Industrial";
+  if (normalized.includes("mixed")) return "Mixed-Use";
+  return "Office";
+};
+
+const toUrgency = (
+  status: string | undefined,
+  createdAt: string | undefined,
+): PropertyMapData["urgencyLevel"] => {
+  const normalizedStatus = String(status || "").toLowerCase();
+  if (normalizedStatus === "active") return "high";
+
+  const createdDate = createdAt ? new Date(createdAt) : null;
+  if (createdDate && !Number.isNaN(createdDate.getTime())) {
+    const ageInDays =
+      (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+    if (ageInDays <= 3) return "medium";
+  }
+
+  return "standard";
+};
+
+const resolveImageUrl = (value?: string | null) => {
+  if (!value) return FALLBACK_PROPERTY_IMAGE;
+
+  const raw = String(value).trim();
+  if (!raw || raw === "null" || raw === "undefined") {
+    return FALLBACK_PROPERTY_IMAGE;
+  }
+
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || "").replace(/\/+$/, "");
+
+  if (/^https?:\/\//i.test(raw)) {
+    if (!baseUrl) return raw;
+    return raw.replace(/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i, baseUrl);
+  }
+
+  const normalizedPath = raw.replace(/^\/+/, "");
+  if (raw.startsWith("/") || normalizedPath.startsWith("media/")) {
+    return baseUrl ? `${baseUrl}/${normalizedPath}` : `/${normalizedPath}`;
+  }
+
+  return FALLBACK_PROPERTY_IMAGE;
+};
 
 //========== Property Map Page ===========
 
 const PropertyMap: React.FC = () => {
+  const router = useRouter();
   const [properties, setProperties] = useState<PropertyMapData[]>([]);
-  const [stats, setStats] = useState<PropertyMapStats>({
-    totalProperties: 0,
-    totalLoanValue: 0,
-    avgLoanSize: 0,
-    urgentRequests: 0,
-  });
+  const [stats] = useState<PropertyMapStats>(STATIC_STATS);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -45,7 +138,6 @@ const PropertyMap: React.FC = () => {
     try {
       const mergedData = await fetchLenderCombinedData();
       setProperties(mergedData.properties);
-      setStats(mergedData.stats);
       setSelectedProperty((previousSelection) => {
         if (!previousSelection) return null;
         return (
@@ -58,12 +150,6 @@ const PropertyMap: React.FC = () => {
       console.error("Failed to load property map data", error);
       toast.error("Unable to load property map data right now.");
       setProperties([]);
-      setStats({
-        totalProperties: 0,
-        totalLoanValue: 0,
-        avgLoanSize: 0,
-        urgentRequests: 0,
-      });
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
@@ -92,6 +178,18 @@ const PropertyMap: React.FC = () => {
     [properties, searchQuery, selectedFilter],
   );
 
+  useEffect(() => {
+    if (!selectedProperty) return;
+
+    const isVisible = filteredProperties.some(
+      (property) => property.id === selectedProperty.id,
+    );
+
+    if (!isVisible) {
+      setSelectedProperty(null);
+    }
+  }, [filteredProperties, selectedProperty]);
+
   //========== Format Currency ===========
   const formatCurrency = (amount: number): string => {
     if (amount >= 1000000) {
@@ -115,15 +213,89 @@ const PropertyMap: React.FC = () => {
   );
 
   //========== Handle Actions ===========
-  const handleSubmitQuote = (id: number) => {
-    console.log("Submit quote for property:", id);
-    // TODO: Implement quote submission logic
+  const handleSubmitQuote = (property: PropertyMapData) => {
+    if (!property.loanRequestId) {
+      toast.error("No active loan request found for this property.");
+      return;
+    }
+
+    saveLoanQuotePrefillState(property.loanRequestId, {
+      requestId: property.loanRequestId,
+      propertyName: property.propertyName,
+      propertyAddress: property.address,
+      propertyType: property.propertyType,
+      requestedAmount: property.requestedAmount,
+      loanTerm: Number.parseInt(property.loanTerm, 10) || 0,
+      ltv: property.targetLtv || property.ltv,
+      occupancy: property.occupancy,
+      yearBuilt: property.yearBuilt,
+      propertyImageUrl: property.propertyImage,
+    });
+
+    router.push(getSubmitQuotePath(property.loanRequestId));
   };
 
-  const handleViewFullDetails = (id: number) => {
-    console.log("View full details for property:", id);
-    // TODO: Implement navigation to details page
+  const handleViewFullDetails = (property: PropertyMapData) => {
+    if (!property.loanRequestId) {
+      toast.error("Loan request details are unavailable for this property.");
+      return;
+    }
+
+    router.push(`/loan-requests/${property.loanRequestId}`);
   };
+
+  const handlePropertySelect = useCallback(
+    async (property: PropertyMapData) => {
+      setSelectedProperty(property);
+
+      if (!property.loanRequestId) return;
+
+      try {
+        const response = await api.get<ApiEnvelope<LoanRequestDetailApi>>(
+          `/api/loans/requests/${property.loanRequestId}/`,
+        );
+
+        const detail = response.data?.data;
+        if (!detail) return;
+
+        const mergedProperty: PropertyMapData = {
+          ...property,
+          propertyName: detail.property_name || property.propertyName,
+          address: detail.property_address || property.address,
+          propertyType: detail.property_type
+            ? toPropertyType(detail.property_type)
+            : property.propertyType,
+          requestedAmount:
+            toNumber(detail.requested_amount) ?? property.requestedAmount,
+          loanTerm: toLoanTerm(detail.loan_term),
+          occupancy: toNumber(detail.occupancy) ?? property.occupancy,
+          yearBuilt: detail.year_built ?? property.yearBuilt,
+          ltv: toNumber(detail.ltv) ?? property.ltv,
+          targetLtv: toNumber(detail.ltv) ?? property.targetLtv ?? property.ltv,
+          isActive: String(detail.status || "").toLowerCase() === "active",
+          urgencyLevel: toUrgency(detail.status, detail.created_at),
+          propertyImage: detail.property_image_url
+            ? resolveImageUrl(detail.property_image_url)
+            : property.propertyImage,
+        };
+
+        setProperties((previous) =>
+          previous.map((item) =>
+            item.id === property.id ? { ...item, ...mergedProperty } : item,
+          ),
+        );
+        setSelectedProperty((current) =>
+          current && current.id === property.id
+            ? { ...current, ...mergedProperty }
+            : current,
+        );
+      } catch (error) {
+        console.error("Failed to load property detail", error);
+        toast.error("Unable to load property details right now.");
+      }
+    },
+    [],
+  );
 
   const handleRefresh = () => {
     loadPropertyData(true);
@@ -275,7 +447,7 @@ const PropertyMap: React.FC = () => {
                   <PropertyMapComponent
                     properties={filteredProperties}
                     selectedProperty={selectedProperty}
-                    onPropertySelect={setSelectedProperty}
+                    onPropertySelect={handlePropertySelect}
                   />
                 )}
               </div>
@@ -305,7 +477,7 @@ const PropertyMap: React.FC = () => {
                   <PropertyList
                     properties={filteredProperties}
                     selectedProperty={selectedProperty}
-                    onPropertySelect={setSelectedProperty}
+                    onPropertySelect={handlePropertySelect}
                   />
                 )}
               </div>

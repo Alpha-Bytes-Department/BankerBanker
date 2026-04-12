@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import { GoogleMap, OverlayView, useJsApiLoader } from "@react-google-maps/api";
 import { LoanRequestData, UrgencyLevel } from "@/types/loan-request";
 import { FiMap, FiLayers } from "react-icons/fi";
+import { LENDER_GOOGLE_MAPS_LOADER_OPTIONS } from "@/lib/google-maps-loader";
 
 //========== Loan Requests Map Component ===========
 
@@ -20,11 +21,9 @@ const LoanRequestsMap: React.FC<LoanRequestsMapProps> = ({
   const [mapType, setMapType] = useState<"roadmap" | "satellite">("roadmap");
 
   //========== Configuration ===========
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: "lender-loan-requests-map",
-    googleMapsApiKey: apiKey || "",
-  });
+  const { isLoaded, loadError } = useJsApiLoader(
+    LENDER_GOOGLE_MAPS_LOADER_OPTIONS,
+  );
 
   const validLoanRequests = useMemo(
     () =>
