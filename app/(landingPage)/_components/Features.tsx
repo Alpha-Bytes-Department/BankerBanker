@@ -7,6 +7,7 @@ import { FaShieldAlt } from "react-icons/fa";
 import Headline from "@/components/Headline";
 import Description from "@/components/Description";
 import Button from "@/components/Button";
+import Image from "next/image";
 
 type Feature = {
   id: number;
@@ -18,6 +19,14 @@ type Feature = {
 
 const Features = () => {
   const features: Feature[] = [
+    {
+      id: 6,
+      title: "30 Years CRE Experience",
+      description:
+        "AI technologies combined with actual CRE experience accelerate going to market for the optimal financing. BANCre's network includes thousands of real lender relationships developed over years of closing deals.",
+      icon: <FaHandshake className="text-[#9333EA]" size={40} />,
+      iconBgColor: "#F3E8FF",
+    },
     {
       id: 1,
       title: "Lender Tools fo Faster Quotes",
@@ -35,14 +44,6 @@ const Features = () => {
       iconBgColor: "#DCFCE7",
     },
     {
-      id: 3,
-      title: "View Documents with BANCre AI Analyst",
-      description:
-        "View deals and do Q&A about property documents with our intelligent AI chatbot BANCre analyst 24/7.",
-      icon: <FaHandshake className="text-[#9333EA]" size={40} />,
-      iconBgColor: "#F3E8FF",
-    },
-    {
       id: 4,
       title: "Save Time & Costs",
       description:
@@ -51,6 +52,15 @@ const Features = () => {
       iconBgColor: "#FFEDD5",
     },
     {
+      id: 3,
+      title: "View Documents with BANCre AI Analyst",
+      description:
+        "View deals and do Q&A about property documents with our intelligent AI chatbot BANCre analyst 24/7.",
+      icon: <FaHandshake className="text-[#9333EA]" size={40} />,
+      iconBgColor: "#F3E8FF",
+    },
+
+    {
       id: 5,
       title: "Real-Time Loan Quote Comparison",
       description:
@@ -58,21 +68,19 @@ const Features = () => {
       icon: <FaShieldAlt className="text-[#DC2626]" size={40} />,
       iconBgColor: "#FEE2E2",
     },
-    {
-      id: 6,
-      title: "Save Time & Costs",
-      description:
-        "AI technologies combined with actual CRE experience accelerate going to market for the optimal financing. BANCre's network includes thousands of real lender relationships developed over years of closing deals.",
-      icon: <FaHandshake className="text-[#9333EA]" size={40} />,
-      iconBgColor: "#F3E8FF",
-    },
   ];
 
   return (
-    <div className="mt-20 mx-auto max-w-7xl">
+    <div className="mt-20 py-1 mx-auto max-w-7xl">
       <div className="my-20">
-        <Headline text="Why BANCre?" className="text-4xl text-center" />
-        <Description text="BANCre leverages technology to revolutionize the origination and closing process of commercial real estate loans." />
+        <div className=" flex justify-around">
+          <div className=" flex text-white text-5xl font-semibold">
+            <h1>Why</h1>
+            <h1 className="font-extrabold px-1 tracking-[-0.1em]">BANCre</h1>
+            <h1>?</h1>
+          </div>
+        </div>
+        <Description text="BANCre leverages technology to revolutionize the origination and closing process of commercial real estate loans." className=" text-white/70 text-xl mt-5" />
       </div>
       {/* Feature cards would go here */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10 justify-items-center">

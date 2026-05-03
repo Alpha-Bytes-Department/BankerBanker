@@ -10,7 +10,6 @@ import {
   LenderPropertyMapItem,
   LenderQuoteApiItem,
   LenderQuoteStatsData,
-  LoanRequestMinimal,
   Quote,
   QuoteFilter,
   QuoteStat,
@@ -19,7 +18,6 @@ import {
 import StatsCardsQuotes from "./StatsCardsQuotes";
 import QuotesList from "./QuotesList";
 import QuoteDetailsModal from "./QuoteDetailsModal";
-import { property } from "zod";
 
 type ApiEnvelope<T> = {
   data?: T;
@@ -178,8 +176,6 @@ const MyQuotes: React.FC = () => {
       const propertyItems = propertiesResponse.data?.data || [];
       const dashboardLoanRequests = dashboard?.available_loan_requests || [];
 
-      
-
       const statsCards: QuoteStat[] = [
         {
           id: 1,
@@ -220,104 +216,92 @@ const MyQuotes: React.FC = () => {
       ];
       setStats(statsCards);
 
-      const uniqueLoanRequestIds = Array.from(
-        new Set(
-          quoteItems
-            .map((quote) => Number(quote.loan_request))
-            .filter((id) => Number.isFinite(id) && id > 0),
-        ),
+      const quoteByLoanRequestId = new Map<number, LenderQuoteApiItem>(
+        quoteItems
+          .map((quote) => [Number(quote.loan_request), quote] as const)
+          .filter(([id]) => Number.isFinite(id) && id > 0),
       );
 
-      const loanRequestEntries = await Promise.all(
-        uniqueLoanRequestIds.map(async (loanRequestId) => {
-          try {
-            const response = await api.get<ApiEnvelope<LoanRequestMinimal>>(
-              `/api/loans/requests/${loanRequestId}/`,
-            );
-            return [loanRequestId, response.data?.data ?? null] as const;
-          } catch {
-            return [loanRequestId, null] as const;
-          }
-        }),
-      );
-
-      const loanRequestById = new Map<number, LoanRequestMinimal | null>(
-        loanRequestEntries,
+      const quoteById = new Map<number, LenderQuoteApiItem>(
+        quoteItems
+          .map((quote) => [Number(quote.id), quote] as const)
+          .filter(([id]) => Number.isFinite(id) && id > 0),
       );
 
       const propertyById = new Map<number, LenderPropertyMapItem>(
         propertyItems.map((property) => [property.id, property]),
       );
 
-      const dashboardLoanRequestById = new Map<
-        number,
-        LenderDashboardLoanRequest
-      >(
-        dashboardLoanRequests
-          .map((item) => [Number(item.id), item] as const)
-          .filter(([id]) => Number.isFinite(id) && id > 0),
+      const mappedQuotes: Quote[] = dashboardLoanRequests.map(
+        (dashboardRequest: LenderDashboardLoanRequest) => {
+          const loanRequestId = Number(dashboardRequest.id);
+          const dashboardQuoteId =
+            toNumber(dashboardRequest.loan_quote_id) ??
+            toNumber(dashboardRequest.quote_id);
+          const quote =
+            (dashboardQuoteId ? quoteById.get(dashboardQuoteId) : null) ||
+            quoteByLoanRequestId.get(loanRequestId) ||
+            null;
+          const propertyId = toNumber(dashboardRequest.property_id);
+          const propertyInfo = propertyId
+            ? propertyById.get(propertyId) || null
+            : null;
+
+          const fallbackAddress =
+            dashboardRequest.property_address ||
+            propertyInfo?.property_address ||
+            "-";
+          const { city, state } = splitAddress(fallbackAddress);
+          const expiresIn = getDaysUntil(quote?.expires_at);
+          const status = toStatus(quote?.status);
+
+          return {
+            id: quote?.id ?? dashboardQuoteId ?? loanRequestId,
+            quoteId: quote?.id ?? dashboardQuoteId ?? 0,
+            loanRequestId,
+            propertyId: propertyId || null,
+            propertyName:
+              dashboardRequest.property_name ||
+              propertyInfo?.property_name ||
+              "Property",
+            address: fallbackAddress,
+            city,
+            state,
+            sponsor: "N/A",
+            image: resolveImageUrl(
+              dashboardRequest.property_image_url,
+              propertyInfo?.property_image_url,
+            ),
+            status,
+            statusLabel: toStatusLabel(quote?.status),
+            priority: expiresIn <= 3 ? "urgent" : "normal",
+            propertyType:
+              dashboardRequest.property_type ||
+              propertyInfo?.property_type ||
+              "-",
+            interestRate: `${toNumber(quote?.interest_rate)?.toFixed(2) ?? "-"}%`,
+            term:
+              (quote?.term ?? dashboardRequest.loan_term)
+                ? `${quote?.term ?? dashboardRequest.loan_term} months`
+                : "-",
+            ltv: `${toNumber(quote?.max_as_is_ltv ?? dashboardRequest.ltv)?.toFixed(2) ?? "-"}%`,
+            submittedDate: formatDate(quote?.submitted_at),
+            expiresIn,
+            quotedAmount: formatCurrency(
+              quote?.loan_amount ?? dashboardRequest.requested_amount,
+            ),
+            competingQuotes: 0,
+            avgResponseTime: "-",
+            lenderName: quote?.lender_name || "-",
+            guarantor: quote?.guarantor || "-",
+            rawLoanAmount: quote?.loan_amount || "0",
+            rawInterestRate: quote?.interest_rate || "0",
+            rawExpiresAt: quote?.expires_at || "",
+            raw: quote ?? ({} as LenderQuoteApiItem),
+          };
+        },
       );
 
-      const mappedQuotes: Quote[] = quoteItems.map((quote) => {
-        const loanRequestId = Number(quote.loan_request);
-        const requestDetail = loanRequestById.get(loanRequestId) || null;
-        const dashboardRequest =
-          dashboardLoanRequestById.get(loanRequestId) || null;
-        const propertyId = toNumber(requestDetail?.property);
-        const propertyInfo = propertyId ? propertyById.get(propertyId) : null;
-
-        const fallbackAddress =
-          requestDetail?.property_address ||
-          dashboardRequest?.property_address ||
-          propertyInfo?.property_address ||
-          "-";
-        const { city, state } = splitAddress(fallbackAddress);
-        const expiresIn = getDaysUntil(quote.expires_at);
-        const status = toStatus(quote.status);
-
-        return {
-          id: quote.id,
-          quoteId: quote.id,
-          loanRequestId,
-          propertyId: propertyId || null,
-          propertyName:
-            requestDetail?.property_name ||
-            dashboardRequest?.property_name ||
-            propertyInfo?.property_name ||
-            "Property",
-          address: fallbackAddress,
-          city,
-          state,
-          sponsor: "N/A",
-          image: resolveImageUrl(
-            propertyInfo?.property_image_url,
-            requestDetail?.property_image_url,
-            dashboardRequest?.property_image_url,
-          ),
-          status,
-          statusLabel: toStatusLabel(quote.status),
-          priority: expiresIn <= 3 ? "urgent" : "normal",
-          propertyType:
-            requestDetail?.property_type ||
-            dashboardRequest?.property_type ||
-            propertyInfo?.property_type ||
-            "-",
-          interestRate: `${toNumber(quote.interest_rate)?.toFixed(2) ?? "-"}%`,
-          term: quote.term ? `${quote.term} months` : "-",
-          ltv: `${toNumber(quote.max_as_is_ltv)?.toFixed(2) ?? "-"}%`,
-          submittedDate: formatDate(quote.submitted_at),
-          expiresIn,
-          quotedAmount: formatCurrency(quote.loan_amount),
-          competingQuotes: 0,
-          avgResponseTime: "-",
-          lenderName: quote.lender_name,
-          guarantor: quote.guarantor,
-          rawLoanAmount: quote.loan_amount,
-          rawInterestRate: quote.interest_rate,
-          rawExpiresAt: quote.expires_at,
-          raw: quote,
-        };
-      });
       console.log("Mapped Quotes:", mappedQuotes);
       setAllQuotes(mappedQuotes);
     } catch (error) {
@@ -374,7 +358,7 @@ const MyQuotes: React.FC = () => {
             quote.city.toLowerCase().includes(query)
           );
         }
-    
+
         return true;
       }),
     [activeFilter, allQuotes, searchQuery],
@@ -386,6 +370,11 @@ const MyQuotes: React.FC = () => {
   };
 
   const handleEditQuote = (quote: Quote) => {
+    if (!quote.quoteId) {
+      toast.error("No submitted quote found for this loan request yet.");
+      return;
+    }
+
     router.push(`/my-quotes/${quote.quoteId}/edit`);
   };
 

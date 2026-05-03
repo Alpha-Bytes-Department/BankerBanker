@@ -43,28 +43,36 @@ export default function HowItWorksTwo() {
     }
 
     return (
-        <div className="flex flex-col xl:flex-row items-center justify-center gap-20 px-4 py-16">
-            {howItWorksTwoData.map(item => (
-                // Card
-                <div key={item.id} className="bg-[#F3F3F3] max-w-[550px] rounded-3xl p-12">
-                    <div className="w-16 h-16 flex items-center justify-center bg-primary rounded-lg">
-                        <item.logo className="w-7 h-7 text-white" />
-                    </div>
-                    <h1 className="text-[#111827] text-2xl font-bold mt-5">{item.title}</h1>
-                    <h1 className="text-[#4B5563] mt-5">{item.subtitle}</h1>
-                    <div className="flex flex-col gap-3 mt-4">
-                        {
-                            item.property.map(prope => (
-                                <div key={prope} className="flex items-center gap-2">
-                                    <FaCheck className="text-primary" />
-                                    <p className="text-[#374151] text-sm">{prope}</p>
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <Button onClick={handleGoToSignUp} text={item.buttonName} arrow={true} className="button-primary w-full mt-5" />
+      <div className="flex flex-col xl:flex-row items-center justify-center gap-20 px-4 py-16">
+        {howItWorksTwoData.map((item) => (
+          // Card
+          <div
+            key={item.id}
+            className="bg-[#e5e7eb] max-w-[550px] rounded-3xl p-12"
+          >
+            <div className="w-16 h-16 flex items-center justify-center bg-primary rounded-lg">
+              <item.logo className="w-7 h-7 text-white" />
+            </div>
+            <h1 className="text-[#111827] text-2xl font-bold mt-5">
+              {item.title}
+            </h1>
+            <h1 className="text-[#4B5563] mt-5">{item.subtitle}</h1>
+            <div className="flex flex-col gap-3 mt-4">
+              {item.property.map((prope) => (
+                <div key={prope} className="flex items-center gap-2">
+                  <FaCheck className="text-primary" />
+                  <p className="text-[#374151] text-sm">{prope}</p>
                 </div>
-            ))}
-        </div>
+              ))}
+            </div>
+            <Button
+              onClick={handleGoToSignUp}
+              text={item.buttonName}
+              arrow={true}
+              className="button-primary w-full mt-5"
+            />
+          </div>
+        ))}
+      </div>
     );
 }

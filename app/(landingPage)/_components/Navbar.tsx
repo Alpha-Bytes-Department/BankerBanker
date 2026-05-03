@@ -66,20 +66,27 @@ const Navbar = ({ className = "" }: NavbarProps) => {
       <nav
         className={`sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-[#E5E7EB] ${className}`}
       >
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 lg:px-6 py-3">
-          <div className="">
-            <Link className="cursor-pointer" href="/">
+        <div className="mx-auto flex w-full items-center justify-between px-4 py-3 lg:px-6">
+          <div className="flex w-full items-center justify-between lg:w-auto">
+            <Link className="shrink-0 cursor-pointer" href="/">
               <Image
                 src={"/logo/BANCre.png"}
                 alt={"logo"}
-                width={150}
+                width={100}
                 height={50}
-                className="hidden lg:flex"
+                className="h-auto w-auto lg:hidden"
+              />
+              <Image
+                src={"/logo/BANCre.png"}
+                alt={"logo"}
+                width={130}
+                height={50}
+                className="hidden h-auto w-auto lg:block"
               />
             </Link>
             <RxHamburgerMenu
               onClick={() => setIsMenuOpen(true)}
-              className="text-xl flex lg:hidden"
+              className="text-xl lg:hidden"
             />
           </div>
           {/* maping Links for desktop */}
@@ -95,7 +102,7 @@ const Navbar = ({ className = "" }: NavbarProps) => {
                 </Link>
               ))}
           </div>
-          <div className="flex gap-5 items-center">
+          <div className="lg:flex gap-5 hidden items-center">
             {userData ? (
               <></>
             ) : (
@@ -108,7 +115,7 @@ const Navbar = ({ className = "" }: NavbarProps) => {
             <Button
               onClick={() => router.push("/register")}
               text="Get Started Free"
-              className="button-primary"
+              className="button-primary "
             />
           </div>
         </div>
@@ -124,16 +131,16 @@ const Navbar = ({ className = "" }: NavbarProps) => {
         >
           <div className="flex flex-col h-full">
             {/* Mobile Menu Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <div className="flex items-center justify-between p-4 border-b border-blue-200">
               {/* Logo Section */}
               <div className="shrink-0">
                 <Link className="cursor-pointer" href="/">
                   <Image
                     src={"/logo/BANCre.png"}
                     alt={"logo"}
-                    width={150}
+                    width={100}
                     height={50}
-                    className="hidden lg:flex"
+                    className=" lg:flex"
                   />
                 </Link>
               </div>
@@ -174,8 +181,8 @@ const Navbar = ({ className = "" }: NavbarProps) => {
                 </>
               ) : (
                 <>
-                  <Button text="Log in" className="button-primary w-full " />{" "}
-                  <Button text="Sign up" className="button-primary w-full " />
+                  <Button text="Log in" className="button-primary w-full mx-1" />{" "}
+                  <Button text="Sign up" className="button-primary w-full mx-1" />
                 </>
               )}
             </div>

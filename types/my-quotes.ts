@@ -75,6 +75,9 @@ export interface LenderQuoteStatsData {
 
 export interface LenderDashboardLoanRequest {
   id: number;
+  property_id: number;
+  loan_quote_id?: number | null;
+  quote_id?: number | null;
   property_name: string;
   property_address: string;
   property_type: string;
