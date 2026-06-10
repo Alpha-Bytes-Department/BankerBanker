@@ -8,7 +8,7 @@ const Banner = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
-      <div className="w-full h-[80vh] bg-[linear-gradient(255.49deg,rgba(0,0,0,0)_-2%,rgba(0,0,0,0.54)_58.53%),url('/images/banner-img.png')] bg-no-repeat bg-[center_65%] bg-cover relative flex flex-col items-center justify-center text-white">
+      <div className="w-full h-[80vh] bg-[linear-gradient(255.49deg,rgba(0,0,0,0)_-2%,rgba(0,0,0,0.54)_58.53%),url('/images/banner.png')] bg-no-repeat bg-[center_65%] bg-cover relative flex flex-col items-center justify-center text-white">
         <div className="flex flex-col w-full items-start gap-5 px-4 lg:px-6 md:absolute bottom-20 ">
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
