@@ -18,6 +18,17 @@ type GMAPProps = {
     onLocationSelect?: (coords: { lat: number; lng: number }) => void;
 }
 
+type ExtractedLocation = {
+    place_id: string;
+    name: string;
+    address: string;
+    lat: number;
+    lng: number;
+    types: string[];
+    rating: number | null;
+    photos: string[];
+};
+
 const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -40,6 +51,85 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
         gestureHandling: 'greedy'
     }), []);
 
+    const extractLocationData = useCallback((place: google.maps.places.PlaceResult): ExtractedLocation | null => {
+        const location = place.geometry?.location;
+
+        if (!location) {
+            return null;
+        }
+
+        return {
+            place_id: place.place_id || "",
+            name: place.name || "",
+            address: place.formatted_address || place.vicinity || "",
+            lat: location.lat(),
+            lng: location.lng(),
+            types: place.types || [],
+            rating: place.rating ?? null,
+            photos: place.photos?.slice(0, 3).map((photo) => photo.getUrl({ maxWidth: 1200, maxHeight: 1200 })) || []
+        };
+    }, []);
+
+    const logLocationData = useCallback((label: string, place: google.maps.places.PlaceResult) => {
+        const extractedLocation = extractLocationData(place);
+
+        if (extractedLocation) {
+            console.log(label, extractedLocation);
+        }
+    }, [extractLocationData]);
+
+    const fetchPinnedPlaceDetails = useCallback((coords: google.maps.LatLngLiteral) => {
+        if (!map || !window.google?.maps) {
+            return;
+        }
+
+        const geocoder = new window.google.maps.Geocoder();
+
+        geocoder.geocode({ location: coords }, (results, status) => {
+            const firstResult = results?.[0];
+
+            if (status !== "OK" || !firstResult?.place_id) {
+                console.log("Pinned location data", {
+                    place_id: "",
+                    name: "",
+                    address: "",
+                    lat: coords.lat,
+                    lng: coords.lng,
+                    types: [],
+                    rating: null,
+                    photos: []
+                });
+                return;
+            }
+
+            const placesService = new window.google.maps.places.PlacesService(map);
+
+            placesService.getDetails(
+                {
+                    placeId: firstResult.place_id,
+                    fields: ["place_id", "name", "formatted_address", "geometry", "types", "rating", "photos"]
+                },
+                (place, detailsStatus) => {
+                    if (detailsStatus === window.google.maps.places.PlacesServiceStatus.OK && place) {
+                        logLocationData("Pinned location data", place);
+                        return;
+                    }
+
+                    console.log("Pinned location data", {
+                        place_id: firstResult.place_id,
+                        name: firstResult.formatted_address || "",
+                        address: firstResult.formatted_address || "",
+                        lat: coords.lat,
+                        lng: coords.lng,
+                        types: firstResult.types || [],
+                        rating: null,
+                        photos: []
+                    });
+                }
+            );
+        });
+    }, [logLocationData, map]);
+
     const onMapClick = useCallback((e: google.maps.MapMouseEvent) => {
         if (e.latLng) {
             const lat = e.latLng.lat();
@@ -47,12 +137,13 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
             const coords = { lat, lng };
 
             setTempMarker(coords); // Show visual feedback
+            fetchPinnedPlaceDetails(coords);
 
             if (onLocationSelect) {
                 onLocationSelect(coords); // Send to backend/parent
             }
         }
-    }, [onLocationSelect]);
+    }, [fetchPinnedPlaceDetails, onLocationSelect]);
 
     const onPlaceChanged = () => {
         if (autocompleteRef.current) {
@@ -67,6 +158,8 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
                 map?.setZoom(17);
 
                 if (onLocationSelect) onLocationSelect(newPos);
+
+                logLocationData("Searched location data", place);
             }
         }
     };
@@ -76,7 +169,10 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
             <LoadScript googleMapsApiKey={apiKey || ""} libraries={LIBRARIES}>
                 <div className="my-5 w-full max-w-md">
                     <Autocomplete
-                        onLoad={(auto) => (autocompleteRef.current = auto)}
+                        onLoad={(auto) => {
+                            auto.setFields(["place_id", "name", "formatted_address", "geometry", "types", "rating", "photos"]);
+                            autocompleteRef.current = auto;
+                        }}
                         onPlaceChanged={onPlaceChanged}
                     >
                         <input

@@ -217,8 +217,8 @@ const Page = () => {
 
   return (
     <div className="flex flex-col w-full gap-3 p-3 sm:p-4 min-h-screen">
-      <div className="flex flex-col lg:flex-row gap-3 flex-1">
-        <div className="w-full lg:flex-[1.4] min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 flex-1">
+        <div className="w-full col-span-3 lg:flex-[1.4] min-h-0">
           <Preview
             document={selectedDocument}
             loading={loading}
