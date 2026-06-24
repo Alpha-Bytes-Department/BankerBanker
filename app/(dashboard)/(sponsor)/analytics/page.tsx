@@ -17,6 +17,14 @@ const getFileNameFromUrl = (url: string) => {
   return decodeURIComponent(safeUrl.substring(safeUrl.lastIndexOf("/") + 1));
 };
 
+const resolveFileUrl = (url: string) => {
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url)) return url;
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000/";
+  return new URL(url, baseUrl).toString();
+};
+
 const Page = () => {
   const searchParams = useSearchParams();
 
@@ -198,7 +206,7 @@ const Page = () => {
     if (typeof window === "undefined") return;
 
     const anchor = window.document.createElement("a");
-    anchor.href = document.file_url;
+    anchor.href = resolveFileUrl(document.file_url);
     anchor.target = "_blank";
     anchor.rel = "noopener noreferrer";
     anchor.download = getFileNameFromUrl(document.file_url);
@@ -230,7 +238,7 @@ const Page = () => {
           />
         </div>
         <div className="w-full lg:flex-1 min-h-0">
-          <AiChat />
+          <AiChat propertyId={selectedGroup?.property.id ?? null} />
         </div>
       </div>
       <div className="w-full">

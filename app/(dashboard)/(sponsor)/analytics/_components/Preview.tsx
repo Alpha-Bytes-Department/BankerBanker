@@ -1,16 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Download, FileText, ExternalLink } from "lucide-react";
+import { Download, FileText, ExternalLink, FileImage } from "lucide-react";
 import mammoth from "mammoth/mammoth.browser";
-import { Document, Page, pdfjs } from "react-pdf";
 import api from "@/Provider/api";
 import type { DocviewDocument } from "./docview-types";
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url,
-).toString();
 
 interface PreviewProps {
   document: DocviewDocument | null;
@@ -23,6 +17,14 @@ interface PreviewProps {
 const getFileNameFromUrl = (url: string) => {
   const safeUrl = url.split("?")[0];
   return decodeURIComponent(safeUrl.substring(safeUrl.lastIndexOf("/") + 1));
+};
+
+const resolveFileUrl = (url: string) => {
+  if (!url) return "";
+  if (/^https?:\/\//i.test(url)) return url;
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000/";
+  return new URL(url, baseUrl).toString();
 };
 
 const getFileType = (fileName: string): "pdf" | "image" | "docx" | "other" => {
@@ -59,22 +61,19 @@ const Preview = ({
     ? getFileNameFromUrl(document.file_url)
     : "No file selected";
   const fileType = useMemo(() => getFileType(fileName), [fileName]);
+  const fileUrl = document ? resolveFileUrl(document.file_url) : "";
 
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [previewBlobUrl, setPreviewBlobUrl] = useState<string | null>(null);
   const [docxHtml, setDocxHtml] = useState("");
-  const [pdfPageCount, setPdfPageCount] = useState(0);
-  const [pdfPageWidth, setPdfPageWidth] = useState(820);
 
-  const pdfContainerRef = useRef<HTMLDivElement | null>(null);
   const previewBlobRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (!document) {
       setPreviewBlobUrl(null);
       setDocxHtml("");
-      setPdfPageCount(0);
       setPreviewError(null);
       setPreviewLoading(false);
       return;
@@ -93,14 +92,20 @@ const Preview = ({
       cleanupBlob();
       setPreviewBlobUrl(null);
       setDocxHtml("");
-      setPdfPageCount(0);
       setPreviewError(null);
       setPreviewLoading(true);
 
       try {
-        const response = await api.get(document.file_url, {
-          responseType: "blob",
-        });
+        if (fileType === "image" || fileType === "pdf") {
+          setPreviewBlobUrl(fileUrl);
+          return;
+        }
+
+        if (fileType === "other") {
+          return;
+        }
+
+        const response = await api.get(fileUrl, { responseType: "blob" });
         const blob = response.data as Blob;
 
         if (!isActive) {
@@ -119,9 +124,11 @@ const Preview = ({
           return;
         }
 
-        const objectUrl = URL.createObjectURL(blob);
-        previewBlobRef.current = objectUrl;
-        setPreviewBlobUrl(objectUrl);
+        if (fileType !== "other") {
+          const objectUrl = URL.createObjectURL(blob);
+          previewBlobRef.current = objectUrl;
+          setPreviewBlobUrl(objectUrl);
+        }
       } catch (error) {
         console.error("Failed to load preview blob", error);
         if (isActive) {
@@ -140,39 +147,38 @@ const Preview = ({
       isActive = false;
       cleanupBlob();
     };
-  }, [document?.id, document?.file_url, fileType]);
-
-  useEffect(() => {
-    if (fileType !== "pdf") {
-      return;
-    }
-
-    const containerNode = pdfContainerRef.current;
-    if (!containerNode) {
-      return;
-    }
-
-    const updateWidth = () => {
-      const width = Math.max(containerNode.clientWidth - 24, 320);
-      setPdfPageWidth(width);
-    };
-
-    updateWidth();
-
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(containerNode);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [fileType, previewBlobUrl]);
+  }, [document, fileType, fileUrl]);
 
   return (
     <div className="flex flex-col gap-3 sm:gap-4 p-3 sm:p-5 w-full border border-[#0000001A] rounded-xl h-[55vh] sm:h-[65vh] lg:h-[calc(90vh-1rem)] bg-white">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 rounded-xl border border-[#DDE3EA] bg-[#F8FAFC] px-3 py-2 shrink-0">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#4A5565]">
+            Allowed previews
+          </p>
+          <p className="text-xs text-[#6A7282]">
+            Image files, PDF files, and DOCX files can be previewed here.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-1.5">
+          {["Images", "PDF", "DOCX"].map((label) => (
+            <span
+              key={label}
+              className="rounded-full border border-primary/20 bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
+            >
+              {label}
+            </span>
+          ))}
+        </div>
+      </div>
       <div className="flex items-center justify-between gap-2 shrink-0">
         <div className="flex gap-2 items-center min-w-0 flex-1">
           <span className="shrink-0 p-1.5 rounded-lg bg-primary/10">
-            <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            {fileType === "image" ? (
+              <FileImage className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            ) : (
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            )}
           </span>
           <div className="min-w-0">
             <h1 className="text-sm sm:text-base font-semibold truncate leading-tight">
@@ -180,7 +186,7 @@ const Preview = ({
             </h1>
             <p className="text-xs text-[#6A7282] truncate">
               {propertyName || "No property selected"}
-              {propertyId ? ` · #${propertyId}` : ""}
+              {propertyId ? ` - #${propertyId}` : ""}
             </p>
           </div>
         </div>
@@ -230,34 +236,32 @@ const Preview = ({
             </button>
           </div>
         ) : fileType === "pdf" && previewBlobUrl ? (
-          <div ref={pdfContainerRef} className="h-full overflow-y-auto p-3">
-            <Document
-              file={previewBlobUrl}
-              onLoadSuccess={({ numPages }) => setPdfPageCount(numPages)}
-              onLoadError={() =>
-                setPreviewError("Unable to render this PDF in preview.")
-              }
-              loading={
-                <div className="h-full flex items-center justify-center text-sm text-[#6A7282]">
-                  Rendering PDF...
-                </div>
-              }
+          <div className="h-full bg-white">
+            <object
+              data={previewBlobUrl}
+              type="application/pdf"
+              className="h-full w-full"
             >
-              <div className="flex flex-col items-center gap-3 pb-3">
-                {Array.from({ length: pdfPageCount || 1 }).map((_, index) => (
-                  <Page
-                    key={index + 1}
-                    pageNumber={index + 1}
-                    width={pdfPageWidth}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                  />
-                ))}
+              <div className="h-full flex flex-col justify-center items-center text-center px-4">
+                <p className="text-sm sm:text-base font-medium text-[#4A5565]">
+                  Your browser could not display this PDF inline.
+                </p>
+                <a
+                  href={previewBlobUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 flex items-center gap-1.5 border border-[#0000001A] px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-50 transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span>Open PDF</span>
+                </a>
               </div>
-            </Document>
+            </object>
           </div>
         ) : fileType === "image" && previewBlobUrl ? (
           <div className="h-full w-full flex items-center justify-center p-3 bg-white overflow-auto">
+            {/* Uploaded previews can be SVG/object URLs, which Next Image may block. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewBlobUrl}
               alt={fileName}
@@ -299,7 +303,7 @@ const Preview = ({
       <div className="flex items-center justify-end gap-2 shrink-0">
         {document ? (
           <a
-            href={document.file_url}
+            href={fileUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="cursor-pointer flex items-center gap-1.5 border border-[#0000001A] px-2.5 py-1.5 rounded-full text-xs sm:text-sm font-medium hover:bg-gray-50 transition-colors"

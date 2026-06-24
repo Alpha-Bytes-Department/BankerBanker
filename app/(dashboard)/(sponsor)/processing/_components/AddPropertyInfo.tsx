@@ -1,12 +1,12 @@
 "use client";
 
-import GMAP from "@/app/(dashboard)/_components/GMAP";
 import Button from "@/components/Button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import api from "@/Provider/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus, X } from "lucide-react";
+import type { PlaceData } from "./place-types";
 
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -51,13 +51,38 @@ type PropertyFormData = {
   parking_spaces: number;
 };
 
+type PropertyImageItem =
+  | {
+      id: string;
+      name: string;
+      source: "place";
+      url: string;
+    }
+  | {
+      id: string;
+      name: string;
+      source: "upload";
+      file: File;
+    };
+
 type AddPropertyInfoProps = {
   id: number;
   title?: string;
   description?: string;
   setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
   setPropertyId?: React.Dispatch<React.SetStateAction<number | null>>;
+  placeData?: PlaceData | null;
 };
+
+const MAX_IMAGES = 4;
+
+const getPlaceImageItems = (photos?: string[]): PropertyImageItem[] =>
+  (photos || []).slice(0, MAX_IMAGES).map((photo, index) => ({
+    id: `place-${index}-${photo}`,
+    name: `Fetched image ${index + 1}`,
+    source: "place",
+    url: photo,
+  }));
 
 const AddPropertyInfo = ({
   id,
@@ -65,20 +90,60 @@ const AddPropertyInfo = ({
   description,
   setCurrentStep,
   setPropertyId,
+  placeData,
 }: AddPropertyInfoProps) => {
-  const [location, setLocation] = React.useState({ lat: 0, lng: 0 });
-  const [propertyImages, setPropertyImages] = React.useState<File[]>([]);
+  const [location, setLocation] = React.useState({
+    lat: placeData?.lat || 0,
+    lng: placeData?.lng || 0,
+  });
+  const [propertyImages, setPropertyImages] = React.useState<
+    PropertyImageItem[]
+  >(() => getPlaceImageItems(placeData?.photos));
   const [isDraggingImages, setIsDraggingImages] = React.useState(false);
   const imageInputRef = React.useRef<HTMLInputElement>(null);
-  const MAX_IMAGES = 3;
+  const imagePreviews = React.useMemo(
+    () =>
+      propertyImages.map((image) => ({
+        ...image,
+        url:
+          image.source === "upload" ? URL.createObjectURL(image.file) : image.url,
+      })),
+    [propertyImages],
+  );
+
+  React.useEffect(() => {
+    return () => {
+      imagePreviews.forEach((preview) => {
+        if (preview.source === "upload") {
+          URL.revokeObjectURL(preview.url);
+        }
+      });
+    };
+  }, [imagePreviews]);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema) as never,
+    defaultValues: {
+      property_name: placeData?.name || "",
+      property_address: placeData?.address || "",
+    },
   });
+
+  React.useEffect(() => {
+    if (!placeData) return;
+
+    setLocation({ lat: placeData.lat, lng: placeData.lng });
+    reset({
+      property_name: placeData.name || "",
+      property_address: placeData.address || "",
+    });
+    setPropertyImages(getPlaceImageItems(placeData.photos));
+  }, [placeData, reset]);
 
   const onSubmit = async (data: PropertyFormData) => {
     if (location.lat === 0 && location.lng === 0) {
@@ -99,9 +164,23 @@ const AddPropertyInfo = ({
       formData.append("latitude", location.lat.toFixed(6));
       formData.append("longitude", location.lng.toFixed(6));
 
+      const selectedPlacePhotos: string[] = [];
+
       propertyImages.forEach((image) => {
-        formData.append("property_image", image);
+        if (image.source === "upload") {
+          formData.append("property_image", image.file);
+          return;
+        }
+
+        selectedPlacePhotos.push(image.url);
       });
+
+      if (selectedPlacePhotos.length > 0) {
+        formData.append(
+          "property_image_urls",
+          JSON.stringify(selectedPlacePhotos),
+        );
+      }
 
       const response = await api.post("/api/properties/", formData);
 
@@ -129,16 +208,16 @@ const AddPropertyInfo = ({
     }
 
     setPropertyImages((prev) => {
-      const merged = [...prev, ...onlyImages];
+      const uploadItems: PropertyImageItem[] = onlyImages.map((file) => ({
+        id: `upload-${file.name}-${file.size}-${file.lastModified}`,
+        name: file.name,
+        source: "upload",
+        file,
+      }));
+      const merged = [...prev, ...uploadItems];
       const unique = merged.filter(
-        (file, index, arr) =>
-          index ===
-          arr.findIndex(
-            (item) =>
-              item.name === file.name &&
-              item.size === file.size &&
-              item.lastModified === file.lastModified,
-          ),
+        (image, index, arr) =>
+          index === arr.findIndex((item) => item.id === image.id),
       );
 
       if (unique.length > MAX_IMAGES) {
@@ -161,8 +240,8 @@ const AddPropertyInfo = ({
     addImages(Array.from(e.dataTransfer.files));
   };
 
-  const removeImage = (index: number) => {
-    setPropertyImages((prev) => prev.filter((_, i) => i !== index));
+  const removeImage = (imageId: string) => {
+    setPropertyImages((prev) => prev.filter((image) => image.id !== imageId));
   };
 
   const inputClass =
@@ -181,10 +260,6 @@ const AddPropertyInfo = ({
         </div>
       </div>
 
-      {/* Map */}
-      <h1 className="mt-5 mb-2 text-xl">Select your property Location</h1>
-      <GMAP onLocationSelect={setLocation} />
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="mt-10 border border-[#99A1AF] p-6 rounded-2xl bg-white shadow-sm"
@@ -196,6 +271,28 @@ const AddPropertyInfo = ({
           Fill in the information about the property below.
         </p>
         <hr className="border-[#E5E7EB] mb-6" />
+
+        {placeData ? (
+          <div className="mb-6 rounded-xl border border-[#DDE3EA] bg-[#F8FAFC] p-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#6A7282]">
+                Location from previous step
+              </p>
+              <p className="mt-1 text-sm font-medium text-gray-900">
+                {placeData.name || "Unnamed place"}
+              </p>
+              <p className="mt-1 text-sm text-[#4A5565]">
+                {placeData.address || "No address available"}
+              </p>
+              <p className="mt-2 text-xs text-[#6A7282]">
+                {placeData.lat.toFixed(6)}, {placeData.lng.toFixed(6)}
+                {typeof placeData.rating === "number"
+                  ? ` - Rating ${placeData.rating}`
+                  : ""}
+              </p>
+            </div>
+          </div>
+        ) : null}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-5">
           {/* Property Name */}
@@ -257,6 +354,7 @@ const AddPropertyInfo = ({
                 required: "Property type is required",
               })}
             >
+              <option value="">Select property type</option>
               <option value="Multifamily">Multifamily</option>
               <option value="Industrial">Industrial</option>
               <option value="Retail">Retail</option>
@@ -410,7 +508,8 @@ const AddPropertyInfo = ({
                 Property Images
               </Label>
               <p className="text-xs text-[#4A5565] mt-1">
-                Upload photos of the property (max {MAX_IMAGES} images).
+                Fetched photos are prefilled. Remove any photo or append new
+                uploads (max {MAX_IMAGES} images).
               </p>
             </div>
             <span className="text-xs text-[#4A5565]">
@@ -460,21 +559,28 @@ const AddPropertyInfo = ({
             </button>
           </div>
 
-          {propertyImages.length > 0 && (
-            <div className="mt-4 space-y-2">
-              {propertyImages.map((file, index) => (
+          {imagePreviews.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {imagePreviews.map((preview) => (
                 <div
-                  key={`${file.name}-${file.size}-${file.lastModified}`}
-                  className="flex items-center justify-between rounded-lg border border-[#E5E7EB] px-3 py-2"
+                  key={preview.id}
+                  className="relative aspect-[4/3] overflow-hidden rounded-xl border border-[#E5E7EB] bg-[#F9FAFB]"
                 >
-                  <p className="text-sm text-gray-700 truncate pr-3">
-                    {file.name}
-                  </p>
+                  {/* Uploads use object URLs, fetched images use remote URLs. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={preview.url}
+                    alt={preview.name}
+                    className="h-full w-full object-cover"
+                  />
+                  <span className="absolute bottom-2 left-2 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white">
+                    {preview.source === "place" ? "Fetched" : "New"}
+                  </span>
                   <button
                     type="button"
-                    onClick={() => removeImage(index)}
-                    aria-label={`Remove ${file.name}`}
-                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    onClick={() => removeImage(preview.id)}
+                    aria-label={`Remove ${preview.name}`}
+                    className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/70 bg-black/55 text-white shadow-sm hover:bg-black/70"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -485,7 +591,13 @@ const AddPropertyInfo = ({
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end mt-8 pt-5 border-t border-[#E5E7EB]">
+        <div className="flex justify-between mt-8 pt-5 border-t border-[#E5E7EB]">
+          <Button
+            text="Back"
+            type="button"
+            className="button-outline"
+            onClick={() => setCurrentStep?.((prev) => Math.max(prev - 1, 0))}
+          />
           <Button
             text={isSubmitting ? "Submitting..." : "Continue"}
             type="submit"

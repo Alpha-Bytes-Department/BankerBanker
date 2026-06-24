@@ -1,8 +1,10 @@
 'use client'
 import { memo, useMemo, useState, useRef, useCallback } from 'react';
 import { GoogleMap, LoadScript, OverlayView, Autocomplete } from '@react-google-maps/api';
+import type { PlaceData } from "@/app/(dashboard)/(sponsor)/processing/_components/place-types";
 
 const LIBRARIES: ("places" | "geometry" | "drawing")[] = ['places', 'geometry', 'drawing'];
+type MapViewMode = "roadmap" | "satellite";
 
 type Marker = {
     id: number | string;
@@ -16,26 +18,17 @@ type GMAPProps = {
     markersList?: Marker[];
     // Callback to send coordinates to the parent/backend
     onLocationSelect?: (coords: { lat: number; lng: number }) => void;
+    onPlaceSelect?: (place: PlaceData) => void;
 }
 
-type ExtractedLocation = {
-    place_id: string;
-    name: string;
-    address: string;
-    lat: number;
-    lng: number;
-    types: string[];
-    rating: number | null;
-    photos: string[];
-};
-
-const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
+const GMAP = ({ markersList, onLocationSelect, onPlaceSelect }: GMAPProps) => {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
     const [map, setMap] = useState<google.maps.Map | null>(null);
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
     // State to show a "temporary" pin when the user clicks
     const [tempMarker, setTempMarker] = useState<google.maps.LatLngLiteral | null>(null);
+    const [mapViewMode, setMapViewMode] = useState<MapViewMode>("satellite");
 
     const [center, setCenter] = useState<google.maps.LatLngLiteral>({
         lat: 40.7128, // Default to New York
@@ -51,7 +44,7 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
         gestureHandling: 'greedy'
     }), []);
 
-    const extractLocationData = useCallback((place: google.maps.places.PlaceResult): ExtractedLocation | null => {
+    const extractLocationData = useCallback((place: google.maps.places.PlaceResult): PlaceData | null => {
         const location = place.geometry?.location;
 
         if (!location) {
@@ -70,13 +63,14 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
         };
     }, []);
 
-    const logLocationData = useCallback((label: string, place: google.maps.places.PlaceResult) => {
+    const handlePlaceData = useCallback((label: string, place: google.maps.places.PlaceResult) => {
         const extractedLocation = extractLocationData(place);
 
         if (extractedLocation) {
             console.log(label, extractedLocation);
+            onPlaceSelect?.(extractedLocation);
         }
-    }, [extractLocationData]);
+    }, [extractLocationData, onPlaceSelect]);
 
     const fetchPinnedPlaceDetails = useCallback((coords: google.maps.LatLngLiteral) => {
         if (!map || !window.google?.maps) {
@@ -99,6 +93,16 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
                     rating: null,
                     photos: []
                 });
+                onPlaceSelect?.({
+                    place_id: "",
+                    name: "",
+                    address: "",
+                    lat: coords.lat,
+                    lng: coords.lng,
+                    types: [],
+                    rating: null,
+                    photos: []
+                });
                 return;
             }
 
@@ -111,11 +115,11 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
                 },
                 (place, detailsStatus) => {
                     if (detailsStatus === window.google.maps.places.PlacesServiceStatus.OK && place) {
-                        logLocationData("Pinned location data", place);
+                        handlePlaceData("Pinned location data", place);
                         return;
                     }
 
-                    console.log("Pinned location data", {
+                    const fallbackPlace = {
                         place_id: firstResult.place_id,
                         name: firstResult.formatted_address || "",
                         address: firstResult.formatted_address || "",
@@ -124,11 +128,14 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
                         types: firstResult.types || [],
                         rating: null,
                         photos: []
-                    });
+                    };
+
+                    console.log("Pinned location data", fallbackPlace);
+                    onPlaceSelect?.(fallbackPlace);
                 }
             );
         });
-    }, [logLocationData, map]);
+    }, [handlePlaceData, map, onPlaceSelect]);
 
     const onMapClick = useCallback((e: google.maps.MapMouseEvent) => {
         if (e.latLng) {
@@ -159,7 +166,7 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
 
                 if (onLocationSelect) onLocationSelect(newPos);
 
-                logLocationData("Searched location data", place);
+                handlePlaceData("Searched location data", place);
             }
         }
     };
@@ -177,18 +184,38 @@ const GMAP = ({ markersList, onLocationSelect }: GMAPProps) => {
                     >
                         <input
                             type="text"
-                            placeholder="Search and pin a palace..."
+                            placeholder="Search and pin a place..."
                             className="w-full h-12 px-4 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-black shadow-sm"
                         />
                     </Autocomplete>
                 </div>
 
                 <div className="relative w-full">
+                    <div className="absolute right-3 top-3 z-10 flex overflow-hidden rounded-lg border border-white/70 bg-white shadow-sm">
+                        {[
+                            { label: "2D Map", value: "roadmap" as const },
+                            { label: "Satellite", value: "satellite" as const },
+                        ].map((option) => (
+                            <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => setMapViewMode(option.value)}
+                                className={`px-3 py-2 text-xs font-semibold transition-colors ${
+                                    mapViewMode === option.value
+                                        ? "bg-primary text-white"
+                                        : "bg-white text-gray-700 hover:bg-gray-50"
+                                }`}
+                            >
+                                {option.label}
+                            </button>
+                        ))}
+                    </div>
                     <GoogleMap
                         mapContainerStyle={{ width: "100%" }}
                         mapContainerClassName='h-[400px] xl:h-[600px] rounded-xl shadow-inner'
                         center={center}
                         zoom={12}
+                        mapTypeId={mapViewMode}
                         options={mapOptions}
                         onLoad={(inst) => setMap(inst)}
                         onClick={onMapClick} // <--- This captures the pin action
