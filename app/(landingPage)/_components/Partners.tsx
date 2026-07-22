@@ -25,7 +25,7 @@ const Partners = () => {
             
             <Marquee>
                 {images.map((image, index) => (
-                    <div key={index} className="mx-8 flex items-center">
+                    <div key={index} className="mx-8 flex pt-5 items-center">
                         <Image src={image.src} alt={image.alt} width={100} height={100} className="h-8 md:h-12 mx-10 w-full object-contain object-center" />
                     </div>
                 ))}

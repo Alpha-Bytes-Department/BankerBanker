@@ -21,17 +21,13 @@ const page = () => {
       <section className="relative z-0 bg-[#111111]/90">
         <Features />
       </section>
-      <div className="py-16">
-        <Headline text="How It Works"  className=" text-center text-4xl "/>
-         <Description text="Simple 3-step process to transform your CRE financing" />
-      <HowItWorksOne />
-      </div>
+      
      
       <div className=" bg-[#111111]/90">
         <HowItWorksTwo />
       </div>
 
-      <div className="text-center bg-slate-100/40 flex flex-col gap-5 py-20">
+      <div className="text-center bg-slate-100/40 flex flex-col gap-10 py-20">
         <Headline text="Our Network of Partners" />
         <Partners />
       </div>
