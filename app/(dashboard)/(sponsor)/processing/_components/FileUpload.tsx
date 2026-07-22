@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Button from "@/components/Button";
-import { Upload, Lightbulb, X, CheckCircle } from "lucide-react";
+import { Upload, Lightbulb, X, CheckCircle, FileText, FileSpreadsheet, File } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/Provider/api";
 
@@ -22,6 +22,33 @@ const FileUpload = ({
     const [files, setFiles] = useState<File[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const filePreviews = useMemo(() => {
+        return files.map((file, index) => {
+            const ext = file.name.split(".").pop()?.toLowerCase() || "";
+            const isImage = file.type.startsWith("image/") || ["jpg", "jpeg", "png", "webp", "gif", "svg"].includes(ext);
+            return {
+                file,
+                index,
+                url: isImage ? URL.createObjectURL(file) : null,
+                ext,
+                isImage,
+                isPdf: file.type === "application/pdf" || ext === "pdf",
+                isSpreadsheet: ["xls", "xlsx", "csv"].includes(ext),
+                isDoc: ["doc", "docx", "txt"].includes(ext),
+            };
+        });
+    }, [files]);
+
+    useEffect(() => {
+        return () => {
+            filePreviews.forEach((preview) => {
+                if (preview.url) {
+                    URL.revokeObjectURL(preview.url);
+                }
+            });
+        };
+    }, [filePreviews]);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -122,30 +149,92 @@ const FileUpload = ({
                 </label>
             </div>
 
-            {/* Selected files list */}
-            {files.length > 0 && (
-                <ul className="space-y-2">
-                    {files.map((file, index) => (
-                        <li
-                            key={index}
-                            className="flex items-center justify-between rounded-lg border border-gray-200 px-4 py-2 text-sm text-gray-700"
+            {/* Selected files preview grid */}
+            {filePreviews.length > 0 && (
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                        <p className="text-sm font-semibold text-gray-800">
+                            Selected Documents & Files ({filePreviews.length})
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setFiles([])}
+                            className="text-xs text-red-600 hover:underline font-medium cursor-pointer"
                         >
-                            <div className="flex items-center gap-2">
-                                <CheckCircle className="h-4 w-4 text-green-500" />
-                                <span className="truncate max-w-xs">{file.name}</span>
-                                <span className="text-gray-400 text-xs">
-                                    ({(file.size / 1024).toFixed(1)} KB)
-                                </span>
-                            </div>
-                            <button
-                                onClick={() => removeFile(index)}
-                                className="text-gray-400 hover:text-red-500 transition"
+                            Remove All
+                        </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                        {filePreviews.map((preview) => (
+                            <div
+                                key={preview.index}
+                                className="group relative flex flex-col justify-between h-40 rounded-xl border border-gray-200 bg-white p-3 shadow-xs hover:border-blue-300 hover:shadow-md transition overflow-hidden"
                             >
-                                <X className="h-4 w-4" />
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                                {/* Top bar: Badge & Remove button */}
+                                <div className="flex items-center justify-between z-10">
+                                    <span
+                                        className={`rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${
+                                            preview.isPdf
+                                                ? "bg-red-100 text-red-700 border border-red-200"
+                                                : preview.isSpreadsheet
+                                                ? "bg-emerald-100 text-emerald-700 border border-emerald-200"
+                                                : preview.isImage
+                                                ? "bg-blue-100 text-blue-700 border border-blue-200"
+                                                : "bg-purple-100 text-purple-700 border border-purple-200"
+                                        }`}
+                                    >
+                                        {preview.ext || "FILE"}
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => removeFile(preview.index)}
+                                        className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-600 transition cursor-pointer"
+                                        aria-label={`Remove ${preview.file.name}`}
+                                    >
+                                        <X className="h-3.5 w-3.5" />
+                                    </button>
+                                </div>
+
+                                {/* Center Thumbnail or Icon */}
+                                <div className="my-1 flex flex-1 items-center justify-center overflow-hidden">
+                                    {preview.isImage && preview.url ? (
+                                        <div className="relative h-20 w-full rounded-lg overflow-hidden border border-gray-100 bg-gray-50">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img
+                                                src={preview.url}
+                                                alt={preview.file.name}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        </div>
+                                    ) : preview.isPdf ? (
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-red-50 text-red-600 border border-red-100 shadow-xs">
+                                            <FileText className="h-7 w-7" />
+                                        </div>
+                                    ) : preview.isSpreadsheet ? (
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-xs">
+                                            <FileSpreadsheet className="h-7 w-7" />
+                                        </div>
+                                    ) : (
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-purple-50 text-purple-600 border border-purple-100 shadow-xs">
+                                            <File className="h-7 w-7" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Bottom info */}
+                                <div className="mt-1 z-10">
+                                    <p className="truncate text-xs font-medium text-gray-900" title={preview.file.name}>
+                                        {preview.file.name}
+                                    </p>
+                                    <p className="text-[10px] text-gray-400">
+                                        {(preview.file.size / 1024).toFixed(1)} KB
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             )}
 
             {/* Inline error message */}
