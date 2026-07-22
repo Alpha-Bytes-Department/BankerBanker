@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiFile,
@@ -13,6 +14,7 @@ import {
   FiBarChart2,
   FiBell,
   FiChevronLeft,
+  FiSend,
 } from "react-icons/fi";
 
 //========== Document Viewer Animation Component ===========
@@ -21,6 +23,59 @@ const ComponentAnimation = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
   const [activeRole, setActiveRole] = useState<"sponsor" | "lender">("sponsor");
+
+  const [messages, setMessages] = useState<
+    { id: string; sender: "user" | "ai"; text: string; tags?: string[] }[]
+  >([
+    {
+      id: "welcome-1",
+      sender: "ai",
+      text: "Hello! I'm the BANCre AI Analyst. I've analyzed all uploaded documents for this deal. You can ask me questions about the property, financials, or market conditions.",
+      tags: ["Property Details", "Financial Summary", "Market Analysis"],
+    },
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isSubmitting]);
+
+  const handleSendMessage = (e?: React.FormEvent, customText?: string) => {
+    if (e) e.preventDefault();
+    const textToSend = customText || inputValue;
+    if (!textToSend.trim() || isSubmitting) return;
+
+    const userMsgId = Date.now().toString();
+    setMessages((prev) => [
+      ...prev,
+      { id: userMsgId, sender: "user", text: textToSend.trim() },
+    ]);
+    setInputValue("");
+    setIsSubmitting(true);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          sender: "ai",
+          text: "Welcome to BANCre! We make Commercial Real Estate financing faster, cheaper, and smarter. Experience seamless loan origination, AI document processing, and direct access to top lenders. Sign up for free today to get started!",
+        },
+      ]);
+    }, 1000);
+  };
 
   //========== Reset Animation ===========
   const handleMouseEnter = () => {
@@ -34,12 +89,18 @@ const ComponentAnimation = () => {
   };
 
   return (
-    <div className="relative w-full lg:w-3/4 lg:rounded-2xl lg:shadow-2xl mx-auto lg:mt-10 h-screen lg:h-3/4 bg-gray-50 flex overflow-hidden">
+    <div className="relative w-full lg:w-[94%] xl:w-[90%] max-w-[1400px] lg:rounded-2xl lg:shadow-2xl mx-auto my-6 lg:my-10 h-[600px] lg:h-[650px] bg-gray-50 flex overflow-hidden">
       {/* ====== Left Navigation Sidebar - Hidden on mobile/tablet ====== */}
-      <div className="hidden xl:flex w-60 bg-black text-white flex-col border-r border-gray-800">
+      <div className="hidden xl:flex w-48 bg-black text-white flex-col border-r border-gray-800 shrink-0">
         {/* ====== Logo ====== */}
-        <div className="p-6 border-b border-gray-800">
-          <h1 className="text-2xl font-bold">BANCre</h1>
+        <div className="px-6 py-4 border-b border-gray-800 flex items-center">
+          <Image
+            src="/logo/White_BANCre.png"
+            alt="logo"
+            width={100}
+            height={40}
+            className="h-auto w-auto"
+          />
         </div>
 
         {/* ====== User Profile ====== */}
@@ -194,18 +255,18 @@ const ComponentAnimation = () => {
               </AnimatePresence>
 
               {/* ====== Left Sidebar - Document List (Collapsible on mobile) ====== */}
-              <div className="w-full lg:w-80 bg-white border-r border-gray-200 p-3 md:p-4 lg:p-6 overflow-y-auto max-h-60 lg:max-h-none">
-                <div className="mb-4 lg:mb-6">
-                  <h3 className="text-xs md:text-sm font-semibold text-gray-700 mb-1">
+              <div className="w-full lg:w-60 bg-white border-r border-gray-200 p-3 md:p-4 overflow-y-auto max-h-60 lg:max-h-none shrink-0">
+                <div className="mb-4 lg:mb-6 flex items-center justify-between">
+                  <h3 className="text-xs font-semibold text-gray-700">
                     Documents
                   </h3>
-                  <span className="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
+                  <span className="inline-block bg-gray-200 text-gray-700 text-[10px] px-2 py-0.5 rounded-full font-medium">
                     9
                   </span>
                 </div>
 
                 {/* ====== Document Items ====== */}
-                <div className="space-y-2 md:space-y-3">
+                <div className="space-y-2">
                   {[
                     {
                       name: "Financial_Statements_Q3_2024.pdf",
@@ -234,27 +295,27 @@ const ComponentAnimation = () => {
                   ].map((doc, index) => (
                     <motion.div
                       key={index}
-                      className="bg-gray-50 rounded-lg md:rounded-xl p-2 md:p-3 lg:p-4 border border-gray-200 hover:border-blue-300 transition-all cursor-pointer"
+                      className="bg-gray-50 rounded-lg p-2.5 border border-gray-200 hover:border-blue-300 transition-all cursor-pointer"
                       whileHover={{ scale: 1.02, y: -2 }}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <div className="flex items-start justify-between mb-1 md:mb-2">
-                        <div className="flex items-start gap-1 md:gap-2 flex-1 min-w-0">
-                          <FiFileText className="w-4 h-4 md:w-5 md:h-5 text-gray-400 shrink-0 mt-0.5" />
+                      <div className="flex items-start justify-between mb-1">
+                        <div className="flex items-start gap-1.5 flex-1 min-w-0">
+                          <FiFileText className="w-3.5 h-3.5 text-gray-400 shrink-0 mt-0.5" />
                           <div className="flex-1 min-w-0">
-                            <p className="text-xs md:text-sm font-medium text-gray-900 truncate">
+                            <p className="text-[11px] font-medium text-gray-900 truncate" title={doc.name}>
                               {doc.name}
                             </p>
-                            <p className="text-xs text-gray-500 mt-0.5 md:mt-1">
+                            <p className="text-[10px] text-gray-500 mt-0.5">
                               {doc.pages} pages • {doc.date}
                             </p>
                           </div>
                         </div>
-                        <FiDownload className="w-3 h-3 md:w-4 md:h-4 text-gray-400 shrink-0 ml-2" />
+                        <FiDownload className="w-3 h-3 text-gray-400 shrink-0 ml-1" />
                       </div>
-                      <span className="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">
+                      <span className="inline-block bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0.5 rounded font-medium">
                         {doc.category}
                       </span>
                     </motion.div>
@@ -351,10 +412,10 @@ const ComponentAnimation = () => {
               </div>
 
               {/* ====== Right Sidebar - AI Analyst ====== */}
-              <div className="w-96 bg-white border-l border-gray-200 p-6 flex flex-col">
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 bg-linear-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-96 lg:w-[430px] bg-white border-l border-gray-200 p-6 flex flex-col shrink-0">
+                <div className="mb-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-8 h-8 bg-linear-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shrink-0">
                       <FiMessageSquare className="w-5 h-5 text-white" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -366,106 +427,112 @@ const ComponentAnimation = () => {
                   </p>
                 </div>
 
-                {/* ====== Chat Messages ====== */}
-                <div className="flex-1 overflow-y-auto space-y-4">
+                {/* ====== Chat Messages Container ====== */}
+                <div
+                  ref={chatContainerRef}
+                  className="flex-1 overflow-y-auto space-y-4 pr-1 scroll-smooth"
+                >
                   <AnimatePresence>
                     {isHovered && animationComplete && (
                       <>
-                        {/* ====== Loading Dots ====== */}
-                        <motion.div
-                          className="flex items-center gap-2 bg-gray-100 rounded-2xl rounded-tl-none p-4 w-fit"
-                          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.8 }}
-                          transition={{ delay: 0.3, duration: 0.4 }}
-                        >
-                          {[0, 1, 2].map((i) => (
-                            <motion.div
-                              key={i}
-                              className="w-2 h-2 bg-blue-600 rounded-full"
-                              animate={{
-                                scale: [1, 1.3, 1],
-                                opacity: [0.5, 1, 0.5],
-                              }}
-                              transition={{
-                                duration: 1,
-                                repeat: Infinity,
-                                delay: i * 0.2,
-                              }}
-                            />
-                          ))}
-                        </motion.div>
-
-                        {/* ====== AI Message ====== */}
-                        <motion.div
-                          className="bg-linear-to-br from-blue-50 to-purple-50 rounded-2xl rounded-tl-none p-4 border border-blue-200"
-                          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                          transition={{ delay: 1.5, duration: 0.5 }}
-                        >
-                          <motion.p
-                            className="text-sm text-gray-800 leading-relaxed"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 1.8, duration: 0.4 }}
-                          >
-                            Hello! I'm the Team Ari AI Analyst. I've analyzed
-                            all uploaded documents for this deal. You can ask me
-                            questions about the property, financials, market
-                            conditions, or any specific details from the
-                            offering memorandum.
-                          </motion.p>
-
+                        {messages.map((msg) => (
                           <motion.div
-                            className="mt-3 flex flex-wrap gap-2"
+                            key={msg.id}
+                            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className={`flex flex-col ${
+                              msg.sender === "user" ? "items-end" : "items-start"
+                            }`}
+                          >
+                            <div
+                              className={`p-3.5 rounded-2xl max-w-[85%] text-xs md:text-sm leading-relaxed ${
+                                msg.sender === "user"
+                                  ? "bg-blue-600 text-white rounded-tr-none shadow-xs"
+                                  : "bg-linear-to-br from-blue-50 to-purple-50 text-gray-800 border border-blue-200 rounded-tl-none shadow-xs"
+                              }`}
+                            >
+                              <p>{msg.text}</p>
+                              {msg.tags && msg.tags.length > 0 && (
+                                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                                  {msg.tags.map((tag) => (
+                                    <button
+                                      key={tag}
+                                      type="button"
+                                      onClick={() =>
+                                        handleSendMessage(
+                                          undefined,
+                                          `Tell me about ${tag}`
+                                        )
+                                      }
+                                      className="text-xs bg-white border border-blue-300 text-blue-700 px-2 py-0.5 rounded-full hover:bg-blue-100 transition-colors cursor-pointer"
+                                    >
+                                      {tag}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
+                        ))}
+
+                        {/* ====== Submitting Loader Dots ====== */}
+                        {isSubmitting && (
+                          <motion.div
+                            key="loader"
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 2.2, duration: 0.4 }}
+                            exit={{ opacity: 0 }}
+                            className="flex items-center gap-2 bg-gray-100 rounded-2xl rounded-tl-none p-3.5 w-fit"
                           >
-                            {[
-                              "Property Details",
-                              "Financial Summary",
-                              "Market Analysis",
-                            ].map((tag, i) => (
-                              <motion.span
-                                key={tag}
-                                className="text-xs bg-white border border-blue-300 text-blue-700 px-2 py-1 rounded-full cursor-pointer hover:bg-blue-50 transition-colors"
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{
-                                  delay: 2.4 + i * 0.1,
-                                  duration: 0.3,
+                            {[0, 1, 2].map((i) => (
+                              <motion.div
+                                key={i}
+                                className="w-2 h-2 bg-blue-600 rounded-full"
+                                animate={{
+                                  scale: [1, 1.3, 1],
+                                  opacity: [0.4, 1, 0.4],
                                 }}
-                                whileHover={{ scale: 1.05 }}
-                              >
-                                {tag}
-                              </motion.span>
+                                transition={{
+                                  duration: 0.8,
+                                  repeat: Infinity,
+                                  delay: i * 0.2,
+                                }}
+                              />
                             ))}
                           </motion.div>
-                        </motion.div>
+                        )}
                       </>
                     )}
                   </AnimatePresence>
                 </div>
 
                 {/* ====== Input Area ====== */}
-                <motion.div
+                <form
+                  onSubmit={(e) => handleSendMessage(e)}
                   className="mt-4 relative"
-                  initial={{ opacity: 0.5 }}
-                  animate={{
-                    opacity: isHovered && animationComplete ? 1 : 0.5,
-                  }}
                 >
                   <input
                     type="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
                     placeholder="Ask about the documents..."
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    disabled={!isHovered || !animationComplete}
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs md:text-sm"
+                    disabled={!isHovered || !animationComplete || isSubmitting}
                   />
-                  <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50">
-                    <FiMessageSquare className="w-4 h-4" />
+                  <button
+                    type="submit"
+                    disabled={
+                      !isHovered ||
+                      !animationComplete ||
+                      isSubmitting ||
+                      !inputValue.trim()
+                    }
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-40 cursor-pointer"
+                  >
+                    <FiSend className="w-4 h-4" />
                   </button>
-                </motion.div>
+                </form>
               </div>
             </div>
 

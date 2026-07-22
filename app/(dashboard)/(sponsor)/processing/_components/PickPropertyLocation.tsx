@@ -83,7 +83,10 @@ const PickPropertyLocation = ({
           Search for the property address or click the map to pin the location.
         </p>
 
-        <GMAP onPlaceSelect={setSelectedPlace} />
+        <GMAP onPlaceSelect={(place) => {
+          console.log("Details from map:", place);
+          setSelectedPlace(place);
+        }} />
 
         {selectedPlace ? (
           <div className="mt-5 rounded-xl border border-[#DDE3EA] bg-[#F8FAFC] p-4">

@@ -72,15 +72,15 @@ const Navbar = ({ className = "" }: NavbarProps) => {
               <Image
                 src={"/logo/BANCre.png"}
                 alt={"logo"}
-                width={100}
-                height={50}
+                width={85}
+                height={40}
                 className="h-auto w-auto lg:hidden"
               />
               <Image
                 src={"/logo/BANCre.png"}
                 alt={"logo"}
-                width={130}
-                height={50}
+                width={100}
+                height={45}
                 className="hidden h-auto w-auto lg:block"
               />
             </Link>
@@ -90,32 +90,34 @@ const Navbar = ({ className = "" }: NavbarProps) => {
             />
           </div>
           {/* maping Links for desktop */}
-          <div className="hidden lg:flex items-center gap-5 bg-[#315DF60F] text-[#000000B2] px-4 py-2 rounded-full">
+          <div className="hidden lg:flex items-center gap-1 bg-[#315DF60F] text-[#000000B2] p-1.5 rounded-full">
             {Links &&
               Links.map((link, idx) => (
                 <Link
                   key={idx}
-                  className={` ${link.href === pathName ? "bg-[#0D4DA5] px-3 py-2 rounded-full text-white" : ""}`}
+                  className={`px-4 py-1.5 rounded-full text-xs md:text-sm font-medium transition-colors ${link.href === pathName ? "bg-[#0D4DA5] text-white" : "hover:text-black"}`}
                   href={link.href}
                 >
                   {link.text}
                 </Link>
               ))}
           </div>
-          <div className="lg:flex gap-5 hidden items-center">
+          <div className="lg:flex gap-3 hidden items-center">
             {userData ? (
               <></>
             ) : (
               <Button
                 onClick={() => router.push("/signin")}
                 text="Sign in"
+                size="medium"
                 className="button-none hidden lg:flex"
               />
             )}
             <Button
               onClick={() => router.push("/register")}
               text="Get Started Free"
-              className="button-primary "
+              size="medium"
+              className="button-primary"
             />
           </div>
         </div>

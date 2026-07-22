@@ -2,7 +2,9 @@
 import React from "react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/autoplay";
 
 const transactions = [
   {
@@ -45,7 +47,7 @@ const transactions = [
 
 const Transaction = () => {
   return (
-    <section className="bg-white py-12 px-4 lg:px-8 overflow-hidden">
+    <section id="transactions" className="bg-white py-12 px-4 lg:px-8 overflow-hidden">
       <div className="mx-auto text-center">
         <h2 className="text-3xl md:text-5xl font-bold mb-3 tracking-tight">
           Our Transactions
@@ -55,21 +57,34 @@ const Transaction = () => {
         </p>
 
         {/* Swiper slider for transactions */}
-        <div className="mt-8">
+        <div className="relative mt-8 max-w-5xl mx-auto px-4">
+          {/* Left slight blur overlay */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-16 md:w-24 z-20 bg-gradient-to-r from-white via-white/80 to-transparent backdrop-blur-[2px]" />
+          {/* Right slight blur overlay */}
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-16 md:w-24 z-20 bg-gradient-to-l from-white via-white/80 to-transparent backdrop-blur-[2px]" />
+
           <Swiper
-            spaceBetween={24}
-            breakpoints={{
-              0: { slidesPerView: 1.2 },
-              640: { slidesPerView: 2.2 },
-              1024: { slidesPerView: 3.2 },
-              1280: { slidesPerView: 4.2 },
+            modules={[Autoplay]}
+            spaceBetween={20}
+            slidesPerView={3}
+            loop={true}
+            speed={900}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
             }}
-            className="w-full"
+            breakpoints={{
+              0: { slidesPerView: 1 },
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+            className="w-full py-4"
           >
             {transactions.map((tx) => (
               <SwiperSlide key={tx.id}>
-                <div className="flex flex-col gap-3">
-                  <div className="relative w-full h-56 md:h-64 lg:h-80 rounded-3xl overflow-hidden shadow-sm">
+                <div className="flex flex-col gap-2.5 text-left transition-all duration-700 hover:scale-[1.02]">
+                  <div className="relative w-full h-44 md:h-52 lg:h-60 rounded-2xl overflow-hidden shadow-xs">
                     <Image
                       src={tx.image}
                       alt={tx.title}
@@ -77,9 +92,9 @@ const Transaction = () => {
                       className="object-cover"
                     />
                   </div>
-                  <div className="flex flex-col text-sm text-black">
-                    <span className="font-semibold">{tx.title}</span>
-                    <span>{tx.location}</span>
+                  <div className="flex flex-col text-sm text-black px-1">
+                    <span className="font-semibold text-xs md:text-sm">{tx.title}</span>
+                    <span className="text-gray-500 text-xs">{tx.location}</span>
                   </div>
                 </div>
               </SwiperSlide>
