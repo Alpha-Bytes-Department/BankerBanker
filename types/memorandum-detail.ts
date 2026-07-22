@@ -1,3 +1,39 @@
+//========== Section Block Types (new API format) ===========
+
+export interface HeadingBlock {
+  type: "heading";
+  level: number;
+  content: string;
+}
+
+export interface ParagraphBlock {
+  type: "paragraph";
+  content: string;
+}
+
+export interface KeyValueRow {
+  key: string;
+  label: string;
+  value: string;
+  value_type: string;
+}
+
+export interface KeyValueTableBlock {
+  type: "key_value_table";
+  rows: KeyValueRow[];
+}
+
+export interface BulletListBlock {
+  type: "bullet_list";
+  items: string[];
+}
+
+export type SectionBlock =
+  | HeadingBlock
+  | ParagraphBlock
+  | KeyValueTableBlock
+  | BulletListBlock;
+
 //========== Memorandum Detail Page Types ===========
 
 export interface MemorandumDetailData {

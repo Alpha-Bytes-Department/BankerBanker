@@ -18,6 +18,7 @@ import {
   sanitizeInlineMarkdownText,
 } from "./section-utils";
 import { MemorandumTab } from "@/types/memorandum-detail";
+import type { SectionBlock } from "@/types/memorandum-detail";
 import api from "@/Provider/api";
 import { toast } from "sonner";
 import ConfirmActionModal from "@/components/ConfirmActionModal";
@@ -32,7 +33,9 @@ import {
 type MemorandumSection = {
   id: number;
   section_type: string;
+  title?: string;
   content: string;
+  blocks?: SectionBlock[];
   image_url?: string | null;
   order: number;
   updated_at?: string;

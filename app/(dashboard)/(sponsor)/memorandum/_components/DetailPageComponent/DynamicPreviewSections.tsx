@@ -3,15 +3,19 @@
 import Image from "next/image";
 import PreviewSection from "./PreviewSection";
 import SectionMarkdown from "./SectionMarkdown";
+import SectionBlockRenderer from "./SectionBlockRenderer";
 import {
   formatSectionTitle,
   stripLeadingSectionHeading,
 } from "./section-utils";
+import type { SectionBlock } from "@/types/memorandum-detail";
 
 type DynamicSection = {
   id: number;
   section_type: string;
+  title?: string;
   content: string;
+  blocks?: SectionBlock[];
   image_url?: string | null;
 };
 
@@ -23,7 +27,10 @@ const DynamicPreviewSections = ({ sections }: DynamicPreviewSectionsProps) => {
   return (
     <div>
       {sections.map((section, index) => {
-        const sectionTitle = formatSectionTitle(section.section_type);
+        const sectionTitle =
+          section.title || formatSectionTitle(section.section_type);
+        const hasBlocks =
+          Array.isArray(section.blocks) && section.blocks.length > 0;
         const contentToRender = stripLeadingSectionHeading(
           section.content || "",
           sectionTitle,
@@ -49,10 +56,17 @@ const DynamicPreviewSections = ({ sections }: DynamicPreviewSectionsProps) => {
                 </div>
               ) : null}
 
-              <SectionMarkdown
-                content={contentToRender}
-                className="text-gray-700 leading-relaxed"
-              />
+              {hasBlocks ? (
+                <SectionBlockRenderer
+                  blocks={section.blocks!}
+                  skipFirstHeading={true}
+                />
+              ) : (
+                <SectionMarkdown
+                  content={contentToRender}
+                  className="text-gray-700 leading-relaxed"
+                />
+              )}
             </div>
           </PreviewSection>
         );

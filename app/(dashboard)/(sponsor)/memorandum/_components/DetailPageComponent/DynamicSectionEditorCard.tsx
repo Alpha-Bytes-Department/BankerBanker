@@ -5,6 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { FiCheck, FiEdit, FiUpload, FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import SectionMarkdown from "./SectionMarkdown";
+import SectionBlockRenderer, {
+  serializeBlocksToContent,
+} from "./SectionBlockRenderer";
+import type { SectionBlock } from "@/types/memorandum-detail";
 import {
   formatSectionTitle,
   stripLeadingSectionHeading,
@@ -13,7 +17,9 @@ import {
 type DynamicSection = {
   id: number;
   section_type: string;
+  title?: string;
   content: string;
+  blocks?: SectionBlock[];
   image_url?: string | null;
 };
 
@@ -30,31 +36,50 @@ const DynamicSectionEditorCard = ({
 }: DynamicSectionEditorCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(section.content || "");
+  const [editedBlocks, setEditedBlocks] = useState<SectionBlock[] | null>(
+    section.blocks && section.blocks.length > 0
+      ? [...section.blocks]
+      : null,
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const sectionTitle = formatSectionTitle(section.section_type);
+  const sectionTitle =
+    section.title || formatSectionTitle(section.section_type);
   const contentToRender = stripLeadingSectionHeading(
     editedContent,
     sectionTitle,
   );
 
+  const hasBlocks =
+    Array.isArray(editedBlocks) && editedBlocks.length > 0;
+
   useEffect(() => {
     setEditedContent(section.content || "");
-  }, [section.content, section.id]);
+    setEditedBlocks(
+      section.blocks && section.blocks.length > 0
+        ? [...section.blocks]
+        : null,
+    );
+  }, [section.content, section.blocks, section.id]);
 
   const hasSectionImage = Boolean(section.image_url);
 
   const handleSave = async () => {
-    if (editedContent.trim() === "") {
+    // Serialize blocks to content for the API if we have blocks
+    const contentToSave = hasBlocks
+      ? serializeBlocksToContent(editedBlocks!)
+      : editedContent;
+
+    if (contentToSave.trim() === "") {
       toast.error("Section content cannot be empty.");
       return;
     }
 
     try {
       setIsSaving(true);
-      await onSave(section.id, editedContent);
+      await onSave(section.id, contentToSave);
       setIsEditing(false);
     } finally {
       setIsSaving(false);
@@ -64,6 +89,11 @@ const DynamicSectionEditorCard = ({
   const handleCancel = () => {
     setIsEditing(false);
     setEditedContent(section.content || "");
+    setEditedBlocks(
+      section.blocks && section.blocks.length > 0
+        ? [...section.blocks]
+        : null,
+    );
   };
 
   const handleUploadClick = () => {
@@ -91,7 +121,13 @@ const DynamicSectionEditorCard = ({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-4 md:p-6 mb-6">
+    <div
+      className={`bg-white border rounded-2xl p-4 md:p-6 mb-6 transition-colors ${
+        isEditing
+          ? "border-blue-300 shadow-[0_0_0_1px_rgba(59,130,246,0.15)]"
+          : "border-gray-200"
+      }`}
+    >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-3">
         <h3 className="text-lg md:text-xl text-gray-900">{sectionTitle}</h3>
 
@@ -130,17 +166,26 @@ const DynamicSectionEditorCard = ({
         </div>
       </div>
 
-      {!isEditing ? (
+      {/* ====== Section Content ====== */}
+      {hasBlocks ? (
+        <SectionBlockRenderer
+          blocks={editedBlocks!}
+          skipFirstHeading={true}
+          editable={isEditing}
+          onBlocksChange={(updatedBlocks) => setEditedBlocks(updatedBlocks)}
+        />
+      ) : !isEditing ? (
         <SectionMarkdown
           content={contentToRender}
           className="text-sm md:text-base text-gray-700 leading-relaxed"
         />
       ) : (
+        /* Fallback: plain text editing for sections without blocks */
         <textarea
           value={editedContent}
           onChange={(e) => setEditedContent(e.target.value)}
           className="w-full min-h-[180px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base resize-y"
-          placeholder="Write section content in markdown format..."
+          placeholder="Write section content..."
         />
       )}
 
