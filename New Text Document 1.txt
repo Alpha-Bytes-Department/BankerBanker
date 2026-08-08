@@ -1,0 +1,1008 @@
+{
+    "success": true,
+    "statusCode": 200,
+    "message": "Memorandum retrieved successfully.",
+    "timestamp": "2026-08-05T14:41:03.310027+00:00",
+    "data": {
+        "id": 20,
+        "title": "AQUA Tower — Offering Memorandum",
+        "property": 21,
+        "property_name": "AQUA Tower",
+        "property_image_url": "https://maps.googleapis.com/maps/api/place/js/PhotoService.GetPhoto?1sAWCwydgMFmXuxext0xJTUZUkYmGnTACVOVNff9Is5htbg6jGk-kDg7Ox2U-KP_rSblE5QGS72A1V-1OfdUHFUZyWXCfNJEE-htpNn9Vm53zcq-rL1UQ9Z-S_CY1hfTzYhE2JCXgA4ENfC5z4kcfToyDveLn4KjL2GqRlSYhuLzMTiGzgLEqTTNBd7Yfj0iyP_kA3m3N-aMkgMLmhfwlow8V4h6b5ZzDmvqGUqiNH9n56TJ15PenWMrxt4IXUEhbHL0Q8vpvgfyx7VmgtkPCKYBETHhWt17Mn1Ka9_OmMh3PqOmO9UisVkBmffMX7_rfMFgrQbb-UBZDJyGEzJ3Ve4RNzRzBP9GGEqhDlYonj9ozbrScQzeJIGAQQYJlCLsJzj1gSRw_EZsQwIP_3P3V96lfZCx8QD09DWRSuD6d2qnxo04B6DIcTbnna9Kk1XQH3dCWc&3u1200&4u1200&5m1&2e1&callback=none&r_url=https%3A%2F%2Fbancre.com%2Fprocessing&key=AIzaSyDh_bLhAAE1Pfg8AIPDlsC5qgSYJXZHGYA&token=18405",
+        "status": "Ready",
+        "mode": "Editor",
+        "created_at": "2026-08-01T15:30:04.421513Z",
+        "updated_at": "2026-08-01T15:30:19.778482Z",
+        "sections": [
+            {
+                "id": 267,
+                "section_type": "property_information",
+                "title": "Property Information",
+                "content": "**Property Information**\n\n- **Property Name:** AQUA Tower\n- **Address:** 43 Mohakhali C/A, Dhaka 1212, Bangladesh\n- **Type:** Industrial\n- **Number of Units:** 33\n- **Rentable Area:** 12,323.00 SF\n- **Year Built:** 1998\n- **Year Renovated:** 2024\n- **Occupancy Rate:** 23.00%\n- **Parking Spaces:** 40",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Property Information"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "property_name",
+                                "label": "Property Name",
+                                "value": "AQUA Tower",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "address",
+                                "label": "Address",
+                                "value": "43 Mohakhali C/A, Dhaka 1212, Bangladesh",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "type",
+                                "label": "Type",
+                                "value": "Industrial",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "number_of_units",
+                                "label": "Number of Units",
+                                "value": "33",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "rentable_area",
+                                "label": "Rentable Area",
+                                "value": "12,323.00 SF",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "year_built",
+                                "label": "Year Built",
+                                "value": "1998",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "year_renovated",
+                                "label": "Year Renovated",
+                                "value": "2024",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "occupancy_rate",
+                                "label": "Occupancy Rate",
+                                "value": "23.00%",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "parking_spaces",
+                                "label": "Parking Spaces",
+                                "value": "40",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    }
+                ],
+                "image_url": null,
+                "order": 0,
+                "updated_at": "2026-08-01T15:30:19.763407Z"
+            },
+            {
+                "id": 268,
+                "section_type": "executive_summary",
+                "title": "Executive Summary",
+                "content": "**Executive Summary**\n\n**Investment Opportunity:**\nNorthMarq, on behalf of Sale Commercial Properties, Inc., presents an exceptional refinancing opportunity for East Side Plaza, a premier retail neighborhood center located at 7460 Youree Drive, Shreveport, LA. This property, built in 2004, boasts a current occupancy rate of 98%, with a diverse tenant mix that includes nationally recognized brands such as Michaels, Dollar Tree, and Guitar Center. The plaza is strategically positioned in Shreveport's highest-traffic retail corridor, benefiting from over 24,000 vehicles passing daily, which significantly enhances foot traffic and consumer engagement.\n\n**Key Financial Metrics:**\nThe total loan request for refinancing is $6,400,000, representing a competitive price of $81 per square foot and a loan-to-value ratio of 61%. The property is projected to generate a robust Net Operating Income (NOI) of $816,822, yielding a debt service coverage ratio (DSCR) of 1.68x and a debt yield of 12.76%. These metrics underscore the financial stability and profitability of East Side Plaza, making it an attractive investment for potential lenders.\n\n**Location Strengths:**\nEast Side Plaza is ideally situated off Highway 1 (Youree Drive), providing seamless access to major interstate highways, including Interstate 20 and Interstate 220. The surrounding area is a retail powerhouse, featuring a concentration of well-known retailers such as Target, Best Buy, and Lowe’s, which collectively drive significant consumer traffic. The plaza's location not only enhances its visibility but also positions it as a key player in the Shreveport-Bossier Metro Area's retail landscape.\n\n**Attractive Deal Highlights:**\nThis investment opportunity is particularly compelling due to the following factors:\n- **High Occupancy Rate:** With a 98% occupancy rate and long-term tenants, the property demonstrates strong demand and stability.\n- **Diverse Tenant Mix:** The presence of nationally recognized brands ensures a reliable income stream and mitigates vacancy risks.\n- **Strategic Location:** The plaza's positioning in a high-traffic area, coupled with its proximity to major retail hubs, enhances its appeal to both consumers and investors.\n- **Growth Potential:** The Shreveport retail market is experiencing low vacancy rates and a constrained construction pipeline, indicating potential for future rent growth and increased property value.\n\nIn summary, East Side Plaza represents a unique opportunity for investors seeking a stable, income-producing asset in a thriving retail market. The combination of strong financial metrics, a prime location, and a diverse tenant base positions this property as a sound investment for the future.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Executive Summary"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Investment Opportunity:** NorthMarq, on behalf of Sale Commercial Properties, Inc., presents an exceptional refinancing opportunity for East Side Plaza, a premier retail neighborhood center located at 7460 Youree Drive, Shreveport, LA. This property, built in 2004, boasts a current occupancy rate of 98%, with a diverse tenant mix that includes nationally recognized brands such as Michaels, Dollar Tree, and Guitar Center. The plaza is strategically positioned in Shreveport's highest-traffic retail corridor, benefiting from over 24,000 vehicles passing daily, which significantly enhances foot traffic and consumer engagement."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Key Financial Metrics:** The total loan request for refinancing is $6,400,000, representing a competitive price of $81 per square foot and a loan-to-value ratio of 61%. The property is projected to generate a robust Net Operating Income (NOI) of $816,822, yielding a debt service coverage ratio (DSCR) of 1.68x and a debt yield of 12.76%. These metrics underscore the financial stability and profitability of East Side Plaza, making it an attractive investment for potential lenders."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Location Strengths:** East Side Plaza is ideally situated off Highway 1 (Youree Drive), providing seamless access to major interstate highways, including Interstate 20 and Interstate 220. The surrounding area is a retail powerhouse, featuring a concentration of well-known retailers such as Target, Best Buy, and Lowe’s, which collectively drive significant consumer traffic. The plaza's location not only enhances its visibility but also positions it as a key player in the Shreveport-Bossier Metro Area's retail landscape."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Attractive Deal Highlights:** This investment opportunity is particularly compelling due to the following factors: - **High Occupancy Rate:** With a 98% occupancy rate and long-term tenants, the property demonstrates strong demand and stability. - **Diverse Tenant Mix:** The presence of nationally recognized brands ensures a reliable income stream and mitigates vacancy risks. - **Strategic Location:** The plaza's positioning in a high-traffic area, coupled with its proximity to major retail hubs, enhances its appeal to both consumers and investors. - **Growth Potential:** The Shreveport retail market is experiencing low vacancy rates and a constrained construction pipeline, indicating potential for future rent growth and increased property value."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "In summary, East Side Plaza represents a unique opportunity for investors seeking a stable, income-producing asset in a thriving retail market. The combination of strong financial metrics, a prime location, and a diverse tenant base positions this property as a sound investment for the future."
+                    }
+                ],
+                "image_url": null,
+                "order": 1,
+                "updated_at": "2026-08-01T15:30:19.764019Z"
+            },
+            {
+                "id": 269,
+                "section_type": "property_overview",
+                "title": "Property Overview",
+                "content": "**Property Overview**\n\nAQUA Tower, located at 43 Mohakhali C/A, Dhaka 1212, Bangladesh, is a well-established industrial property that boasts a total rentable area of 12,323 square feet. Constructed in 1998, the property has undergone significant renovations in 2024, enhancing its functionality and aesthetic appeal to meet modern industrial standards. The building is designed to accommodate a diverse range of industrial operations, making it an attractive option for various tenants.\n\nThe property features a total of 33 units, with a current occupancy rate of 23%. This presents a unique opportunity for potential investors to capitalize on the available space and increase occupancy through strategic leasing efforts. The unit mix is versatile, catering to different industrial needs, which can include manufacturing, warehousing, and distribution activities.\n\nAQUA Tower is strategically situated in the Mohakhali area, a prominent industrial hub in Dhaka. This location offers excellent connectivity to major transportation routes, facilitating efficient logistics and distribution for tenants. The surrounding area is characterized by a mix of industrial and commercial developments, providing a robust economic environment that supports business growth.\n\nIn terms of physical condition, AQUA Tower is in good shape following its recent renovations. The upgrades have modernized the facilities, ensuring compliance with current industry standards and enhancing the overall tenant experience. The property also includes 40 dedicated parking spaces, providing ample parking for tenants and visitors alike.\n\nOverall, AQUA Tower presents a compelling investment opportunity within the industrial sector, with its prime location, diverse unit mix, and recent renovations positioning it favorably in the market. With a proactive leasing strategy, there is significant potential for increased occupancy and revenue generation in the coming years.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Property Overview"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "AQUA Tower, located at 43 Mohakhali C/A, Dhaka 1212, Bangladesh, is a well-established industrial property that boasts a total rentable area of 12,323 square feet. Constructed in 1998, the property has undergone significant renovations in 2024, enhancing its functionality and aesthetic appeal to meet modern industrial standards. The building is designed to accommodate a diverse range of industrial operations, making it an attractive option for various tenants."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The property features a total of 33 units, with a current occupancy rate of 23%. This presents a unique opportunity for potential investors to capitalize on the available space and increase occupancy through strategic leasing efforts. The unit mix is versatile, catering to different industrial needs, which can include manufacturing, warehousing, and distribution activities."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "AQUA Tower is strategically situated in the Mohakhali area, a prominent industrial hub in Dhaka. This location offers excellent connectivity to major transportation routes, facilitating efficient logistics and distribution for tenants. The surrounding area is characterized by a mix of industrial and commercial developments, providing a robust economic environment that supports business growth."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "In terms of physical condition, AQUA Tower is in good shape following its recent renovations. The upgrades have modernized the facilities, ensuring compliance with current industry standards and enhancing the overall tenant experience. The property also includes 40 dedicated parking spaces, providing ample parking for tenants and visitors alike."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Overall, AQUA Tower presents a compelling investment opportunity within the industrial sector, with its prime location, diverse unit mix, and recent renovations positioning it favorably in the market. With a proactive leasing strategy, there is significant potential for increased occupancy and revenue generation in the coming years."
+                    }
+                ],
+                "image_url": null,
+                "order": 2,
+                "updated_at": "2026-08-01T15:30:19.764026Z"
+            },
+            {
+                "id": 270,
+                "section_type": "property_highlights",
+                "title": "Property Highlights",
+                "content": "### Property Highlights\n\n- **Prime Location**: Situated along Highway 1 (Youree Drive) with direct access to major interstates (I-20, I-220) and state routes, ensuring high visibility and accessibility.\n  \n- **High Traffic Volume**: Daily traffic exceeding 24,000 vehicles per day, making it the highest-traffic retail area in Shreveport.\n\n- **Strong Occupancy Rate**: Currently 98% occupied, with a significant portion of tenants having long-term leases, enhancing stability and income reliability.\n\n- **Diverse Tenant Mix**: Features well-known national retailers such as Michaels, Dollar Tree, and Guitar Center, which attract a broad customer base.\n\n- **Strategic Retail Corridor**: Located in Shreveport’s densest shopping area, surrounded by major retailers like Target, Sam’s Club, and Best Buy, driving additional foot traffic.\n\n- **Recent Renovations**: The property has undergone renovations in 2024, enhancing its appeal and functionality.\n\n- **Competitive Rental Rates**: Average rent per square foot at $12.72, positioned favorably compared to nearby retail centers.\n\n- **Strong Financial Performance**: Projected Net Operating Income (NOI) of $816,822, with a debt service coverage ratio of 1.68x, indicating robust financial health.\n\n- **Ample Parking**: 40 parking spaces available, providing convenience for customers and tenants alike.\n\n- **Future Growth Potential**: Located in a region with ongoing economic development, including significant investments in the casino and hotel industry, promising continued demand for retail space.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Property Highlights"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "prime_location",
+                                "label": "Prime Location",
+                                "value": "Situated along Highway 1 (Youree Drive) with direct access to major interstates (I-20, I-220) and state routes, ensuring high visibility and accessibility.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "high_traffic_volume",
+                                "label": "High Traffic Volume",
+                                "value": "Daily traffic exceeding 24,000 vehicles per day, making it the highest-traffic retail area in Shreveport.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "strong_occupancy_rate",
+                                "label": "Strong Occupancy Rate",
+                                "value": "Currently 98% occupied, with a significant portion of tenants having long-term leases, enhancing stability and income reliability.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "diverse_tenant_mix",
+                                "label": "Diverse Tenant Mix",
+                                "value": "Features well-known national retailers such as Michaels, Dollar Tree, and Guitar Center, which attract a broad customer base.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "strategic_retail_corridor",
+                                "label": "Strategic Retail Corridor",
+                                "value": "Located in Shreveport’s densest shopping area, surrounded by major retailers like Target, Sam’s Club, and Best Buy, driving additional foot traffic.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "recent_renovations",
+                                "label": "Recent Renovations",
+                                "value": "The property has undergone renovations in 2024, enhancing its appeal and functionality.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "competitive_rental_rates",
+                                "label": "Competitive Rental Rates",
+                                "value": "Average rent per square foot at $12.72, positioned favorably compared to nearby retail centers.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "strong_financial_performance",
+                                "label": "Strong Financial Performance",
+                                "value": "Projected Net Operating Income (NOI) of $816,822, with a debt service coverage ratio of 1.68x, indicating robust financial health.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "ample_parking",
+                                "label": "Ample Parking",
+                                "value": "40 parking spaces available, providing convenience for customers and tenants alike.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "future_growth_potential",
+                                "label": "Future Growth Potential",
+                                "value": "Located in a region with ongoing economic development, including significant investments in the casino and hotel industry, promising continued demand for retail space.",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    }
+                ],
+                "image_url": null,
+                "order": 3,
+                "updated_at": "2026-08-01T15:30:19.764029Z"
+            },
+            {
+                "id": 271,
+                "section_type": "area_overview",
+                "title": "Area Overview",
+                "content": "### Area Overview\n\n#### Neighborhood and City Demographics\nShreveport, Louisiana, serves as the commercial hub of the Ark-La-Tex tri-state region, boasting a population of over 389,000 residents. The city is characterized by a diverse demographic profile, with a mix of cultures and communities contributing to its vibrant atmosphere. The median home price in Shreveport is approximately $258,000, which is significantly lower than the national average, making it an attractive location for families and individuals seeking affordable housing options. The cost of living in Shreveport is about 17% less than the national average, further enhancing its appeal as a desirable place to live and work.\n\n#### Employment Base and Major Employers\nShreveport's economy is bolstered by a diverse employment base, with key sectors including healthcare, education, retail, and military. The largest employer in the area is Barksdale Air Force Base, which supports approximately 15,000 active duty members, reservists, and civilian employees, along with a significant number of retirees and their families. Other major employers in the region include Christus Health, Willis-Knighton Health System, and various retail giants located in the bustling shopping corridors. The recent expansion of SLB and the opening of the Live! Casino & Hotel Louisiana, a $270 million development, further illustrate the city's growth and economic potential.\n\n#### Transportation Access\nShreveport benefits from excellent transportation access, with major highways including Interstate 20 and Interstate 220 facilitating connectivity to neighboring states and cities. The strategic location of East Side Plaza along Highway 1 (Youree Drive) ensures high visibility and accessibility, with daily traffic exceeding 24,000 vehicles. This prime location allows for easy access to a variety of retail and dining options, making it a central point for both residents and visitors.\n\n#### Economic Outlook\nThe economic outlook for Shreveport remains positive, with projections indicating steady growth in the retail sector. The Southeast retail submarket, where East Side Plaza is located, boasts a low vacancy rate of 1.7%, driven by strong demand for retail spaces. The area has experienced a slight increase in rental rates, currently averaging $24.32 per square foot, which is significantly higher than the overall market average. With minimal new retail space expected to be delivered in the coming years, the demand for existing retail properties is anticipated to continue rising, supporting further rent growth and economic stability in the region.\n\nIn summary, Shreveport presents a dynamic and growing environment for both residents and businesses, characterized by a diverse population, a robust employment base, excellent transportation access, and a favorable economic outlook. The East Side Plaza, with its high occupancy and strategic location, is well-positioned to capitalize on the ongoing growth and development in the area.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Area Overview"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "#### Neighborhood and City Demographics Shreveport, Louisiana, serves as the commercial hub of the Ark-La-Tex tri-state region, boasting a population of over 389,000 residents. The city is characterized by a diverse demographic profile, with a mix of cultures and communities contributing to its vibrant atmosphere. The median home price in Shreveport is approximately $258,000, which is significantly lower than the national average, making it an attractive location for families and individuals seeking affordable housing options. The cost of living in Shreveport is about 17% less than the national average, further enhancing its appeal as a desirable place to live and work."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "#### Employment Base and Major Employers Shreveport's economy is bolstered by a diverse employment base, with key sectors including healthcare, education, retail, and military. The largest employer in the area is Barksdale Air Force Base, which supports approximately 15,000 active duty members, reservists, and civilian employees, along with a significant number of retirees and their families. Other major employers in the region include Christus Health, Willis-Knighton Health System, and various retail giants located in the bustling shopping corridors. The recent expansion of SLB and the opening of the Live! Casino & Hotel Louisiana, a $270 million development, further illustrate the city's growth and economic potential."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "#### Transportation Access Shreveport benefits from excellent transportation access, with major highways including Interstate 20 and Interstate 220 facilitating connectivity to neighboring states and cities. The strategic location of East Side Plaza along Highway 1 (Youree Drive) ensures high visibility and accessibility, with daily traffic exceeding 24,000 vehicles. This prime location allows for easy access to a variety of retail and dining options, making it a central point for both residents and visitors."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "#### Economic Outlook The economic outlook for Shreveport remains positive, with projections indicating steady growth in the retail sector. The Southeast retail submarket, where East Side Plaza is located, boasts a low vacancy rate of 1.7%, driven by strong demand for retail spaces. The area has experienced a slight increase in rental rates, currently averaging $24.32 per square foot, which is significantly higher than the overall market average. With minimal new retail space expected to be delivered in the coming years, the demand for existing retail properties is anticipated to continue rising, supporting further rent growth and economic stability in the region."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "In summary, Shreveport presents a dynamic and growing environment for both residents and businesses, characterized by a diverse population, a robust employment base, excellent transportation access, and a favorable economic outlook. The East Side Plaza, with its high occupancy and strategic location, is well-positioned to capitalize on the ongoing growth and development in the area."
+                    }
+                ],
+                "image_url": null,
+                "order": 4,
+                "updated_at": "2026-08-01T15:30:19.764031Z"
+            },
+            {
+                "id": 272,
+                "section_type": "area_highlights",
+                "title": "Area Highlights",
+                "content": "### Area Highlights\n\n- **Nearby Amenities:**\n  - East Side Plaza features major tenants such as Michaels, Guitar Center, and Dollar Tree.\n  - A diverse selection of dining options including Chick-fil-A, Chipotle, Starbucks, Five Guys, Panda Express, Panera Bread, Chili’s, and Olive Garden.\n  - Proximity to other major retailers like Target, Sam’s Club, Best Buy, TJ Maxx, Burlington, Lowe’s, Kohl’s, JCPenney, and DICK’s Sporting Goods.\n\n- **Transit Options:**\n  - Convenient access to Highway 1 (Youree Drive), connecting to Interstate 20, Interstate 220, LA 3032, and LA 523.\n  - Daily traffic exceeding 24,000 vehicles per day (VPD) along Highway 1, enhancing visibility and accessibility.\n\n- **Schools:**\n  - Located within a community served by various public and private educational institutions, providing options for families in the area.\n\n- **Employment Centers:**\n  - Barksdale Air Force Base, the largest employer in the Shreveport-Bossier metro area, is nearby, employing approximately 15,000 active duty members, reservists, and civilian employees.\n  - The Shreveport area serves as a commercial hub for the Ark-La-Tex region, with significant employment opportunities in retail, healthcare, and other sectors.\n\n- **Notable Nearby Developments:**\n  - Recent expansions include SLB’s $30 million operational growth and the opening of the $270 million Live! Casino & Hotel Louisiana in 2025, which is expected to attract significant tourism.\n  - Continued development in the Shreveport area, with a forecast for steady growth in retail rent and minimal new construction, indicating a strong demand for retail spaces. \n\nThis combination of amenities, transit options, educational institutions, and employment centers makes East Side Plaza a highly desirable location for both businesses and residents.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Area Highlights"
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "**Nearby Amenities:**",
+                            "East Side Plaza features major tenants such as Michaels, Guitar Center, and Dollar Tree.",
+                            "A diverse selection of dining options including Chick-fil-A, Chipotle, Starbucks, Five Guys, Panda Express, Panera Bread, Chili’s, and Olive Garden.",
+                            "Proximity to other major retailers like Target, Sam’s Club, Best Buy, TJ Maxx, Burlington, Lowe’s, Kohl’s, JCPenney, and DICK’s Sporting Goods."
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "**Transit Options:**",
+                            "Convenient access to Highway 1 (Youree Drive), connecting to Interstate 20, Interstate 220, LA 3032, and LA 523.",
+                            "Daily traffic exceeding 24,000 vehicles per day (VPD) along Highway 1, enhancing visibility and accessibility."
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "**Schools:**",
+                            "Located within a community served by various public and private educational institutions, providing options for families in the area."
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "**Employment Centers:**",
+                            "Barksdale Air Force Base, the largest employer in the Shreveport-Bossier metro area, is nearby, employing approximately 15,000 active duty members, reservists, and civilian employees.",
+                            "The Shreveport area serves as a commercial hub for the Ark-La-Tex region, with significant employment opportunities in retail, healthcare, and other sectors."
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "**Notable Nearby Developments:**",
+                            "Recent expansions include SLB’s $30 million operational growth and the opening of the $270 million Live! Casino & Hotel Louisiana in 2025, which is expected to attract significant tourism.",
+                            "Continued development in the Shreveport area, with a forecast for steady growth in retail rent and minimal new construction, indicating a strong demand for retail spaces."
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "This combination of amenities, transit options, educational institutions, and employment centers makes East Side Plaza a highly desirable location for both businesses and residents."
+                    }
+                ],
+                "image_url": null,
+                "order": 5,
+                "updated_at": "2026-08-01T15:30:19.764033Z"
+            },
+            {
+                "id": 273,
+                "section_type": "market_summary",
+                "title": "Market Summary",
+                "content": "### Market Summary\n\n#### Current Submarket Conditions\n\n**Vacancy Rates:**\nThe Shreveport retail market currently exhibits a vacancy rate of 5.6%, with the Southeast retail submarket showcasing an even lower rate of 1.7%. This submarket has experienced a slight increase in vacancy over the past year, yet it remains well below the historical averages of 2.7% and 3.7% for the five-year and ten-year periods, respectively. The East Side Plaza, located within this submarket, boasts an impressive occupancy rate of 98%, with only 1,600 SF currently vacant, highlighting the plaza's desirability and strong tenant retention.\n\n**Average Rents:**\nThe average rent in the Southeast retail submarket is currently $24.32 per square foot, significantly higher than the overall Shreveport market average. East Side Plaza's average rent stands at $12.72 per square foot, reflecting its competitive positioning within the submarket. Despite a recent flattening of rent growth, which has stabilized at 1.9% over the past year, the five-year average annual rent growth remains robust at 4.2%. The anticipated rent growth for the Southeast submarket is projected to reach 2.3% by the end of 2026.\n\n**Rent Growth Trends:**\nAfter a period of rapid rent growth during the pandemic, which peaked at 5% in 2022, the market has seen a normalization of growth rates. The Southeast submarket's rent growth has aligned with national averages, with a year-over-year increase of 2.0%. This trend is expected to continue, driven by low vacancy rates and limited new supply, which will support sustained demand for retail spaces.\n\n**New Supply Pipeline:**\nThe new supply pipeline in the Shreveport retail market has been notably constrained, with only 36,100 SF delivered in the past 12 months and a mere 950 SF currently under construction. This is a significant decrease from the historical average of 160,000 SF per year over the past decade. Looking ahead, only 6,342 SF of new retail space is expected to be delivered over the next eight quarters, representing just 0.1% of the total inventory. This limited supply is likely to further tighten vacancy rates and support rent growth in the coming years.\n\n**Overall Demand Drivers:**\nSeveral key demand drivers are influencing the Shreveport retail market. The area's strategic location as a commercial hub for the Ark-La-Tex region, combined with its proximity to major highways and a dense population, enhances its appeal to retailers. The presence of significant employers, such as Barksdale Air Force Base and the recent expansion of local businesses, contributes to a stable consumer base. Additionally, the affordability of living in Shreveport, with home prices at 63.7% of the national average, attracts new residents and supports retail demand. The ongoing development of attractions, such as the Live! Casino & Hotel Louisiana, is expected to further bolster tourism and retail activity in the region.\n\nIn summary, the Southeast retail submarket in Shreveport is characterized by low vacancy rates, stable rent growth, and a constrained supply pipeline, positioning it as a strong performer within the overall market. East Side Plaza, with its high occupancy and strategic location, is well-positioned to capitalize on these favorable market conditions.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Market Summary"
+                    },
+                    {
+                        "type": "heading",
+                        "level": 4,
+                        "content": "Current Submarket Conditions"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Vacancy Rates:** The Shreveport retail market currently exhibits a vacancy rate of 5.6%, with the Southeast retail submarket showcasing an even lower rate of 1.7%. This submarket has experienced a slight increase in vacancy over the past year, yet it remains well below the historical averages of 2.7% and 3.7% for the five-year and ten-year periods, respectively. The East Side Plaza, located within this submarket, boasts an impressive occupancy rate of 98%, with only 1,600 SF currently vacant, highlighting the plaza's desirability and strong tenant retention."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Average Rents:** The average rent in the Southeast retail submarket is currently $24.32 per square foot, significantly higher than the overall Shreveport market average. East Side Plaza's average rent stands at $12.72 per square foot, reflecting its competitive positioning within the submarket. Despite a recent flattening of rent growth, which has stabilized at 1.9% over the past year, the five-year average annual rent growth remains robust at 4.2%. The anticipated rent growth for the Southeast submarket is projected to reach 2.3% by the end of 2026."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Rent Growth Trends:** After a period of rapid rent growth during the pandemic, which peaked at 5% in 2022, the market has seen a normalization of growth rates. The Southeast submarket's rent growth has aligned with national averages, with a year-over-year increase of 2.0%. This trend is expected to continue, driven by low vacancy rates and limited new supply, which will support sustained demand for retail spaces."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**New Supply Pipeline:** The new supply pipeline in the Shreveport retail market has been notably constrained, with only 36,100 SF delivered in the past 12 months and a mere 950 SF currently under construction. This is a significant decrease from the historical average of 160,000 SF per year over the past decade. Looking ahead, only 6,342 SF of new retail space is expected to be delivered over the next eight quarters, representing just 0.1% of the total inventory. This limited supply is likely to further tighten vacancy rates and support rent growth in the coming years."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Overall Demand Drivers:** Several key demand drivers are influencing the Shreveport retail market. The area's strategic location as a commercial hub for the Ark-La-Tex region, combined with its proximity to major highways and a dense population, enhances its appeal to retailers. The presence of significant employers, such as Barksdale Air Force Base and the recent expansion of local businesses, contributes to a stable consumer base. Additionally, the affordability of living in Shreveport, with home prices at 63.7% of the national average, attracts new residents and supports retail demand. The ongoing development of attractions, such as the Live! Casino & Hotel Louisiana, is expected to further bolster tourism and retail activity in the region."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "In summary, the Southeast retail submarket in Shreveport is characterized by low vacancy rates, stable rent growth, and a constrained supply pipeline, positioning it as a strong performer within the overall market. East Side Plaza, with its high occupancy and strategic location, is well-positioned to capitalize on these favorable market conditions."
+                    }
+                ],
+                "image_url": null,
+                "order": 6,
+                "updated_at": "2026-08-01T15:30:19.764035Z"
+            },
+            {
+                "id": 274,
+                "section_type": "financing_summary",
+                "title": "Financing Summary",
+                "content": "**Financing Summary**\n\n**Property Overview:**\n- **Property Name:** East Side Plaza\n- **Address:** 7460 Youree Drive, Shreveport, LA 71105\n- **Property Type:** Retail Neighborhood Center\n- **Year Built:** 2004\n- **Net Rentable Area:** 78,761 SF\n- **Current Occupancy:** 98%\n\n**Loan Request:**\n- **Loan Amount:** $6,400,000\n- **Loan Per SF:** $81\n- **Loan to Value (LTV):** 61% of the estimated property value of $10,500,000\n\n**Financing Terms:**\n- **Interest Rate:** 6.50%\n- **Amortization Period:** 30 years\n- **Loan Term:** 10 years\n- **Annual Debt Service:** $485,428\n\n**Debt Coverage Metrics:**\n- **Net Operating Income (NOI):** $816,822\n- **Debt Service Coverage Ratio (DSCR):** 1.68x\n- **Debt Yield:** 12.76%\n\n**Use of Funds:**\n- **Pay Off Existing Debt:** $6,170,000\n- **Closing & Financing Costs:** $230,000\n- **Total Uses of Funds:** $6,400,000\n\n**Assumptions:**\n- The underwriting is based on current in-place rents, a minimum vacancy allowance of 5.0%, 2025 projected operating expenses, and a reserve of $0.20 per SF.\n- The financing is intended to refinance the existing loan that matures at the start of 2027, allowing for continued operational stability and potential growth in rental income.\n\nThis financing summary provides a comprehensive overview of the proposed refinancing terms for East Side Plaza, highlighting the favorable metrics that support the investment's viability and the strategic positioning of the property within the Shreveport retail market.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Financing Summary"
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*Property Overview:**",
+                            "**Property Name:** East Side Plaza",
+                            "**Address:** 7460 Youree Drive, Shreveport, LA 71105",
+                            "**Property Type:** Retail Neighborhood Center",
+                            "**Year Built:** 2004",
+                            "**Net Rentable Area:** 78,761 SF",
+                            "**Current Occupancy:** 98%"
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*Loan Request:**",
+                            "**Loan Amount:** $6,400,000",
+                            "**Loan Per SF:** $81",
+                            "**Loan to Value (LTV):** 61% of the estimated property value of $10,500,000"
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*Financing Terms:**",
+                            "**Interest Rate:** 6.50%",
+                            "**Amortization Period:** 30 years",
+                            "**Loan Term:** 10 years",
+                            "**Annual Debt Service:** $485,428"
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*Debt Coverage Metrics:**",
+                            "**Net Operating Income (NOI):** $816,822",
+                            "**Debt Service Coverage Ratio (DSCR):** 1.68x",
+                            "**Debt Yield:** 12.76%"
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*Use of Funds:**",
+                            "**Pay Off Existing Debt:** $6,170,000",
+                            "**Closing & Financing Costs:** $230,000",
+                            "**Total Uses of Funds:** $6,400,000"
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*Assumptions:**",
+                            "The underwriting is based on current in-place rents, a minimum vacancy allowance of 5.0%, 2025 projected operating expenses, and a reserve of $0.20 per SF.",
+                            "The financing is intended to refinance the existing loan that matures at the start of 2027, allowing for continued operational stability and potential growth in rental income."
+                        ]
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "This financing summary provides a comprehensive overview of the proposed refinancing terms for East Side Plaza, highlighting the favorable metrics that support the investment's viability and the strategic positioning of the property within the Shreveport retail market."
+                    }
+                ],
+                "image_url": null,
+                "order": 7,
+                "updated_at": "2026-08-01T15:30:19.764038Z"
+            },
+            {
+                "id": 275,
+                "section_type": "financial_analysis",
+                "title": "Financial Analysis",
+                "content": "### Financial Analysis\n\n#### Income and Expense Structure\n\nThe financial performance of East Side Plaza is anchored by its diverse tenant mix and strategic location in Shreveport, Louisiana. The property has a total rentable area of 78,761 square feet, with a current occupancy rate of 98%. The primary income source is derived from base rental revenue, which is projected to increase from $899,079 in 2024 to $1,001,789 by 2025, reflecting a growth in rental rates and stable occupancy levels. \n\nThe effective gross income (EGI) is calculated by adding reimbursements and other income to the base rental revenue, resulting in an EGI of $1,173,290 for 2024 and $1,234,573 for 2025. Operating expenses are projected to decrease from $483,134 in 2024 to $417,751 in 2025, primarily due to a reduction in general and administrative costs and insurance expenses. The total operating expenses represent approximately 41.18% of the EGI in 2024, decreasing to 33.84% in 2025, indicating improved operational efficiency.\n\n#### Net Operating Income (NOI)\n\nThe Net Operating Income (NOI) is a critical metric for evaluating the property's financial health. For 2024, the NOI is projected at $690,155, increasing to $816,822 by 2025. This growth in NOI is attributed to the anticipated increase in rental income and the reduction in operating expenses, which enhances the property's profitability.\n\n#### Capitalization Rate (Cap Rate)\n\nThe capitalization rate is calculated by dividing the NOI by the property value. With an estimated property value of $10,500,000 and an underwritten NOI of $816,822, the cap rate is approximately 7.79%. This cap rate is competitive within the Shreveport retail market, reflecting the strong demand for retail spaces in the area.\n\n#### Cash-on-Cash Returns\n\nCash-on-cash return is a measure of the cash income earned on the cash invested in the property. Assuming a loan amount of $6,400,000 and an annual debt service of $485,428, the cash flow after debt service is calculated as follows:\n\n- **NOI**: $816,822\n- **Annual Debt Service**: $485,428\n- **Cash Flow After Debt Service**: $331,394\n\nTo calculate the cash-on-cash return, we consider the equity invested, which is the difference between the property value and the loan amount:\n\n- **Equity Investment**: $10,500,000 - $6,400,000 = $4,100,000\n- **Cash-on-Cash Return**: ($331,394 / $4,100,000) * 100 = 8.08%\n\nThis cash-on-cash return of 8.08% indicates a favorable return on investment for potential investors.\n\n#### Financial Projections and Assumptions\n\nThe financial projections for East Side Plaza are based on several key assumptions:\n\n1. **Stable Occupancy**: The property maintains a high occupancy rate of 98%, with no significant lease expirations until 2026, ensuring consistent rental income.\n2. **Rental Growth**: A conservative annual rental growth rate of approximately 5% is anticipated, supported by the low vacancy rates in the Southeast retail submarket.\n3. **Operating Expense Management**: Operating expenses are expected to decrease as a percentage of EGI due to improved management practices and cost control measures.\n4. **Market Conditions**: The retail market in Shreveport is projected to remain strong, with limited new supply and continued demand for retail space, contributing to stable rental rates.\n\nIn conclusion, East Side Plaza presents a compelling investment opportunity with strong financial metrics, a solid tenant base, and favorable market conditions. The projected NOI, cap rate, and cash-on-cash returns indicate a well-positioned asset for both current and future investors.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Financial Analysis"
+                    },
+                    {
+                        "type": "heading",
+                        "level": 4,
+                        "content": "Income and Expense Structure"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The financial performance of East Side Plaza is anchored by its diverse tenant mix and strategic location in Shreveport, Louisiana. The property has a total rentable area of 78,761 square feet, with a current occupancy rate of 98%. The primary income source is derived from base rental revenue, which is projected to increase from $899,079 in 2024 to $1,001,789 by 2025, reflecting a growth in rental rates and stable occupancy levels."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The effective gross income (EGI) is calculated by adding reimbursements and other income to the base rental revenue, resulting in an EGI of $1,173,290 for 2024 and $1,234,573 for 2025. Operating expenses are projected to decrease from $483,134 in 2024 to $417,751 in 2025, primarily due to a reduction in general and administrative costs and insurance expenses. The total operating expenses represent approximately 41.18% of the EGI in 2024, decreasing to 33.84% in 2025, indicating improved operational efficiency."
+                    },
+                    {
+                        "type": "heading",
+                        "level": 4,
+                        "content": "Net Operating Income (NOI)"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The Net Operating Income (NOI) is a critical metric for evaluating the property's financial health. For 2024, the NOI is projected at $690,155, increasing to $816,822 by 2025. This growth in NOI is attributed to the anticipated increase in rental income and the reduction in operating expenses, which enhances the property's profitability."
+                    },
+                    {
+                        "type": "heading",
+                        "level": 4,
+                        "content": "Capitalization Rate (Cap Rate)"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The capitalization rate is calculated by dividing the NOI by the property value. With an estimated property value of $10,500,000 and an underwritten NOI of $816,822, the cap rate is approximately 7.79%. This cap rate is competitive within the Shreveport retail market, reflecting the strong demand for retail spaces in the area."
+                    },
+                    {
+                        "type": "heading",
+                        "level": 4,
+                        "content": "Cash-on-Cash Returns"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Cash-on-cash return is a measure of the cash income earned on the cash invested in the property. Assuming a loan amount of $6,400,000 and an annual debt service of $485,428, the cash flow after debt service is calculated as follows:"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "noi",
+                                "label": "NOI",
+                                "value": "$816,822",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "annual_debt_service",
+                                "label": "Annual Debt Service",
+                                "value": "$485,428",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "cash_flow_after_debt_service",
+                                "label": "Cash Flow After Debt Service",
+                                "value": "$331,394",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "To calculate the cash-on-cash return, we consider the equity invested, which is the difference between the property value and the loan amount:"
+                    },
+                    {
+                        "rows": [
+                            {
+                                "key": "equity_investment",
+                                "label": "Equity Investment",
+                                "value": "$10,500,000 - $6,400,000 = $4,100,000",
+                                "value_type": "string"
+                            },
+                            {
+                                "key": "cash_on_cash_return",
+                                "label": "Cash-on-Cash Return",
+                                "value": "($331,394 / $4,100,000) * 100 = 8.08%",
+                                "value_type": "string"
+                            }
+                        ],
+                        "type": "key_value_table"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "This cash-on-cash return of 8.08% indicates a favorable return on investment for potential investors."
+                    },
+                    {
+                        "type": "heading",
+                        "level": 4,
+                        "content": "Financial Projections and Assumptions"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The financial projections for East Side Plaza are based on several key assumptions:"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "1. **Stable Occupancy**: The property maintains a high occupancy rate of 98%, with no significant lease expirations until 2026, ensuring consistent rental income. 2. **Rental Growth**: A conservative annual rental growth rate of approximately 5% is anticipated, supported by the low vacancy rates in the Southeast retail submarket. 3. **Operating Expense Management**: Operating expenses are expected to decrease as a percentage of EGI due to improved management practices and cost control measures. 4. **Market Conditions**: The retail market in Shreveport is projected to remain strong, with limited new supply and continued demand for retail space, contributing to stable rental rates."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "In conclusion, East Side Plaza presents a compelling investment opportunity with strong financial metrics, a solid tenant base, and favorable market conditions. The projected NOI, cap rate, and cash-on-cash returns indicate a well-positioned asset for both current and future investors."
+                    }
+                ],
+                "image_url": null,
+                "order": 8,
+                "updated_at": "2026-08-01T15:30:19.764040Z"
+            },
+            {
+                "id": 276,
+                "section_type": "sales_comparables",
+                "title": "Sales Comparables",
+                "content": "### Sales Comparables\n\nThe following table presents recent comparable property sales in the Shreveport retail market, specifically focusing on properties similar to East Side Plaza. The data includes the address, sale price, price per unit, cap rate, and date of sale for each comparable property.\n\n| Address                        | Sale Price   | Price Per Unit | Cap Rate | Date of Sale   |\n|--------------------------------|--------------|----------------|----------|-----------------|\n| 7040-7090 Youree Dr           | $8,500,000   | $57.24         | 6.50%    | August 2023     |\n| 7230 Youree Drive              | $3,500,000   | $192.00        | 7.00%    | July 2023       |\n| 5711-5751 Youree Dr           | $4,200,000   | $73.16         | 6.80%    | June 2023       |\n| 4801 Line Avenue               | $5,000,000   | $73.90         | 6.25%    | May 2023        |\n\n### Summary of Comparable Sales\n\nThe sales comparables indicate a robust retail market in Shreveport, particularly in the Southeast retail submarket. The average price per unit across these comparable sales is approximately $99.57, with a range from $57.24 to $192.00, reflecting varying property sizes, locations, and tenant compositions. The cap rates range from 6.25% to 7.00%, suggesting a stable investment environment with moderate risk.\n\nThe recent sales trends indicate that properties with higher occupancy rates and established tenant bases, like East Side Plaza, may command higher prices and lower cap rates. The strong demand for retail spaces in this submarket, coupled with low vacancy rates, supports the notion that the market is favoring well-located and maintained properties. Overall, these comparables suggest that East Side Plaza is competitively positioned within the market, with potential for continued appreciation in value given its high occupancy and desirable tenant mix.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Sales Comparables"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The following table presents recent comparable property sales in the Shreveport retail market, specifically focusing on properties similar to East Side Plaza. The data includes the address, sale price, price per unit, cap rate, and date of sale for each comparable property."
+                    },
+                    {
+                        "rows": [
+                            {
+                                "id": 1,
+                                "address": "7040-7090 Youree Dr",
+                                "cap_rate": "6.50%",
+                                "sale_price": "$8,500,000",
+                                "date_of_sale": "August 2023",
+                                "price_per_unit": "$57.24"
+                            },
+                            {
+                                "id": 2,
+                                "address": "7230 Youree Drive",
+                                "cap_rate": "7.00%",
+                                "sale_price": "$3,500,000",
+                                "date_of_sale": "July 2023",
+                                "price_per_unit": "$192.00"
+                            },
+                            {
+                                "id": 3,
+                                "address": "5711-5751 Youree Dr",
+                                "cap_rate": "6.80%",
+                                "sale_price": "$4,200,000",
+                                "date_of_sale": "June 2023",
+                                "price_per_unit": "$73.16"
+                            },
+                            {
+                                "id": 4,
+                                "address": "4801 Line Avenue",
+                                "cap_rate": "6.25%",
+                                "sale_price": "$5,000,000",
+                                "date_of_sale": "May 2023",
+                                "price_per_unit": "$73.90"
+                            }
+                        ],
+                        "type": "table",
+                        "columns": [
+                            {
+                                "key": "address",
+                                "label": "Address",
+                                "sortable": true,
+                                "data_type": "string"
+                            },
+                            {
+                                "key": "sale_price",
+                                "label": "Sale Price",
+                                "sortable": true,
+                                "data_type": "currency"
+                            },
+                            {
+                                "key": "price_per_unit",
+                                "label": "Price Per Unit",
+                                "sortable": true,
+                                "data_type": "currency"
+                            },
+                            {
+                                "key": "cap_rate",
+                                "label": "Cap Rate",
+                                "sortable": true,
+                                "data_type": "percentage"
+                            },
+                            {
+                                "key": "date_of_sale",
+                                "label": "Date of Sale",
+                                "sortable": true,
+                                "data_type": "string"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Summary of Comparable Sales"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The sales comparables indicate a robust retail market in Shreveport, particularly in the Southeast retail submarket. The average price per unit across these comparable sales is approximately $99.57, with a range from $57.24 to $192.00, reflecting varying property sizes, locations, and tenant compositions. The cap rates range from 6.25% to 7.00%, suggesting a stable investment environment with moderate risk."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The recent sales trends indicate that properties with higher occupancy rates and established tenant bases, like East Side Plaza, may command higher prices and lower cap rates. The strong demand for retail spaces in this submarket, coupled with low vacancy rates, supports the notion that the market is favoring well-located and maintained properties. Overall, these comparables suggest that East Side Plaza is competitively positioned within the market, with potential for continued appreciation in value given its high occupancy and desirable tenant mix."
+                    }
+                ],
+                "image_url": null,
+                "order": 9,
+                "updated_at": "2026-08-01T15:30:19.764043Z"
+            },
+            {
+                "id": 277,
+                "section_type": "lease_comparables",
+                "title": "Lease Comparables",
+                "content": "### Lease Comparables\n\nThe following lease comparables provide insight into the current rental rates and market conditions for retail properties in the Shreveport area. These comparables reflect a range of property types and sizes, highlighting the achievable rents for East Side Plaza.\n\n| Property Name                  | Address                     | Year Built | Rentable Area (SF) | Occupancy | Asking Rent (PSF) | Lease Type |\n|-------------------------------|-----------------------------|------------|--------------------|-----------|--------------------|------------|\n| 1. University Plaza            | 7040-7090 Youree Dr        | 2001       | 148,356            | 100.0%    | $35.00/NNN         | NNN        |\n| 2. Youree Plaza               | 7230 Youree Drive           | 2004       | 18,152             | 87.9%     | $24.00/NNN         | NNN        |\n| 3. Southfield Shopping Center  | 5711-5751 Youree Dr        | 1954       | 57,393             | 82.9%     | $16.00/NNN         | NNN        |\n| 4. Pierremont Mall            | 4801 Line Avenue            | 1964       | 67,720             | 94.4%     | $15.00/NNN         | NNN        |\n\n**Average Metrics:**\n- **Average Rent PSF:** $25.93/NNN\n- **Average Occupancy:** 94.6%\n\n**East Side Plaza Metrics:**\n- **Year Built:** 2004\n- **Rentable Area:** 78,761 SF\n- **Current Occupancy:** 98%\n- **Average Rent PSF:** $12.72\n\n### Summary of Comparable Analysis\n\nThe lease comparables indicate a significant variance in rental rates across different properties in the Shreveport market. The highest asking rent is observed at University Plaza at $35.00 PSF, while the lower end is represented by Pierremont Mall and Southfield Shopping Center, with rents of $15.00 and $16.00 PSF, respectively. \n\nEast Side Plaza, with an average rent of $12.72 PSF, is positioned at the lower end of the spectrum, suggesting potential for rent growth given its high occupancy rate of 98% and favorable location adjacent to major retail centers. The comparables indicate that while East Side Plaza's current rents are competitive, there may be opportunities to increase rents in line with market trends, especially as the overall retail market in the Southeast submarket is expected to experience steady growth due to low vacancy rates and limited new supply. \n\nOverall, the data suggests that East Side Plaza could potentially achieve higher rents in the future, particularly if it capitalizes on the strong demand for retail space in the area.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Lease Comparables"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The following lease comparables provide insight into the current rental rates and market conditions for retail properties in the Shreveport area. These comparables reflect a range of property types and sizes, highlighting the achievable rents for East Side Plaza."
+                    },
+                    {
+                        "rows": [
+                            {
+                                "id": 1,
+                                "address": "7040-7090 Youree Dr",
+                                "occupancy": "100.0%",
+                                "lease_type": "NNN",
+                                "year_built": "2001",
+                                "property_name": "1. University Plaza",
+                                "asking_rent_psf": "$35.00/NNN",
+                                "rentable_area_sf": "148,356"
+                            },
+                            {
+                                "id": 2,
+                                "address": "7230 Youree Drive",
+                                "occupancy": "87.9%",
+                                "lease_type": "NNN",
+                                "year_built": "2004",
+                                "property_name": "2. Youree Plaza",
+                                "asking_rent_psf": "$24.00/NNN",
+                                "rentable_area_sf": "18,152"
+                            },
+                            {
+                                "id": 3,
+                                "address": "5711-5751 Youree Dr",
+                                "occupancy": "82.9%",
+                                "lease_type": "NNN",
+                                "year_built": "1954",
+                                "property_name": "3. Southfield Shopping Center",
+                                "asking_rent_psf": "$16.00/NNN",
+                                "rentable_area_sf": "57,393"
+                            },
+                            {
+                                "id": 4,
+                                "address": "4801 Line Avenue",
+                                "occupancy": "94.4%",
+                                "lease_type": "NNN",
+                                "year_built": "1964",
+                                "property_name": "4. Pierremont Mall",
+                                "asking_rent_psf": "$15.00/NNN",
+                                "rentable_area_sf": "67,720"
+                            }
+                        ],
+                        "type": "table",
+                        "columns": [
+                            {
+                                "key": "property_name",
+                                "label": "Property Name",
+                                "sortable": true,
+                                "data_type": "string"
+                            },
+                            {
+                                "key": "address",
+                                "label": "Address",
+                                "sortable": true,
+                                "data_type": "string"
+                            },
+                            {
+                                "key": "year_built",
+                                "label": "Year Built",
+                                "sortable": true,
+                                "data_type": "string"
+                            },
+                            {
+                                "key": "rentable_area_sf",
+                                "label": "Rentable Area (SF)",
+                                "sortable": true,
+                                "data_type": "currency"
+                            },
+                            {
+                                "key": "occupancy",
+                                "label": "Occupancy",
+                                "sortable": true,
+                                "data_type": "percentage"
+                            },
+                            {
+                                "key": "asking_rent_psf",
+                                "label": "Asking Rent (PSF)",
+                                "sortable": true,
+                                "data_type": "currency"
+                            },
+                            {
+                                "key": "lease_type",
+                                "label": "Lease Type",
+                                "sortable": true,
+                                "data_type": "string"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*Average Metrics:**",
+                            "**Average Rent PSF:** $25.93/NNN",
+                            "**Average Occupancy:** 94.6%"
+                        ]
+                    },
+                    {
+                        "type": "bullet_list",
+                        "items": [
+                            "*East Side Plaza Metrics:**",
+                            "**Year Built:** 2004",
+                            "**Rentable Area:** 78,761 SF",
+                            "**Current Occupancy:** 98%",
+                            "**Average Rent PSF:** $12.72"
+                        ]
+                    },
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Summary of Comparable Analysis"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The lease comparables indicate a significant variance in rental rates across different properties in the Shreveport market. The highest asking rent is observed at University Plaza at $35.00 PSF, while the lower end is represented by Pierremont Mall and Southfield Shopping Center, with rents of $15.00 and $16.00 PSF, respectively."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "East Side Plaza, with an average rent of $12.72 PSF, is positioned at the lower end of the spectrum, suggesting potential for rent growth given its high occupancy rate of 98% and favorable location adjacent to major retail centers. The comparables indicate that while East Side Plaza's current rents are competitive, there may be opportunities to increase rents in line with market trends, especially as the overall retail market in the Southeast submarket is expected to experience steady growth due to low vacancy rates and limited new supply."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Overall, the data suggests that East Side Plaza could potentially achieve higher rents in the future, particularly if it capitalizes on the strong demand for retail space in the area."
+                    }
+                ],
+                "image_url": null,
+                "order": 10,
+                "updated_at": "2026-08-01T15:30:19.764045Z"
+            },
+            {
+                "id": 278,
+                "section_type": "area_amenities",
+                "title": "Area Amenities",
+                "content": "### Area Amenities\n\n**Restaurants:**\nEast Side Plaza is surrounded by a diverse selection of dining options that cater to various tastes and preferences. Nearby restaurants include:\n- **Chick-fil-A**: A popular fast-food chain known for its chicken sandwiches and friendly service.\n- **Chipotle**: Offers customizable burritos, bowls, and tacos with fresh ingredients.\n- **Starbucks**: A go-to spot for coffee lovers, providing a range of beverages and light snacks.\n- **Five Guys**: Famous for its burgers and fries, with a casual dining atmosphere.\n- **Panda Express**: Fast-casual dining featuring American Chinese cuisine.\n- **Panera Bread**: Known for its bakery items, sandwiches, and healthy options.\n- **Chili’s**: A casual dining restaurant offering a variety of American and Tex-Mex dishes.\n- **Olive Garden**: A family-friendly Italian restaurant known for its pasta and breadsticks.\n\n**Retail:**\nEast Side Plaza benefits from its proximity to a variety of retail stores, making it a prime shopping destination. Major retailers in the area include:\n- **Target**: A one-stop shop for groceries, clothing, electronics, and household goods.\n- **Sam’s Club**: A membership-based warehouse club offering bulk groceries and merchandise.\n- **Best Buy**: A leading retailer for electronics and appliances.\n- **TJ Maxx**: Offers discounted brand-name clothing, home goods, and accessories.\n- **Burlington**: Known for its off-price apparel and home products.\n- **Lowe’s**: A home improvement store providing tools, appliances, and building materials.\n- **Total Wine**: A large retailer specializing in wine, beer, and spirits.\n- **Kohl’s**: A department store offering a wide range of clothing, home goods, and accessories.\n- **JCPenney**: A retail chain offering apparel, home furnishings, and beauty products.\n- **DICK’s Sporting Goods**: A retailer specializing in sporting goods and outdoor equipment.\n\n**Grocery:**\nIn addition to the retail options, residents have access to several grocery stores in the vicinity, ensuring convenience for everyday shopping needs.\n\n**Entertainment:**\nThe area is rich in entertainment options, including cinemas, bowling alleys, and family-friendly attractions, providing ample opportunities for leisure and recreation.\n\n**Parks and Recreation:**\nShreveport boasts several parks and recreational areas nearby, perfect for outdoor activities, picnics, and family outings. These parks offer walking trails, playgrounds, and sports facilities.\n\n**Lifestyle Amenities:**\nThe East Side Plaza area is designed to cater to a vibrant lifestyle, with fitness centers, salons, and wellness spas available to residents. The central location also provides easy access to medical facilities and community services, enhancing the overall quality of life for tenants and buyers.\n\nOverall, the combination of diverse dining options, extensive retail offerings, and recreational amenities makes East Side Plaza an attractive location for both tenants and buyers seeking a convenient and vibrant lifestyle.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Area Amenities"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Restaurants:** East Side Plaza is surrounded by a diverse selection of dining options that cater to various tastes and preferences. Nearby restaurants include: - **Chick-fil-A**: A popular fast-food chain known for its chicken sandwiches and friendly service. - **Chipotle**: Offers customizable burritos, bowls, and tacos with fresh ingredients. - **Starbucks**: A go-to spot for coffee lovers, providing a range of beverages and light snacks. - **Five Guys**: Famous for its burgers and fries, with a casual dining atmosphere. - **Panda Express**: Fast-casual dining featuring American Chinese cuisine. - **Panera Bread**: Known for its bakery items, sandwiches, and healthy options. - **Chili’s**: A casual dining restaurant offering a variety of American and Tex-Mex dishes. - **Olive Garden**: A family-friendly Italian restaurant known for its pasta and breadsticks."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Retail:** East Side Plaza benefits from its proximity to a variety of retail stores, making it a prime shopping destination. Major retailers in the area include: - **Target**: A one-stop shop for groceries, clothing, electronics, and household goods. - **Sam’s Club**: A membership-based warehouse club offering bulk groceries and merchandise. - **Best Buy**: A leading retailer for electronics and appliances. - **TJ Maxx**: Offers discounted brand-name clothing, home goods, and accessories. - **Burlington**: Known for its off-price apparel and home products. - **Lowe’s**: A home improvement store providing tools, appliances, and building materials. - **Total Wine**: A large retailer specializing in wine, beer, and spirits. - **Kohl’s**: A department store offering a wide range of clothing, home goods, and accessories. - **JCPenney**: A retail chain offering apparel, home furnishings, and beauty products. - **DICK’s Sporting Goods**: A retailer specializing in sporting goods and outdoor equipment."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Grocery:** In addition to the retail options, residents have access to several grocery stores in the vicinity, ensuring convenience for everyday shopping needs."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Entertainment:** The area is rich in entertainment options, including cinemas, bowling alleys, and family-friendly attractions, providing ample opportunities for leisure and recreation."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Parks and Recreation:** Shreveport boasts several parks and recreational areas nearby, perfect for outdoor activities, picnics, and family outings. These parks offer walking trails, playgrounds, and sports facilities."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "**Lifestyle Amenities:** The East Side Plaza area is designed to cater to a vibrant lifestyle, with fitness centers, salons, and wellness spas available to residents. The central location also provides easy access to medical facilities and community services, enhancing the overall quality of life for tenants and buyers."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Overall, the combination of diverse dining options, extensive retail offerings, and recreational amenities makes East Side Plaza an attractive location for both tenants and buyers seeking a convenient and vibrant lifestyle."
+                    }
+                ],
+                "image_url": null,
+                "order": 11,
+                "updated_at": "2026-08-01T15:30:19.764047Z"
+            },
+            {
+                "id": 279,
+                "section_type": "sponsorship",
+                "title": "Sponsorship",
+                "content": "**Sponsorship Section**\n\n**Sponsor Overview: Sale Commercial Properties, Inc.**\n\nSale Commercial Properties, Inc. is led by President Bill Sale, a seasoned professional with nearly four decades of experience in the commercial real estate sector. Bill began his career in 1985 and has since established himself as a prominent figure in the North Louisiana market. He holds both the Certified Commercial Investment Member (CCIM) and Certified Property Manager (CPM) designations, reflecting his commitment to excellence and professionalism in the industry.\n\nThroughout his career, Bill has brokered over $100 million in commercial sales and leases, showcasing his extensive knowledge and expertise in investment acquisition and asset management. His portfolio includes an impressive equity stake in over 3 million square feet of commercial, industrial, and retail properties, along with the management of more than 150 active commercial leases. This extensive experience positions Sale Commercial Properties as a reliable and knowledgeable sponsor for potential investors.\n\nBill's track record includes successful partnerships with a diverse range of clients, including major corporations such as United Parcel Service, Wal-Mart, Home Depot, and Holiday Inn, among others. His ability to navigate complex transactions and foster long-term relationships with tenants and investors alike has solidified his reputation as a trusted leader in the commercial real estate landscape.\n\n**Relevant Transactions and Expertise**\n\nSale Commercial Properties specializes in various property types, including industrial, retail, and flex spaces. Bill's deep understanding of the Shreveport/Bossier City market enables him to identify lucrative investment opportunities and maximize asset performance. His expertise in landlord representation for industrial and retail properties has been instrumental in driving successful leasing strategies and enhancing property value.\n\nThe company’s recent focus on the East Side Plaza, a retail neighborhood center in Shreveport, exemplifies their strategic approach to real estate investment. With a current occupancy rate of 98% and a diverse tenant mix that includes well-known retailers like Michaels, Dollar Tree, and Guitar Center, East Side Plaza is positioned for continued success. Bill's leadership and experience in managing such properties ensure that Sale Commercial Properties is well-equipped to navigate the challenges of the retail market and capitalize on growth opportunities.\n\nIn summary, Sale Commercial Properties, Inc., under the guidance of Bill Sale, brings a wealth of experience, a proven track record, and a deep understanding of the commercial real estate market to the table. Their commitment to excellence and strategic asset management makes them a strong sponsor for the refinancing of East Side Plaza, providing confidence to potential investors in the viability and profitability of this investment opportunity.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Sponsorship Section"
+                    },
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Sponsor Overview: Sale Commercial Properties, Inc."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Sale Commercial Properties, Inc. is led by President Bill Sale, a seasoned professional with nearly four decades of experience in the commercial real estate sector. Bill began his career in 1985 and has since established himself as a prominent figure in the North Louisiana market. He holds both the Certified Commercial Investment Member (CCIM) and Certified Property Manager (CPM) designations, reflecting his commitment to excellence and professionalism in the industry."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Throughout his career, Bill has brokered over $100 million in commercial sales and leases, showcasing his extensive knowledge and expertise in investment acquisition and asset management. His portfolio includes an impressive equity stake in over 3 million square feet of commercial, industrial, and retail properties, along with the management of more than 150 active commercial leases. This extensive experience positions Sale Commercial Properties as a reliable and knowledgeable sponsor for potential investors."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Bill's track record includes successful partnerships with a diverse range of clients, including major corporations such as United Parcel Service, Wal-Mart, Home Depot, and Holiday Inn, among others. His ability to navigate complex transactions and foster long-term relationships with tenants and investors alike has solidified his reputation as a trusted leader in the commercial real estate landscape."
+                    },
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Relevant Transactions and Expertise"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Sale Commercial Properties specializes in various property types, including industrial, retail, and flex spaces. Bill's deep understanding of the Shreveport/Bossier City market enables him to identify lucrative investment opportunities and maximize asset performance. His expertise in landlord representation for industrial and retail properties has been instrumental in driving successful leasing strategies and enhancing property value."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "The company’s recent focus on the East Side Plaza, a retail neighborhood center in Shreveport, exemplifies their strategic approach to real estate investment. With a current occupancy rate of 98% and a diverse tenant mix that includes well-known retailers like Michaels, Dollar Tree, and Guitar Center, East Side Plaza is positioned for continued success. Bill's leadership and experience in managing such properties ensure that Sale Commercial Properties is well-equipped to navigate the challenges of the retail market and capitalize on growth opportunities."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "In summary, Sale Commercial Properties, Inc., under the guidance of Bill Sale, brings a wealth of experience, a proven track record, and a deep understanding of the commercial real estate market to the table. Their commitment to excellence and strategic asset management makes them a strong sponsor for the refinancing of East Side Plaza, providing confidence to potential investors in the viability and profitability of this investment opportunity."
+                    }
+                ],
+                "image_url": null,
+                "order": 12,
+                "updated_at": "2026-08-01T15:30:19.764049Z"
+            },
+            {
+                "id": 280,
+                "section_type": "disclaimer",
+                "title": "Disclaimer",
+                "content": "**Disclaimer**\n\nThis confidential investment package (the \"Package\") is the property of NorthMarq Capital, LLC (\"NorthMarq\") and is intended solely for the use of parties approved for such delivery. By receiving this Package, you agree that it is provided for your internal analysis regarding the subject property and/or loan herein, and you shall not distribute, reproduce, or disclose any part of this Package to any third party without the prior written consent of NorthMarq. \n\nWhile the information contained in this Package has been obtained from sources deemed reliable, it has not been independently verified by NorthMarq. Therefore, NorthMarq makes no representations or warranties, express or implied, as to the accuracy or completeness of the information provided herein. The data, projections, and assumptions contained in this Package are subject to errors, omissions, and changes, and as such, cannot be guaranteed. \n\nThis Package may contain forward-looking statements regarding future events or the future financial performance of the property. These statements are based on current expectations and assumptions that are subject to risks and uncertainties. Actual results may differ materially from those anticipated in any forward-looking statements due to various factors, including changes in market conditions, economic factors, and other risks.\n\nRecipients of this Package are strongly encouraged to conduct their own independent due diligence and analysis regarding the property and the investment opportunity presented herein. NorthMarq disclaims any liability for any damages arising from the use of this Package or the information contained herein. \n\nReceipt of this information is considered the same as the execution of a letter of non-disclosure and non-circumvention for a period of three years. This Package must be returned upon request by NorthMarq.",
+                "blocks": [
+                    {
+                        "type": "heading",
+                        "level": 3,
+                        "content": "Disclaimer"
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "This confidential investment package (the \"Package\") is the property of NorthMarq Capital, LLC (\"NorthMarq\") and is intended solely for the use of parties approved for such delivery. By receiving this Package, you agree that it is provided for your internal analysis regarding the subject property and/or loan herein, and you shall not distribute, reproduce, or disclose any part of this Package to any third party without the prior written consent of NorthMarq."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "While the information contained in this Package has been obtained from sources deemed reliable, it has not been independently verified by NorthMarq. Therefore, NorthMarq makes no representations or warranties, express or implied, as to the accuracy or completeness of the information provided herein. The data, projections, and assumptions contained in this Package are subject to errors, omissions, and changes, and as such, cannot be guaranteed."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "This Package may contain forward-looking statements regarding future events or the future financial performance of the property. These statements are based on current expectations and assumptions that are subject to risks and uncertainties. Actual results may differ materially from those anticipated in any forward-looking statements due to various factors, including changes in market conditions, economic factors, and other risks."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Recipients of this Package are strongly encouraged to conduct their own independent due diligence and analysis regarding the property and the investment opportunity presented herein. NorthMarq disclaims any liability for any damages arising from the use of this Package or the information contained herein."
+                    },
+                    {
+                        "type": "paragraph",
+                        "content": "Receipt of this information is considered the same as the execution of a letter of non-disclosure and non-circumvention for a period of three years. This Package must be returned upon request by NorthMarq."
+                    }
+                ],
+                "image_url": null,
+                "order": 13,
+                "updated_at": "2026-08-01T15:30:19.764051Z"
+            }
+        ]
+    },
+    "errors": null
+}

@@ -5,9 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiCheck, FiEdit, FiUpload, FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import SectionMarkdown from "./SectionMarkdown";
-import SectionBlockRenderer, {
-  serializeBlocksToContent,
-} from "./SectionBlockRenderer";
+
 import type { SectionBlock } from "@/types/memorandum-detail";
 import {
   formatSectionTitle,
@@ -36,11 +34,7 @@ const DynamicSectionEditorCard = ({
 }: DynamicSectionEditorCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(section.content || "");
-  const [editedBlocks, setEditedBlocks] = useState<SectionBlock[] | null>(
-    section.blocks && section.blocks.length > 0
-      ? [...section.blocks]
-      : null,
-  );
+
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -52,25 +46,16 @@ const DynamicSectionEditorCard = ({
     sectionTitle,
   );
 
-  const hasBlocks =
-    Array.isArray(editedBlocks) && editedBlocks.length > 0;
+
 
   useEffect(() => {
     setEditedContent(section.content || "");
-    setEditedBlocks(
-      section.blocks && section.blocks.length > 0
-        ? [...section.blocks]
-        : null,
-    );
-  }, [section.content, section.blocks, section.id]);
+  }, [section.content, section.id]);
 
   const hasSectionImage = Boolean(section.image_url);
 
   const handleSave = async () => {
-    // Serialize blocks to content for the API if we have blocks
-    const contentToSave = hasBlocks
-      ? serializeBlocksToContent(editedBlocks!)
-      : editedContent;
+    const contentToSave = editedContent;
 
     if (contentToSave.trim() === "") {
       toast.error("Section content cannot be empty.");
@@ -89,11 +74,6 @@ const DynamicSectionEditorCard = ({
   const handleCancel = () => {
     setIsEditing(false);
     setEditedContent(section.content || "");
-    setEditedBlocks(
-      section.blocks && section.blocks.length > 0
-        ? [...section.blocks]
-        : null,
-    );
   };
 
   const handleUploadClick = () => {
@@ -167,20 +147,13 @@ const DynamicSectionEditorCard = ({
       </div>
 
       {/* ====== Section Content ====== */}
-      {hasBlocks ? (
-        <SectionBlockRenderer
-          blocks={editedBlocks!}
-          skipFirstHeading={true}
-          editable={isEditing}
-          onBlocksChange={(updatedBlocks) => setEditedBlocks(updatedBlocks)}
-        />
-      ) : !isEditing ? (
+      {!isEditing ? (
         <SectionMarkdown
           content={contentToRender}
           className="text-sm md:text-base text-gray-700 leading-relaxed"
         />
       ) : (
-        /* Fallback: plain text editing for sections without blocks */
+        /* Plain text editing for markdown */
         <textarea
           value={editedContent}
           onChange={(e) => setEditedContent(e.target.value)}
