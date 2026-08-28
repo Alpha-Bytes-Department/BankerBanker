@@ -1,35 +1,28 @@
+"use client";
 
-"use client"
 import React, { useState } from 'react';
-import { Eye, EyeOff, CheckCircle2, Circle, ChevronDown } from 'lucide-react';
+import { Eye, EyeOff, CheckCircle2, Circle } from 'lucide-react';
 import Button from '@/components/Button';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/Provider/AuthProvider';
-import { signup, UserType } from '@/types/auth';
+import { signup } from '@/types/auth';
 
-
-
-// Main Component
 export default function RegistrationSystem() {
   const [formData, setFormData] = useState<signup>({
-    customer_type: 'Sponsor',
     first_name: '',
     last_name: '',
     email: '',
     phone: '',
     password: '',
     confirm_password: '',
-    agreedToTerms: false
+    agreedToTerms: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof signup, string>>>({});
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const {loading, signup } = useAuth();
-
-  const customer_type: UserType[] = ['Lender', 'Sponsor'];
+  const { loading, signup: performSignup } = useAuth();
 
   const slides = [
     {
@@ -61,7 +54,7 @@ export default function RegistrationSystem() {
 
   // Password validation
   const passwordValidation = {
-    minLength: formData?.password?.length ? formData?.password?.length >= 8 : false,
+    minLength: formData?.password?.length ? formData.password.length >= 8 : false,
     hasNumber: /\d/.test(formData?.password || ''),
     hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(formData?.password || ''),
   };
@@ -99,7 +92,7 @@ export default function RegistrationSystem() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      signup(formData);
+      await performSignup(formData);
     }
   };
 
@@ -110,50 +103,15 @@ export default function RegistrationSystem() {
         <div className="max-w-lg mx-auto">
           {/* Logo */}
           <div className="mb-8">
-            <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
+            <Link href="/">
+              <Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' />
+            </Link>
           </div>
           {/* Title */}
           <h2 className="text-3xl font-bold mb-2">Registration</h2>
           <p className="text-gray-600 mb-8">Let&apos;s get you all set up so you can access your account.</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Customer Type - Modern Dropdown */}
-            <div className='relative'>
-              <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600 z-10">
-                Customer Type<span className="text-red-500">*</span>
-              </label>
-              <button
-                type="button"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 bg-white text-left flex items-center justify-between"
-              >
-                <span className="text-gray-900">{formData.customer_type}</span>
-                <ChevronDown
-                  size={20}
-                  className={`text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
-                />
-              </button>
-
-              {isDropdownOpen && (
-                <div className="absolute z-20 w-full mt-2 bg-white border border-gray-200 rounded-2xl shadow-lg overflow-hidden">
-                  {customer_type.map((type) => (
-                    <button
-                      key={type}
-                      type="button"
-                      onClick={() => {
-                        setFormData({ ...formData, customer_type: type });
-                        setIsDropdownOpen(false);
-                      }}
-                      className={`w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors ${formData.customer_type === type ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-700'
-                        }`}
-                    >
-                      {type}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
             {/* Name Fields */}
             <div className="grid lg:grid-cols-2 gap-4">
               <div className='relative'>
@@ -165,7 +123,7 @@ export default function RegistrationSystem() {
                   value={formData.first_name}
                   onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 focus:ring-3 focus:ring-blue-500 focus:outline-0 rounded-full"
-                  placeholder="enter your first name"
+                  placeholder="Enter your first name"
                 />
                 {errors.first_name && <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>}
               </div>
@@ -178,7 +136,7 @@ export default function RegistrationSystem() {
                   value={formData.last_name}
                   onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0"
-                  placeholder="enter your last name"
+                  placeholder="Enter your last name"
                 />
                 {errors.last_name && <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>}
               </div>
@@ -195,7 +153,7 @@ export default function RegistrationSystem() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0"
-                  placeholder="enter your email"
+                  placeholder="Enter your email"
                 />
                 {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
@@ -225,7 +183,7 @@ export default function RegistrationSystem() {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 pr-12"
-                  placeholder="enter your password"
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
@@ -243,13 +201,13 @@ export default function RegistrationSystem() {
               <label className="absolute -top-2 left-3 bg-white px-1 text-sm text-blue-600">
                 Confirm Password<span className="text-red-500">*</span>
               </label>
-              <div >
+              <div>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirm_password}
                   onChange={(e) => setFormData({ ...formData, confirm_password: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-full focus:ring-3 focus:ring-blue-500 focus:outline-0 pr-12"
-                  placeholder="enter your password again"
+                  placeholder="Enter your password again"
                 />
                 <button
                   type="button"
@@ -305,6 +263,7 @@ export default function RegistrationSystem() {
                 </div>
               </div>
             </div>
+
             {/* Terms Checkbox */}
             <div>
               <label className="flex items-center gap-3 cursor-pointer">
@@ -312,7 +271,7 @@ export default function RegistrationSystem() {
                   type="checkbox"
                   checked={formData.agreedToTerms}
                   onChange={(e) => setFormData({ ...formData, agreedToTerms: e.target.checked })}
-                  className=" w-5 h-5 rounded border-gray-300"
+                  className="w-5 h-5 rounded border-gray-300"
                 />
                 <span className="text-sm text-gray-700">
                   I agree to all the <span className="text-red-500">Terms</span> and <span className="text-red-500">Privacy Policies</span>
@@ -320,6 +279,7 @@ export default function RegistrationSystem() {
               </label>
               {errors.agreedToTerms && <p className="text-red-500 text-sm mt-1">{errors.agreedToTerms}</p>}
             </div>
+
             {/* Submit Button */}
             <Button
               type="submit"
@@ -327,15 +287,18 @@ export default function RegistrationSystem() {
               text={loading ? "Processing..." : "Sign Up"}
               className="button-primary w-full h-14"
             />
+
             {/* Login Link */}
             <p className="text-center text-sm text-gray-600">
-              Already have an account? <span className="text-red-500 cursor-pointer">
-                <Link href={"/signin"}>Login</Link>
-              </span>
+              Already have an account?{" "}
+              <Link href={"/signin"} className="text-red-500 cursor-pointer hover:underline">
+                Login
+              </Link>
             </p>
           </form>
         </div>
       </div>
+
       <div className="hidden lg:block lg:w-1/2 relative bg-gray-900">
         <button className="absolute top-8 right-8 text-white flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20 transition-colors z-10">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

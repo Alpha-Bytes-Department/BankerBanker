@@ -189,7 +189,7 @@ const SignInForm: React.FC = () => {
               <Button
                 type="submit"
                 isDisabled={loading}
-                text="Sign In"
+                text={loading ? "Signing In..." : "Sign In"}
                 className="button-primary w-full md:w-[593px] h-14"
               />
 

@@ -120,7 +120,7 @@ const ProfilePopUp = ({ user }: { user: User | null }) => {
                 console.log("key:", pair[0], "value:", pair[1]);
             }
 
-            const response = await api.patch(`/api/accounts/profile/`, formDataToSend, {
+            const response = await api.patch(`/auth/profile/`, formDataToSend, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 

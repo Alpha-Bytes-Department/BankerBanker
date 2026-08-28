@@ -8,18 +8,19 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import { useAuth } from "@/Provider/AuthProvider";
 import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 const VerifyOtp: React.FC = () => {
   const [otp, setOtp] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isResending, setIsResending] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(30);
-  const {authState,verifyOTP, resendOtp } = useAuth();
+  const { authState, verifyOTP, resendOtp, loading } = useAuth();
 
   const searchParams = useSearchParams();
-  const from = searchParams.get("from");
+  const queryFrom = searchParams.get("from");
+  const currentFrom = queryFrom || authState?.from || "signup";
+  const isForgotPassword = currentFrom === "forgotPassword";
 
-  // countdown
+  // Countdown timer for resend
   useEffect(() => {
     if (resendCooldown <= 0) return;
     const interval = setInterval(() => {
@@ -28,30 +29,46 @@ const VerifyOtp: React.FC = () => {
     return () => clearInterval(interval);
   }, [resendCooldown]);
 
-  // verify otp
-  const handleOtpVerify = () => {
-    setIsVerifying(true);
-    verifyOTP(otp, from || "unknown");
-    setIsVerifying(false);
+  // Verify OTP handler
+  const handleOtpVerify = async () => {
+    if (otp.trim().length !== 6) {
+      toast.error("Please enter the complete 6-digit OTP code.");
+      return;
+    }
+    await verifyOTP(otp, currentFrom);
   };
 
-  // Resend OTP
-  const handleResend = () => {
-    setIsResending(true);
+  // Resend OTP handler
+  const handleResend = async () => {
+    if (!authState?.email) {
+      toast.error("Email not found. Please try again.");
+      return;
+    }
     setResendCooldown(30);
-    resendOtp(authState?.email || "");
-    setIsResending(false);
+    await resendOtp(authState.email, currentFrom);
   };
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-white">
-      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6 ">
-        <Link href="/"><Image src={"/logo/BANCre.png"} alt={'logo'} width={150} height={50} className='hidden lg:flex' /></Link>
+      <div className="flex flex-col justify-center px-6 lg:px-40 py-10 space-y-6">
+        <Link href="/">
+          <Image
+            src={"/logo/BANCre.png"}
+            alt={'logo'}
+            width={150}
+            height={50}
+            className='hidden lg:flex'
+          />
+        </Link>
 
-        <h2 className="text-3xl font-semibold">Verify </h2>
+        <h2 className="text-3xl font-semibold">
+          {isForgotPassword ? "Verify OTP" : "Verify Email"}
+        </h2>
 
-        <p className="text-sm">
-          Please check your email for next steps to reset your password
+        <p className="text-sm text-gray-600">
+          {isForgotPassword
+            ? `Please enter the 6-digit verification code sent to ${authState?.email || "your email"} to reset your password.`
+            : `Please enter the 6-digit verification code sent to ${authState?.email || "your email"}.`}
         </p>
 
         <div className="flex flex-col justify-center items-center gap-4 mt-8">
@@ -71,11 +88,12 @@ const VerifyOtp: React.FC = () => {
             </InputOTPGroup>
           </InputOTP>
 
-          {/* Updated Verify Button */}
+          {/* Verify Button */}
           <div className="w-full flex justify-center mt-8">
             <Button
               type="button"
-              text={isVerifying ? "Verifying..." : "Verify Email"}
+              isDisabled={loading || otp.trim().length !== 6}
+              text={loading ? "Verifying..." : (isForgotPassword ? "Verify OTP" : "Verify Email")}
               onClick={handleOtpVerify}
               className="button-primary w-full md:w-[593px] h-14"
             />
@@ -83,17 +101,18 @@ const VerifyOtp: React.FC = () => {
         </div>
 
         <div className="mt-8 text-center">
-          <span className="text-lg">Not receive a code? </span>
+          <span className="text-lg text-gray-700">Didn&apos;t receive a code? </span>
           <button
-            className={`cursor-pointer text-blue-600 inline-flex items-center gap-2 ${
-              isResending || resendCooldown > 0
+            type="button"
+            className={`cursor-pointer text-blue-600 font-medium inline-flex items-center gap-2 ${
+              loading || resendCooldown > 0
                 ? "opacity-50 cursor-not-allowed"
-                : ""
+                : "hover:underline"
             }`}
             onClick={handleResend}
-            disabled={isResending || resendCooldown > 0}
+            disabled={loading || resendCooldown > 0}
           >
-            {isResending && <Loader2 className="h-4 w-4 animate-spin" />}
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
             {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend"}
           </button>
         </div>

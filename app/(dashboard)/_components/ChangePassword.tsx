@@ -39,10 +39,10 @@ const ChangePassword = () => {
     const handleChangePassword = async (data: PasswordFormData) => {
         try {
             setIsLoading(true);
-            const response = await api.post('/api/accounts/change-password/', {
+            const response = await api.post('/auth/change-password/', {
                 current_password: data.currentPassword,
                 new_password: data.newPassword,
-                confirm_password : data.confirmPassword,
+                confirm_password: data.confirmPassword,
             });
 
             if (response.status !== 200) {

@@ -14,7 +14,7 @@ import Notifications from "../(sponsor)/notifications/page";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ProfilePopUp from "./ProfilePopUp";
 import ChatWidget from "./ChatWidget";
-import { MapPin, School } from "lucide-react";
+import { MapPin, School, ArrowLeftRight } from "lucide-react";
 import { useAuth } from "@/Provider/AuthProvider";
 import ConfirmActionModal from "@/components/ConfirmActionModal";
 
@@ -112,7 +112,7 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
     null,
   );
   const pathName = usePathname();
-  const { loading, user, logout } = useAuth();
+  const { loading, user, logout, toggleRole } = useAuth();
   const userRole =
     normalizeRole(user?.customer_type || user?.role) || storedRole;
   const isLender = userRole === "Lender";
@@ -273,7 +273,13 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
                 className="text-xl flex lg:hidden"
               />
             </div>
-            <div className="flex justify-center items-center gap-2 bg-[#0D4DA5] text-white  px-4 py-2 rounded-full cursor-pointer">
+            <button
+              type="button"
+              onClick={() => toggleRole()}
+              disabled={loading}
+              title={`Switch to ${isLender ? "Sponsor" : "Lender"} dashboard`}
+              className="flex justify-center items-center gap-2 bg-[#0D4DA5] hover:bg-[#0b3e85] text-white px-4 py-2 rounded-full cursor-pointer transition-all active:scale-95 disabled:opacity-50"
+            >
               {isLender ? (
                 <>
                   <School size={18} />
@@ -287,7 +293,8 @@ const DashboardNavigation = ({ children }: NavbarProps) => {
               ) : (
                 <span>User</span>
               )}
-            </div>
+              <ArrowLeftRight size={14} className="opacity-70 ml-1" />
+            </button>
             {/*----------- notification -------- */}
             <Notifications />
           </div>

@@ -10,6 +10,15 @@ let isRefreshing = false;
 let waitingQueue: ((token: string) => void)[] = [];
 // Endpoints that must never send bearer tokens and must not trigger refresh logic.
 const authBootstrapEndpoints = [
+  "/auth/login/",
+  "/auth/signup/",
+  "/auth/verify-signup/",
+  "/auth/signup-resend-otp/",
+  "/auth/forgot-password/",
+  "/auth/forgot-otp-resend/",
+  "/auth/forgot-password-verify/",
+  "/auth/reset-password/",
+  "/auth/token/refresh/",
   "/api/accounts/login/",
   "/api/accounts/signup/",
   "/api/accounts/resend-otp/",
@@ -38,15 +47,18 @@ const getTokensFromLocalStorage = () => {
     console.error("Failed to read tokens from localStorage", error);
     return { accessToken: null, refreshToken: null };
   }
-
-
 };
-console.log("Base URL:", process.env.NEXT_PUBLIC_BASE_URL);
+
+const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://charissa-intuitable-corroboratorily.ngrok-free.dev/";
+const baseUrl = rawBaseUrl.endsWith("/") ? rawBaseUrl : `${rawBaseUrl}/`;
 
 // Creating axios instance
 const api: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000/",
+  baseURL: baseUrl,
   withCredentials: true,
+  headers: {
+    Accept: "application/json",
+  },
 });
 
 // Function to queue failed route callbacks
@@ -60,9 +72,10 @@ const executingRoutes = (token: string) => {
   waitingQueue = [];
 };
 
-// Attaching token in header
+// Attaching token in request interceptor
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+    config.headers.Accept = "application/json";
     const { accessToken } = getTokensFromLocalStorage();
 
     if (isPublicEndpoint(config.url)) {
@@ -115,11 +128,14 @@ api.interceptors.response.use(
           return Promise.reject("No refresh token");
         }
 
-        const { data } = await api.post<{ access_token: string }>(
-          "/accounts/token/refresh/",
+        const { data } = await api.post<{ access_token?: string; access?: string; data?: { access?: string } }>(
+          "/auth/token/refresh/",
           { refresh_token: refreshToken },
         );
-        const newToken = data.access_token;
+        const newToken = data?.data?.access || data?.access || data?.access_token;
+        if (!newToken) {
+          throw new Error("No access token in refresh response");
+        }
 
         // Update localStorage with new access token
         const userData = JSON.parse(localStorage.getItem("userCredentials") || "{}");
