@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import api from "@/Provider/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImagePlus, X } from "lucide-react";
-import type { PlaceData } from "./place-types";
+import type { PlaceData, PropertyData } from "./place-types";
 
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -16,39 +16,65 @@ import { z } from "zod";
 const propertySchema = z.object({
   property_name: z.string().min(1, "Property name is required"),
   property_address: z.string().min(1, "Address is required"),
-  property_type: z.enum([
-    "Multifamily",
-    "Industrial",
-    "Retail",
-    "Office",
-    "Other",
-  ]),
-  number_of_units: z.number().int().min(1, "At least 1 unit"),
-  rentable_area: z.preprocess(String, z.string().min(1, "Required")),
-  year_built: z
-    .number()
-    .int()
-    .min(1800, "Enter a valid year")
-    .max(new Date().getFullYear(), "Cannot be in the future"),
-  occupancy: z.preprocess(String, z.string().min(1, "Required")),
-  year_renovated: z
-    .number()
-    .int()
-    .min(1800, "Enter a valid year")
-    .max(new Date().getFullYear(), "Cannot be in the future"),
-  parking_spaces: z.number().int().min(0, "Min 0"),
+  property_type: z.string().optional(),
+  number_of_units: z.preprocess(
+    (val) =>
+      val === "" || val === undefined || isNaN(Number(val))
+        ? undefined
+        : Number(val),
+    z.number().int().min(1, "At least 1 unit").optional(),
+  ),
+  rentable_area: z.preprocess(
+    (val) => (val === undefined || val === null ? "" : String(val)),
+    z.string().optional(),
+  ),
+  year_built: z.preprocess(
+    (val) =>
+      val === "" || val === undefined || isNaN(Number(val))
+        ? undefined
+        : Number(val),
+    z
+      .number()
+      .int()
+      .min(1800, "Enter a valid year")
+      .max(new Date().getFullYear(), "Cannot be in the future")
+      .optional(),
+  ),
+  occupancy: z.preprocess(
+    (val) => (val === undefined || val === null ? "" : String(val)),
+    z.string().optional(),
+  ),
+  year_renovated: z.preprocess(
+    (val) =>
+      val === "" || val === undefined || isNaN(Number(val))
+        ? undefined
+        : Number(val),
+    z
+      .number()
+      .int()
+      .min(1800, "Enter a valid year")
+      .max(new Date().getFullYear(), "Cannot be in the future")
+      .optional(),
+  ),
+  parking_spaces: z.preprocess(
+    (val) =>
+      val === "" || val === undefined || isNaN(Number(val))
+        ? undefined
+        : Number(val),
+    z.number().int().min(0, "Min 0").optional(),
+  ),
 });
 
 type PropertyFormData = {
   property_name: string;
   property_address: string;
-  property_type: "Multifamily" | "Industrial" | "Retail" | "Office" | "Other";
-  number_of_units: number;
-  rentable_area: string;
-  year_built: number;
-  occupancy: string;
-  year_renovated: number;
-  parking_spaces: number;
+  property_type?: string;
+  number_of_units?: number;
+  rentable_area?: string;
+  year_built?: number;
+  occupancy?: string;
+  year_renovated?: number;
+  parking_spaces?: number;
 };
 
 type PropertyImageItem =
@@ -71,10 +97,12 @@ type AddPropertyInfoProps = {
   description?: string;
   setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
   setPropertyId?: React.Dispatch<React.SetStateAction<number | null>>;
+  setPropertyData?: React.Dispatch<React.SetStateAction<PropertyData | null>>;
   placeData?: PlaceData | null;
+  propertyData?: PropertyData | null;
 };
 
-const MAX_IMAGES = 4;
+const MAX_IMAGES = 6;
 
 const getPlaceImageItems = (photos?: string[]): PropertyImageItem[] =>
   (photos || []).slice(0, MAX_IMAGES).map((photo, index) => ({
@@ -84,13 +112,27 @@ const getPlaceImageItems = (photos?: string[]): PropertyImageItem[] =>
     url: photo,
   }));
 
+const normalizeType = (t?: unknown): string => {
+  if (!t) return "";
+  const s = String(t).trim().toLowerCase();
+  if (s.includes("multi")) return "Multifamily";
+  if (s.includes("indus")) return "Industrial";
+  if (s.includes("retail")) return "Retail";
+  if (s.includes("office")) return "Office";
+  if (s.includes("other") || s.includes("park") || s.includes("establishment"))
+    return "Other";
+  return "Other";
+};
+
 const AddPropertyInfo = ({
   id,
   title,
   description,
   setCurrentStep,
   setPropertyId,
+  setPropertyData,
   placeData,
+  propertyData,
 }: AddPropertyInfoProps) => {
   const [location, setLocation] = React.useState({
     lat: placeData?.lat || 0,
@@ -106,7 +148,9 @@ const AddPropertyInfo = ({
       propertyImages.map((image) => ({
         ...image,
         url:
-          image.source === "upload" ? URL.createObjectURL(image.file) : image.url,
+          image.source === "upload"
+            ? URL.createObjectURL(image.file)
+            : image.url,
       })),
     [propertyImages],
   );
@@ -129,73 +173,209 @@ const AddPropertyInfo = ({
   } = useForm<PropertyFormData>({
     resolver: zodResolver(propertySchema) as never,
     defaultValues: {
-      property_name: placeData?.name || "",
-      property_address: placeData?.address || "",
+      property_name:
+        propertyData?.property_name ||
+        placeData?.property_name ||
+        placeData?.name ||
+        "",
+      property_address:
+        propertyData?.property_address ||
+        placeData?.property_address ||
+        placeData?.address ||
+        "",
+      property_type: normalizeType(
+        propertyData?.property_type || placeData?.property_type,
+      ),
+      number_of_units:
+        (propertyData?.number_of_units ?? placeData?.number_of_units)
+          ? Number(propertyData?.number_of_units ?? placeData?.number_of_units)
+          : undefined,
+      rentable_area:
+        (propertyData?.rentable_area ?? placeData?.rentable_area)
+          ? String(propertyData?.rentable_area ?? placeData?.rentable_area)
+          : "",
+      year_built:
+        (propertyData?.year_built ?? placeData?.year_built)
+          ? Number(propertyData?.year_built ?? placeData?.year_built)
+          : undefined,
+      occupancy:
+        (propertyData?.occupancy ?? placeData?.occupancy)
+          ? String(propertyData?.occupancy ?? placeData?.occupancy)
+          : "",
+      year_renovated:
+        (propertyData?.year_renovated ?? placeData?.year_renovated)
+          ? Number(
+              propertyData?.year_renovated ?? placeData?.year_renovated,
+            )
+          : undefined,
+      parking_spaces:
+        (propertyData?.parking_spaces ?? placeData?.parking_spaces) !== undefined &&
+        (propertyData?.parking_spaces ?? placeData?.parking_spaces) !== null &&
+        (propertyData?.parking_spaces ?? placeData?.parking_spaces) !== ""
+          ? Number(
+              propertyData?.parking_spaces ?? placeData?.parking_spaces,
+            )
+          : undefined,
     },
   });
 
   React.useEffect(() => {
-    if (!placeData) return;
+    if (!placeData && !propertyData) return;
 
-    setLocation({ lat: placeData.lat, lng: placeData.lng });
+    if (placeData?.lat && placeData?.lng) {
+      setLocation({ lat: placeData.lat, lng: placeData.lng });
+    }
+
     reset({
-      property_name: placeData.name || "",
-      property_address: placeData.address || "",
+      property_name:
+        propertyData?.property_name ||
+        placeData?.property_name ||
+        placeData?.name ||
+        "",
+      property_address:
+        propertyData?.property_address ||
+        placeData?.property_address ||
+        placeData?.address ||
+        "",
+      property_type: normalizeType(
+        propertyData?.property_type || placeData?.property_type,
+      ),
+      number_of_units:
+        (propertyData?.number_of_units ?? placeData?.number_of_units)
+          ? Number(
+              propertyData?.number_of_units ?? placeData?.number_of_units,
+            )
+          : undefined,
+      rentable_area:
+        (propertyData?.rentable_area ?? placeData?.rentable_area)
+          ? String(propertyData?.rentable_area ?? placeData?.rentable_area)
+          : "",
+      year_built:
+        (propertyData?.year_built ?? placeData?.year_built)
+          ? Number(propertyData?.year_built ?? placeData?.year_built)
+          : undefined,
+      occupancy:
+        (propertyData?.occupancy ?? placeData?.occupancy)
+          ? String(propertyData?.occupancy ?? placeData?.occupancy)
+          : "",
+      year_renovated:
+        (propertyData?.year_renovated ?? placeData?.year_renovated)
+          ? Number(
+              propertyData?.year_renovated ?? placeData?.year_renovated,
+            )
+          : undefined,
+      parking_spaces:
+        (propertyData?.parking_spaces ?? placeData?.parking_spaces) !== undefined &&
+        (propertyData?.parking_spaces ?? placeData?.parking_spaces) !== null &&
+        (propertyData?.parking_spaces ?? placeData?.parking_spaces) !== ""
+          ? Number(
+              propertyData?.parking_spaces ?? placeData?.parking_spaces,
+            )
+          : undefined,
     });
-    setPropertyImages(getPlaceImageItems(placeData.photos));
-  }, [placeData, reset]);
+
+    if (placeData?.photos && propertyImages.length === 0) {
+      setPropertyImages(getPlaceImageItems(placeData.photos));
+    }
+  }, [placeData, propertyData, reset]);
 
   const onSubmit = async (data: PropertyFormData) => {
     if (location.lat === 0 && location.lng === 0) {
       toast.error("Please select a location on the map before continuing.");
       return;
     }
+
     try {
       const formData = new FormData();
+      formData.append("place_id", placeData?.place_id || "");
       formData.append("property_name", data.property_name);
       formData.append("property_address", data.property_address);
-      formData.append("property_type", data.property_type);
-      formData.append("number_of_units", String(data.number_of_units));
-      formData.append("rentable_area", String(data.rentable_area));
-      formData.append("year_built", String(data.year_built));
-      formData.append("occupancy", String(data.occupancy));
-      formData.append("year_renovated", String(data.year_renovated));
-      formData.append("parking_spaces", String(data.parking_spaces));
+      formData.append(
+        "property_type",
+        (data.property_type || "other").toLowerCase(),
+      );
+      if (data.number_of_units !== undefined && !isNaN(data.number_of_units)) {
+        formData.append("number_of_units", String(data.number_of_units));
+      }
+      if (data.rentable_area) {
+        formData.append("rentable_area", String(data.rentable_area));
+      }
+      if (data.year_built !== undefined && !isNaN(data.year_built)) {
+        formData.append("year_built", String(data.year_built));
+      }
+      if (data.occupancy) {
+        formData.append("occupancy", String(data.occupancy));
+      }
+      if (data.year_renovated !== undefined && !isNaN(data.year_renovated)) {
+        formData.append("year_renovated", String(data.year_renovated));
+      }
+      if (data.parking_spaces !== undefined && !isNaN(data.parking_spaces)) {
+        formData.append("parking_spaces", String(data.parking_spaces));
+      }
       formData.append("latitude", location.lat.toFixed(6));
       formData.append("longitude", location.lng.toFixed(6));
 
-      const selectedPlacePhotos: string[] = [];
+      const typesStr = Array.isArray(placeData?.types)
+        ? placeData.types.join(",")
+        : String(placeData?.types || "establishment,point_of_interest");
+      formData.append("types", typesStr);
 
+      const placePhotos: string[] = [];
       propertyImages.forEach((image) => {
-        if (image.source === "upload") {
+        if (image.source === "place") {
+          placePhotos.push(image.url);
+        } else if (image.source === "upload") {
+          formData.append("photos", image.file);
           formData.append("property_image", image.file);
-          return;
         }
-
-        selectedPlacePhotos.push(image.url);
       });
 
-      if (selectedPlacePhotos.length > 0) {
+      if (placePhotos.length > 0) {
+        formData.append("photos", placePhotos.join(","));
         formData.append(
           "property_image_urls",
-          JSON.stringify(selectedPlacePhotos),
+          JSON.stringify(placePhotos),
         );
       }
 
-      const response = await api.post("/api/properties/", formData);
+      const response = await api.post("/api/v1/properties/", formData);
+      const createdId =
+        response?.data?.data?.id ??
+        response?.data?.id ??
+        response?.data?.property_id;
 
       if (response.status === 200 || response.status === 201) {
-        toast.success("Property info added");
-        setPropertyId?.(response?.data?.data?.id);
+        toast.success(response?.data?.message || "Property info saved.");
+        if (createdId) {
+          setPropertyId?.(Number(createdId));
+        }
+
+        const savedProperty: PropertyData = {
+          ...data,
+          id: createdId ? Number(createdId) : undefined,
+          place_id: placeData?.place_id,
+          latitude: location.lat,
+          longitude: location.lng,
+          photos: propertyImages.map((img) =>
+            img.source === "place" ? img.url : img.name,
+          ),
+          types: placeData?.types,
+        };
+        setPropertyData?.(savedProperty);
+
         setCurrentStep?.((prev) => prev + 1);
       }
     } catch (error: unknown) {
-      const err = error as { response?: { data?: Record<string, unknown> } };
-      console.log("server error details:", err?.response?.data);
-      toast.error(
+      const err = error as {
+        response?: { data?: Record<string, unknown>; message?: string };
+      };
+      console.error("Server error details:", err?.response?.data);
+      const msg =
         (err?.response?.data?.message as string) ||
-          "Something went wrong. Please try again.",
-      );
+        (err?.response?.data?.errors
+          ? JSON.stringify(err.response.data.errors)
+          : "Something went wrong. Please try again.");
+      toast.error(msg);
     }
   };
 

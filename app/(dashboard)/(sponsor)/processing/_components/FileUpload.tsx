@@ -1,8 +1,9 @@
 import { useState, useMemo, useEffect } from "react";
 import Button from "@/components/Button";
-import { Upload, Lightbulb, X, CheckCircle, FileText, FileSpreadsheet, File } from "lucide-react";
+import { Upload, Lightbulb, X, FileText, FileSpreadsheet, File } from "lucide-react";
 import { toast } from "sonner";
 import api from "@/Provider/api";
+import type { UploadedFileItem } from "./place-types";
 
 type FileUploadProps = {
     id: number;
@@ -10,6 +11,7 @@ type FileUploadProps = {
     description?: string;
     setCurrentStep?: React.Dispatch<React.SetStateAction<number>>;
     propertyId: number | null;
+    setUploadedDocuments?: React.Dispatch<React.SetStateAction<UploadedFileItem[]>>;
 };
 
 const FileUpload = ({
@@ -18,6 +20,7 @@ const FileUpload = ({
     description,
     setCurrentStep,
     propertyId,
+    setUploadedDocuments,
 }: FileUploadProps) => {
     const [files, setFiles] = useState<File[]>([]);
     const [isUploading, setIsUploading] = useState(false);
@@ -64,14 +67,14 @@ const FileUpload = ({
     const handleContinue = async () => {
         if (!setCurrentStep) return;
 
-        // Skip upload step if no files selected
+        // If no files are selected, allow advancing
         if (files.length === 0) {
-            setCurrentStep(id + 1);
+            setCurrentStep((prev) => prev + 1);
             return;
         }
 
         if (!propertyId) {
-            setError("Property ID is missing.");
+            setError("Property ID is missing. Please complete the property details step first.");
             return;
         }
 
@@ -80,11 +83,11 @@ const FileUpload = ({
 
         try {
             const formData = new FormData();
-            //  API expects "files" as the form field key
+            // Postman: API expects "files" key for multipart uploads
             files.forEach((file) => formData.append("files", file));
 
             const response = await api.post(
-                `/api/properties/${propertyId}/documents/`,
+                `/api/v1/properties/${propertyId}/files/`,
                 formData,
                 {
                     headers: {
@@ -93,22 +96,46 @@ const FileUpload = ({
                 }
             );
 
-            // API returns { success: true, statusCode: 201, message: "...", data: [...] }
-            if (response?.data?.success) {
-                console.log("checking response",response)
-                toast.success(response.data.message || "Files uploaded successfully");
-                setCurrentStep(id + 1);
-            }
+            if (response.status === 200 || response.status === 201 || response?.data?.success) {
+                toast.success(response.data?.message || "Documents uploaded successfully");
 
-        } catch (err: any) {
+                // Parse returned uploaded documents if available or create from local metadata
+                const rawDocs = response.data?.data ?? response.data ?? [];
+                if (Array.isArray(rawDocs) && rawDocs.length > 0) {
+                    setUploadedDocuments?.(
+                        rawDocs.map((doc: Record<string, unknown>, idx: number) => ({
+                            id: (doc.id as number | string) || idx + 1,
+                            name: String(doc.name || doc.file_name || files[idx]?.name || `Document ${idx + 1}`),
+                            file_url: String(doc.file_url || doc.url || doc.file || ""),
+                            uploaded_at: String(doc.uploaded_at || doc.created_at || new Date().toISOString()),
+                            size: typeof doc.size === "number" ? doc.size : files[idx]?.size,
+                        }))
+                    );
+                } else {
+                    setUploadedDocuments?.(
+                        files.map((file, idx) => ({
+                            id: idx + 1,
+                            name: file.name,
+                            file_url: URL.createObjectURL(file),
+                            uploaded_at: new Date().toISOString(),
+                            size: file.size,
+                        }))
+                    );
+                }
+
+                setCurrentStep((prev) => prev + 1);
+            }
+        } catch (err: unknown) {
+            const errorObj = err as { response?: { data?: { message?: string; errors?: unknown } }; message?: string };
             const apiError =
-                err?.response?.data?.message ||
-                err?.response?.data?.errors ||
-                err?.message ||
-                "Something went wrong.";
-            setError(typeof apiError === "string" ? apiError : JSON.stringify(apiError));
+                errorObj?.response?.data?.message ||
+                errorObj?.response?.data?.errors ||
+                errorObj?.message ||
+                "Something went wrong while uploading files.";
+            const displayMsg = typeof apiError === "string" ? apiError : JSON.stringify(apiError);
+            setError(displayMsg);
             toast.error("Upload failed. Please try again.");
-            console.error("Upload error:", err?.response?.data);
+            console.error("Upload error:", errorObj?.response?.data);
         } finally {
             setIsUploading(false);
         }

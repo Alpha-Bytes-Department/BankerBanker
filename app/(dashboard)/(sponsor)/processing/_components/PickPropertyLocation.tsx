@@ -41,14 +41,64 @@ const PickPropertyLocation = ({
     setIsSubmitting(true);
 
     try {
-      const response = await api.post("/api/properties/places/", selectedPlace);
-      const responsePlace = response?.data?.data as PlaceData | undefined;
+      const payload = {
+        place_id: selectedPlace.place_id,
+        name: selectedPlace.name,
+        address: selectedPlace.address,
+        lat: selectedPlace.lat,
+        lng: selectedPlace.lng,
+        photos: selectedPlace.photos || [],
+        types: selectedPlace.types || [],
+      };
 
-      if (response.status === 200 || response.status === 201) {
-        setPlaceData(responsePlace || selectedPlace);
-        toast.success(response?.data?.message || "Location saved.");
-        setCurrentStep?.((prev) => prev + 1);
-      }
+      const response = await api.post("/api/v1/properties/places/", payload);
+      const extracted = (response?.data?.data ?? response?.data ?? {}) as Record<
+        string,
+        unknown
+      >;
+
+      const mergedPlaceData: PlaceData = {
+        ...selectedPlace,
+        ...extracted,
+        place_id: String(
+          extracted.place_id || selectedPlace.place_id || "",
+        ),
+        name: String(
+          extracted.property_name ||
+            extracted.name ||
+            selectedPlace.name ||
+            "",
+        ),
+        address: String(
+          extracted.property_address ||
+            extracted.address ||
+            selectedPlace.address ||
+            "",
+        ),
+        lat:
+          typeof extracted.latitude === "number"
+            ? extracted.latitude
+            : typeof extracted.lat === "number"
+              ? extracted.lat
+              : selectedPlace.lat,
+        lng:
+          typeof extracted.longitude === "number"
+            ? extracted.longitude
+            : typeof extracted.lng === "number"
+              ? extracted.lng
+              : selectedPlace.lng,
+        photos:
+          Array.isArray(extracted.photos) && extracted.photos.length > 0
+            ? (extracted.photos as string[])
+            : selectedPlace.photos,
+        types: extracted.types
+          ? (extracted.types as string[] | string)
+          : selectedPlace.types,
+      };
+
+      setPlaceData(mergedPlaceData);
+      toast.success(response?.data?.message || "Location and property info extracted.");
+      setCurrentStep?.((prev) => prev + 1);
     } catch (error: unknown) {
       const err = error as {
         response?: { data?: { message?: string; errors?: unknown } };
@@ -56,7 +106,7 @@ const PickPropertyLocation = ({
       const apiError = err?.response?.data?.errors;
       const message =
         err?.response?.data?.message ||
-        (apiError ? JSON.stringify(apiError) : "Unable to save this location.");
+        (apiError ? JSON.stringify(apiError) : "Unable to validate this location.");
 
       toast.error(message);
     } finally {

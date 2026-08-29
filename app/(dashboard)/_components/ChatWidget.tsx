@@ -44,8 +44,20 @@ const ChatWidget = () => {
   const fetchConversations = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await api.get("/api/chatbot/conversations/");
-      setConversations(res.data?.data || []);
+      const res = await api.get("/api/v1/chatbot/conversations/");
+      const rawList =
+        res.data?.data?.results ??
+        res.data?.data ??
+        res.data?.results ??
+        (Array.isArray(res.data) ? res.data : []);
+
+      const list: Conversation[] = rawList.map((c: Record<string, unknown>) => ({
+        id: Number(c.id),
+        title: String(c.title || c.subject || c.name || "Conversation"),
+        created_at: String(c.created_at || c.created || new Date().toISOString()),
+        updated_at: String(c.updated_at || c.updated || c.created_at || new Date().toISOString()),
+      }));
+      setConversations(list);
     } catch (err) {
       console.error("Failed to fetch conversations", err);
     } finally {
@@ -66,13 +78,33 @@ const ChatWidget = () => {
     setActiveConversationId(id);
     setView("chat");
     try {
-      const res = await api.get(`/api/chatbot/conversations/${id}/messages/`);
-      const msgs: Message[] = (res.data?.data || []).map((m: any) => ({
-        id: m.id,
-        role: m.role,
-        content: m.content,
-        created_at: m.created_at,
-      }));
+      const res = await api.get(`/api/v1/chatbot/conversations/${id}/`);
+      const rawMessages =
+        res.data?.data?.messages ??
+        res.data?.messages ??
+        (Array.isArray(res.data?.data) ? res.data.data : null) ??
+        (Array.isArray(res.data?.results) ? res.data.results : null) ??
+        (Array.isArray(res.data) ? res.data : []);
+
+      const msgs: Message[] = rawMessages.map(
+        (m: Record<string, unknown>, index: number) => {
+          const rawRole = String(
+            m.role || m.sender || m.sender_type || "",
+          ).toLowerCase();
+          const isUser =
+            rawRole === "user" ||
+            rawRole === "human" ||
+            rawRole === "customer" ||
+            m.is_user === true;
+
+          return {
+            id: typeof m.id === "number" ? m.id : index + 1,
+            role: isUser ? "user" : "assistant",
+            content: String(m.content || m.message || m.text || m.body || ""),
+            created_at: m.created_at ? String(m.created_at) : undefined,
+          };
+        },
+      );
       setMessages(msgs);
     } catch (err) {
       console.error("Failed to load messages", err);
@@ -112,19 +144,28 @@ const ChatWidget = () => {
         body.conversation_id = activeConversationId;
       }
 
-      const res = await api.post("/api/chatbot/chat/", body);
-      const data = res.data?.data;
+      const res = await api.post("/api/v1/chatbot/chat/", body);
+      const data = res.data?.data ?? res.data;
 
       // Persist conversation id for follow-ups
-      if (data?.conversation_id) {
-        setActiveConversationId(data.conversation_id);
+      const convId =
+        data?.conversation_id ?? data?.conversation?.id ?? data?.id;
+      if (convId) {
+        setActiveConversationId(Number(convId));
       }
+
+      const replyText =
+        data?.reply ||
+        data?.response ||
+        data?.message ||
+        data?.answer ||
+        "Sorry, I couldn't get a response.";
 
       setMessages((prev) => [
         ...prev.filter((m) => m.role !== "typing"),
         {
           role: "assistant",
-          content: data?.reply || "Sorry, I couldn't get a response.",
+          content: replyText,
         },
       ]);
     } catch (err) {
@@ -145,7 +186,7 @@ const ChatWidget = () => {
   const handleDeleteConversation = async (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     try {
-      await api.delete(`/api/chatbot/conversations/${id}/`);
+      await api.delete(`/api/v1/chatbot/conversations/${id}/`);
       setConversations((prev) => prev.filter((c) => c.id !== id));
     } catch (err) {
       console.error("Failed to delete conversation", err);

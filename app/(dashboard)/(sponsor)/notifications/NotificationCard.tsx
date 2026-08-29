@@ -5,20 +5,23 @@ import { IoCheckmarkSharp } from "react-icons/io5";
 import { LuMessageCircle } from "react-icons/lu";
 
 interface NotificationCardProps {
-  id: string;
+  id: string | number;
   title: string;
   from: string;
   description: string;
   is_read: boolean;
-  created_at: string;
-  onRequestMarkRead: (id: string) => void;
-  onRequestDelete: (id: string) => void;
+  created_at?: string;
+  onRequestMarkRead: (id: string | number) => void;
+  onRequestDelete: (id: string | number) => void;
   onClickNotification: () => void | Promise<void>;
 }
 
-function timeAgo(dateStr: string): string {
-  const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diff < 60) return `${diff}s ago`;
+function timeAgo(dateStr?: string): string {
+  if (!dateStr) return "Just now";
+  const parsed = new Date(dateStr).getTime();
+  if (isNaN(parsed)) return "Recently";
+  const diff = Math.floor((Date.now() - parsed) / 1000);
+  if (diff < 60) return `${Math.max(1, diff)}s ago`;
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
   if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
   return `${Math.floor(diff / 86400)}d ago`;
@@ -47,34 +50,46 @@ export default function NotificationCard({
 
   return (
     <div
-      className={`${is_read ? "bg-white" : "bg-[#EFF6FF]"} border-t border-b px-2 py-3 flex gap-2 border border-[#0000001A] cursor-pointer`}
+      className={`${is_read ? "bg-white hover:bg-[#F8FAFC]" : "bg-[#EFF6FF] hover:bg-[#E0EDFF]"} border-t border-b px-3 py-3 flex gap-3 border border-[#0000001A] cursor-pointer transition-colors`}
       onClick={onClickNotification}
     >
-      <div className="w-8 h-8 rounded-full bg-[#DBEAFE] flex items-center justify-center shrink-0">
-        <LuMessageCircle className="w-5 h-5 text-[#155DFC]" />
+      <div className="w-8 h-8 rounded-full bg-[#DBEAFE] flex items-center justify-center shrink-0 mt-0.5">
+        <LuMessageCircle className="w-4 h-4 text-[#155DFC]" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-center gap-1">
-          <h1 className="font-semibold text-[#101828] text-base truncate">
-            {title}
+          <h1 className="font-semibold text-[#101828] text-sm truncate">
+            {title || "Notification"}
           </h1>
           {!is_read && <GoDotFill className="text-[#155DFC] shrink-0" />}
         </div>
-        <p className="text-xs text-[#4A5565]">From: {from}</p>
-        <p className="text-[#4A5565] text-sm">{description}</p>
-        <div className="flex justify-between items-center mt-1">
-          <p className="text-sm text-[#6A7282]">{timeAgo(created_at)}</p>
+        {from && <p className="text-xs text-[#4A5565] mt-0.5">From: {from}</p>}
+        {description && (
+          <p className="text-[#4A5565] text-xs mt-1 line-clamp-2 leading-relaxed">
+            {description}
+          </p>
+        )}
+        <div className="flex justify-between items-center mt-2">
+          <p className="text-xs text-[#6A7282]">{timeAgo(created_at)}</p>
           <div className="flex gap-3 items-center">
             {!is_read && (
-              <button className="cursor-pointer" onClick={handleMarkRead}>
-                <div className="flex gap-1 items-center">
-                  <IoCheckmarkSharp />
-                  <p className="text-[#0A0A0A] text-xs">Mark read</p>
-                </div>
+              <button
+                type="button"
+                className="cursor-pointer flex gap-1 items-center hover:text-blue-600 transition-colors"
+                onClick={handleMarkRead}
+                title="Mark as read"
+              >
+                <IoCheckmarkSharp className="text-sm" />
+                <span className="text-[#0A0A0A] text-xs hover:text-blue-600">Mark read</span>
               </button>
             )}
-            <button className="cursor-pointer" onClick={handleDelete}>
-              <FiTrash2 className="text-[#E7000B]" />
+            <button
+              type="button"
+              className="cursor-pointer hover:opacity-80 transition-opacity p-0.5"
+              onClick={handleDelete}
+              title="Delete notification"
+            >
+              <FiTrash2 className="text-[#E7000B] text-sm" />
             </button>
           </div>
         </div>

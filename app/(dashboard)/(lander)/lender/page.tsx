@@ -195,12 +195,13 @@ const Page = () => {
         payload.conversation_id = assistantConversationId;
       }
 
-      const response = await api.post("/api/chatbot/chat/", payload);
-      const reply = response.data?.data?.reply;
-      const conversationId = response.data?.data?.conversation_id;
+      const response = await api.post("/api/v1/chatbot/chat/", payload);
+      const data = response.data?.data ?? response.data;
+      const reply = data?.reply || data?.response || data?.message || data?.answer;
+      const conversationId = data?.conversation_id ?? data?.conversation?.id ?? data?.id;
 
       if (conversationId) {
-        setAssistantConversationId(conversationId);
+        setAssistantConversationId(Number(conversationId));
       }
 
       setAssistantMessages((previous) => [
