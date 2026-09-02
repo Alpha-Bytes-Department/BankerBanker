@@ -58,6 +58,7 @@ const api: AxiosInstance = axios.create({
   withCredentials: true,
   headers: {
     Accept: "application/json",
+    "ngrok-skip-browser-warning": "true",
   },
 });
 
@@ -76,6 +77,7 @@ const executingRoutes = (token: string) => {
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     config.headers.Accept = "application/json";
+    config.headers["ngrok-skip-browser-warning"] = "true";
     const { accessToken } = getTokensFromLocalStorage();
 
     if (isPublicEndpoint(config.url)) {

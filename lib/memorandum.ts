@@ -8,6 +8,9 @@ export const formatSectionTitle = (sectionType: string): string => {
 
 type SectionLike = {
   section_type?: string;
+  section_key?: string;
+  label?: string;
+  title?: string;
   content?: string;
 };
 
@@ -87,7 +90,9 @@ export const parsePropertyInformationFromSections = (
   sections: SectionLike[] = [],
 ): ParsedPropertyInformation => {
   const propertyInformationSection = sections.find(
-    (section) => section.section_type === "property_information",
+    (section) =>
+      section.section_key === "property_information" ||
+      section.section_type === "property_information",
   );
 
   const content = propertyInformationSection?.content || "";
@@ -100,9 +105,11 @@ export const parsePropertyInformationFromSections = (
   const propertyType = extractLabeledValue(content, ["Type", "Property Type"]);
 
   const unitsRaw = extractLabeledValue(content, [
+    "Number of Units / Keys",
     "Number of Units",
     "Units",
-    "No\. of Units",
+    "No\\. of Units",
+    "Keys",
   ]);
   const yearBuiltRaw = extractLabeledValue(content, ["Year Built"]);
   const occupancyRaw = extractLabeledValue(content, [
@@ -118,6 +125,44 @@ export const parsePropertyInformationFromSections = (
     yearBuilt: parseNumericValue(yearBuiltRaw),
     occupancy: parseNumericValue(occupancyRaw),
   };
+};
+
+export const parseKeyValueContentToTable = (
+  content?: string,
+): { columns: string[]; rows: string[][] } | null => {
+  if (!content) return null;
+  const lines = content.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  if (lines.length < 3) return null;
+
+  const parsedRows: string[][] = [];
+  for (const line of lines) {
+    // Skip if line looks like markdown header or table or list
+    if (
+      line.startsWith("#") ||
+      line.startsWith("|") ||
+      line.startsWith("---") ||
+      line.startsWith("```")
+    ) {
+      return null;
+    }
+    const cleanLine = line.replace(/^[-*•]\s+/, "");
+    const colonIndex = cleanLine.indexOf(":");
+    if (colonIndex <= 0) {
+      return null;
+    }
+    const key = cleanLine.slice(0, colonIndex).trim().replace(/\*\*/g, "");
+    const value = cleanLine.slice(colonIndex + 1).trim().replace(/\*\*/g, "");
+    if (!key || !value) return null;
+    parsedRows.push([key, value]);
+  }
+
+  if (parsedRows.length >= 3) {
+    return {
+      columns: ["Property Metric", "Specification / Value"],
+      rows: parsedRows,
+    };
+  }
+  return null;
 };
 
 const extractHeadingText = (line: string): string | null => {

@@ -29,13 +29,7 @@ type ApiEnvelope<T> = {
   data?: T;
 };
 
-type MemorandumSection = {
-  id: number;
-  section_type: string;
-  content: string;
-  image_url?: string | null;
-  order: number;
-};
+import type { MemorandumSection } from "@/types/memorandum-detail";
 
 type MemorandumDetail = {
   id: number;
@@ -190,9 +184,15 @@ const Page = () => {
       try {
         const responses = await Promise.all(
           validMemorandums.map(async ({ memorandumId }) => {
-            const response = await api.get<ApiEnvelope<MemorandumDetail>>(
-              `/api/memorandums/${memorandumId}/`,
-            );
+            const response = await api
+              .get<ApiEnvelope<MemorandumDetail>>(
+                `/api/v1/memorandums/${memorandumId}/`,
+              )
+              .catch(() =>
+                api.get<ApiEnvelope<MemorandumDetail>>(
+                  `/api/memorandums/${memorandumId}/`,
+                ),
+              );
 
             return response.data?.data ?? null;
           }),
@@ -295,7 +295,10 @@ const Page = () => {
     () =>
       memorandumSections.map((section, index) => ({
         id: index + 1,
-        title: formatSectionTitle(section.section_type),
+        title:
+          section.label ||
+          section.title ||
+          formatSectionTitle(section.section_key || section.section_type),
         pageNumber: index + 3,
         anchorId: `preview-section-${section.id}`,
       })),

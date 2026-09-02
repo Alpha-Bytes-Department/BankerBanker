@@ -22,7 +22,9 @@ type GMAPProps = {
 }
 
 const GMAP = ({ markersList, onLocationSelect, onPlaceSelect }: GMAPProps) => {
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+    const apiKey =
+        process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
+        process.env.NEXT_PUBLIC_MAP_API_KEY;
     const [map, setMap] = useState<google.maps.Map | null>(null);
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 

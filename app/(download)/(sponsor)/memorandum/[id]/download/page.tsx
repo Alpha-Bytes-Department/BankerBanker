@@ -10,20 +10,15 @@ import api from "@/Provider/api";
 import {
   formatSectionTitle,
   parsePropertyInformationFromSections,
+  parseKeyValueContentToTable,
   sanitizeInlineMarkdownText,
   stripLeadingSectionHeading,
 } from "@/lib/memorandum";
 import PDFCoverPage from "./_components/PDFCoverPage";
 import PDFSection from "./_components/PDFSection";
 import PDFTableOfContents from "./_components/PDFTableOfContents";
-
-type MemorandumSection = {
-  id: number;
-  section_type: string;
-  content: string;
-  image_url?: string | null;
-  order: number;
-};
+import ExcelTableView from "@/app/(dashboard)/(sponsor)/memorandum/_components/DetailPageComponent/ExcelTableView";
+import type { MemorandumSection } from "@/types/memorandum-detail";
 
 type MemorandumData = {
   id: number;
@@ -75,8 +70,17 @@ const DownloadPage = () => {
           setLoading(true);
         }
 
-        const response = await api.get(`/api/memorandums/${memorandumId}/`);
-        const latestData = response.data.data as MemorandumData;
+        let response;
+        try {
+          response = await api.get(`/api/v1/memorandums/${memorandumId}/`);
+        } catch (err: any) {
+          if (err?.response?.status === 404) {
+            response = await api.get(`/api/memorandums/${memorandumId}/`);
+          } else {
+            throw err;
+          }
+        }
+        const latestData = (response.data?.data ?? response.data) as MemorandumData;
         setData(latestData);
 
         try {
@@ -110,7 +114,10 @@ const DownloadPage = () => {
     () =>
       sections.map((section, index) => ({
         id: index + 1,
-        title: formatSectionTitle(section.section_type),
+        title:
+          section.label ||
+          section.title ||
+          formatSectionTitle(section.section_key || section.section_type),
         pageNumber: index + 3,
       })),
     [sections],
@@ -201,11 +208,22 @@ const DownloadPage = () => {
         <PDFTableOfContents items={tableOfContents} />
 
         {sections.map((section, index) => {
-          const sectionTitle = formatSectionTitle(section.section_type);
+          const sectionTitle =
+            section.label ||
+            section.title ||
+            formatSectionTitle(section.section_key || section.section_type);
           const contentToRender = stripLeadingSectionHeading(
             section.content || "",
             sectionTitle,
           );
+          const sectionImage = section.image_url || section.image;
+          const hasExplicitTable = Boolean(
+            section.table_data?.columns?.length &&
+              section.table_data?.rows?.length,
+          );
+          const keyValueTable = !hasExplicitTable
+            ? parseKeyValueContentToTable(contentToRender)
+            : null;
 
           return (
             <PDFSection
@@ -214,11 +232,11 @@ const DownloadPage = () => {
               title={sectionTitle}
             >
               <div className="rounded-md p-4 bg-gray-50 print-avoid-break">
-                {section.image_url ? (
+                {sectionImage ? (
                   <div className="mb-4 rounded-md overflow-hidden border border-gray-200">
                     <div className="relative w-full h-[220px]">
                       <Image
-                        src={section.image_url}
+                        src={sectionImage}
                         alt={`${sectionTitle} image`}
                         fill
                         className="object-cover"
@@ -228,11 +246,31 @@ const DownloadPage = () => {
                   </div>
                 ) : null}
 
-                <div className="text-gray-700 text-[11px] leading-relaxed wrap-break-word [&_p]:mb-3 [&_p:last-child]:mb-0 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_h1]:mb-3 [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:mb-3 [&_h2]:text-base [&_h2]:font-semibold [&_h3]:mb-2 [&_h3]:text-sm [&_h3]:font-semibold [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-3 [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-gray-100 [&_pre]:p-3 [&_table]:mb-3 [&_table]:w-full [&_table]:border-collapse [&_table]:overflow-hidden [&_table]:rounded-lg [&_th]:border [&_th]:border-gray-300 [&_th]:bg-gray-100 [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_th]:font-semibold [&_td]:border [&_td]:border-gray-300 [&_td]:px-2 [&_td]:py-1">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {contentToRender}
-                  </ReactMarkdown>
-                </div>
+                {hasExplicitTable && section.table_data ? (
+                  <div className="mb-3">
+                    <ExcelTableView
+                      tableData={section.table_data}
+                      title={sectionTitle}
+                    />
+                  </div>
+                ) : null}
+
+                {!hasExplicitTable && keyValueTable ? (
+                  <div className="mb-3">
+                    <ExcelTableView
+                      tableData={keyValueTable}
+                      title={`${sectionTitle} (Specs)`}
+                    />
+                  </div>
+                ) : null}
+
+                {contentToRender && !keyValueTable ? (
+                  <div className="text-gray-700 text-[11px] leading-relaxed wrap-break-word [&_p]:mb-3 [&_p:last-child]:mb-0 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_h1]:mb-3 [&_h1]:text-lg [&_h1]:font-semibold [&_h2]:mb-3 [&_h2]:text-base [&_h2]:font-semibold [&_h3]:mb-2 [&_h3]:text-sm [&_h3]:font-semibold [&_blockquote]:border-l-4 [&_blockquote]:border-gray-300 [&_blockquote]:pl-3 [&_code]:rounded [&_code]:bg-gray-100 [&_code]:px-1 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-gray-100 [&_pre]:p-3 [&_table]:mb-3 [&_table]:w-full [&_table]:border-collapse [&_table]:overflow-hidden [&_table]:rounded-lg [&_th]:border [&_th]:border-gray-300 [&_th]:bg-gray-100 [&_th]:px-2 [&_th]:py-1 [&_th]:text-left [&_th]:font-semibold [&_td]:border [&_td]:border-gray-300 [&_td]:px-2 [&_td]:py-1">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {contentToRender}
+                    </ReactMarkdown>
+                  </div>
+                ) : null}
               </div>
             </PDFSection>
           );

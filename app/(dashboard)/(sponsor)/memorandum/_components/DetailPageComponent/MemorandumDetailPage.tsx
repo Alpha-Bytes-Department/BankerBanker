@@ -18,7 +18,11 @@ import {
   sanitizeInlineMarkdownText,
 } from "./section-utils";
 import { MemorandumTab } from "@/types/memorandum-detail";
-import type { SectionBlock } from "@/types/memorandum-detail";
+import type {
+  SectionBlock,
+  MemorandumSection,
+  MemorandumTableData,
+} from "@/types/memorandum-detail";
 import api from "@/Provider/api";
 import { toast } from "sonner";
 import ConfirmActionModal from "@/components/ConfirmActionModal";
@@ -29,17 +33,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
-type MemorandumSection = {
-  id: number;
-  section_type: string;
-  title?: string;
-  content: string;
-  blocks?: SectionBlock[];
-  image_url?: string | null;
-  order: number;
-  updated_at?: string;
-};
 
 type LoanRequestForm = {
   requestedAmount: string;
@@ -72,8 +65,18 @@ const MemorandumDetailPage = () => {
     const fetchDetail = async () => {
       try {
         setLoading(true);
-        const response = await api.get(`/api/memorandums/${memorandumId}/`);
-        setData(response.data.data);
+        let response;
+        try {
+          response = await api.get(`/api/v1/memorandums/${memorandumId}/`);
+        } catch (err: any) {
+          if (err?.response?.status === 404) {
+            response = await api.get(`/api/memorandums/${memorandumId}/`);
+          } else {
+            throw err;
+          }
+        }
+        const fetchedData = response.data?.data ?? response.data;
+        setData(fetchedData);
       } catch (error) {
         console.error("Error fetching memorandum details:", error);
       } finally {
@@ -146,19 +149,37 @@ const MemorandumDetailPage = () => {
       : Number(parsedPropertyInformation.occupancy) || 0;
   const isPublished = String(data?.status || "").toLowerCase() === "published";
 
-  const updateSectionContent = async (sectionId: number, content: string) => {
+  const updateSectionContent = async (
+    sectionId: number,
+    content: string,
+    tableData?: MemorandumTableData | null,
+  ) => {
     if (!memorandumId || !sectionId) {
       alert("Unable to update this section right now.");
       return;
     }
 
+    const payload: Record<string, any> = { content };
+    if (tableData !== undefined) {
+      payload.table_data = tableData;
+    }
+
     try {
-      await api.patch(
-        `/api/memorandums/${memorandumId}/sections/${sectionId}/`,
-        {
-          content,
-        },
-      );
+      try {
+        await api.patch(
+          `/api/v1/memorandums/${memorandumId}/sections/${sectionId}/`,
+          payload,
+        );
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          await api.patch(
+            `/api/memorandums/${memorandumId}/sections/${sectionId}/`,
+            payload,
+          );
+        } else {
+          throw err;
+        }
+      }
 
       setData((prev: any) => {
         if (!prev?.sections) return prev;
@@ -169,6 +190,7 @@ const MemorandumDetailPage = () => {
               ? {
                   ...item,
                   content,
+                  ...(tableData !== undefined ? { table_data: tableData } : {}),
                 }
               : item,
           ),
@@ -183,28 +205,42 @@ const MemorandumDetailPage = () => {
   };
 
   const uploadSectionImage = async (sectionId: number, file: File) => {
-    const section = sections.find((item) => item.id === sectionId);
+    const section = sections.find((item: MemorandumSection) => item.id === sectionId);
 
     if (!memorandumId || !sectionId) {
       alert("Unable to upload image for this section right now.");
       return;
     }
 
-    if (section.image_url) {
+    const currentImage = section?.image_url || section?.image;
+    if (currentImage) {
       toast.error("Only one image can be uploaded for this section.");
-      return section.image_url;
+      return currentImage;
     }
 
     const formData = new FormData();
     formData.append("image", file);
 
     try {
-      const response = await api.post(
-        `/api/memorandums/${memorandumId}/sections/${sectionId}/image/`,
-        formData,
-      );
+      let response;
+      try {
+        response = await api.post(
+          `/api/v1/memorandums/${memorandumId}/sections/${sectionId}/image/`,
+          formData,
+        );
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          response = await api.post(
+            `/api/memorandums/${memorandumId}/sections/${sectionId}/image/`,
+            formData,
+          );
+        } else {
+          throw err;
+        }
+      }
 
-      const uploadedImageUrl = response?.data?.data?.image;
+      const uploadedImageUrl =
+        response?.data?.data?.image ?? response?.data?.image;
 
       if (uploadedImageUrl) {
         setData((prev: any) => {
@@ -240,11 +276,21 @@ const MemorandumDetailPage = () => {
 
     try {
       setIsPublishing(true);
-      await api.patch(`/api/memorandums/${memorandumId}/`, {
+      const payload = {
         title: data.title,
         status: "Published",
         mode: "Preview",
-      });
+      };
+
+      try {
+        await api.patch(`/api/v1/memorandums/${memorandumId}/`, payload);
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          await api.patch(`/api/memorandums/${memorandumId}/`, payload);
+        } else {
+          throw err;
+        }
+      }
 
       setData((prev: any) => {
         if (!prev) return prev;
@@ -355,7 +401,10 @@ const MemorandumDetailPage = () => {
   const tableItems = sections.map(
     (section: MemorandumSection, index: number) => ({
       id: index + 1,
-      title: formatSectionTitle(section.section_type),
+      title:
+        section.label ||
+        section.title ||
+        formatSectionTitle(section.section_key || section.section_type),
       pageNumber: index + 3,
       anchorId: `preview-section-${section.id}`,
     }),

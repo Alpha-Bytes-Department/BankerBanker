@@ -32,8 +32,29 @@ const MemorandamPage = () => {
   const fetchMemorandums = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get("/api/memorandums/");
-      const apiData: Memorandum[] = response.data?.data ?? [];
+      let response;
+      try {
+        response = await api.get("/api/v1/memorandums/");
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          response = await api.get("/api/memorandums/");
+        } else {
+          throw err;
+        }
+      }
+
+      const raw = response.data;
+      let apiData: Memorandum[] = [];
+      if (Array.isArray(raw?.data)) {
+        apiData = raw.data;
+      } else if (Array.isArray(raw?.data?.results)) {
+        apiData = raw.data.results;
+      } else if (Array.isArray(raw?.results)) {
+        apiData = raw.results;
+      } else if (Array.isArray(raw)) {
+        apiData = raw;
+      }
+
       setMemorandums(apiData);
     } catch (error) {
       console.error("Error fetching memorandums:", error);
@@ -50,7 +71,15 @@ const MemorandamPage = () => {
   const handleDeleteMemorandum = async (memorandumId: number) => {
     try {
       setDeletingId(memorandumId);
-      await api.delete(`/api/memorandums/${memorandumId}/`);
+      try {
+        await api.delete(`/api/v1/memorandums/${memorandumId}/`);
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          await api.delete(`/api/memorandums/${memorandumId}/`);
+        } else {
+          throw err;
+        }
+      }
       setMemorandums((prev) => prev.filter((item) => item.id !== memorandumId));
       toast.success("Memorandum deleted successfully.");
     } catch (error) {
@@ -82,7 +111,7 @@ const MemorandamPage = () => {
       const mode = (item.mode || "").toLowerCase();
 
       if (status === "generating") stats.generating += 1;
-      if (status === "draft") stats.draft += 1;
+      if (status === "draft" || status === "ready") stats.draft += 1;
       if (status === "published") stats.published += 1;
       if (mode === "preview") stats.previewMode += 1;
     }
@@ -94,15 +123,15 @@ const MemorandamPage = () => {
     () =>
       memorandums.map((item) => ({
         id: item.id,
-        property: String(item.property),
-        title: item.title,
-        property_address: item.property_name,
+        property: String(item.property ?? ""),
+        title: item.title || "Offering Memorandum",
+        property_address: item.property_name || "N/A",
         property_type: item.status,
         property_image_url: item.property_image_url,
         created_at: item.created_at,
         updated_at: item.updated_at,
         status: item.status,
-        location: item.property_name,
+        location: item.property_name || "N/A",
         link: `/memorandum/${item.id}`,
         link2: `/memorandum/${item.id}/download`,
       })),

@@ -133,12 +133,20 @@ const Page = () => {
     try {
       const [propertyRes, memorandumRes] = await Promise.all([
         api.get("/api/properties/"),
-        api.get("/api/memorandums/"),
+        api
+          .get("/api/v1/memorandums/")
+          .catch(() => api.get("/api/memorandums/")),
       ]);
 
       const propertyData: Property[] = propertyRes.data?.data ?? [];
-      const memorandumData: MemorandumSummary[] =
-        memorandumRes.data?.data ?? [];
+      const rawMemorandums =
+        memorandumRes.data?.data ??
+        memorandumRes.data?.results ??
+        memorandumRes.data ??
+        [];
+      const memorandumData: MemorandumSummary[] = Array.isArray(rawMemorandums)
+        ? rawMemorandums
+        : [];
 
       const memorandumByProperty = new Map<number, MemorandumSummary>();
       for (const memorandum of memorandumData) {

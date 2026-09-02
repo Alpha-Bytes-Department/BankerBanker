@@ -5,25 +5,25 @@ import { useEffect, useRef, useState } from "react";
 import { FiCheck, FiEdit, FiUpload, FiX } from "react-icons/fi";
 import { toast } from "sonner";
 import SectionMarkdown from "./SectionMarkdown";
+import ExcelTableView from "./ExcelTableView";
 
-import type { SectionBlock } from "@/types/memorandum-detail";
+import type {
+  MemorandumSection,
+  MemorandumTableData,
+} from "@/types/memorandum-detail";
 import {
   formatSectionTitle,
+  parseKeyValueContentToTable,
   stripLeadingSectionHeading,
 } from "./section-utils";
 
-type DynamicSection = {
-  id: number;
-  section_type: string;
-  title?: string;
-  content: string;
-  blocks?: SectionBlock[];
-  image_url?: string | null;
-};
-
 type DynamicSectionEditorCardProps = {
-  section: DynamicSection;
-  onSave: (sectionId: number, content: string) => Promise<void>;
+  section: MemorandumSection;
+  onSave: (
+    sectionId: number,
+    content: string,
+    tableData?: MemorandumTableData | null,
+  ) => Promise<void>;
   onImageUpload: (sectionId: number, file: File) => Promise<string | void>;
 };
 
@@ -34,37 +34,50 @@ const DynamicSectionEditorCard = ({
 }: DynamicSectionEditorCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(section.content || "");
+  const [editedTableData, setEditedTableData] =
+    useState<MemorandumTableData | null>(section.table_data || null);
 
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const sectionTitle =
-    section.title || formatSectionTitle(section.section_type);
+    section.label ||
+    section.title ||
+    formatSectionTitle(section.section_key || section.section_type);
+
   const contentToRender = stripLeadingSectionHeading(
     editedContent,
     sectionTitle,
   );
 
+  const sectionImage = section.image_url || section.image;
+  const hasSectionImage = Boolean(sectionImage);
 
+  const hasExplicitTable = Boolean(
+    editedTableData?.columns?.length && editedTableData?.rows?.length,
+  );
+  const keyValueTable = !hasExplicitTable
+    ? parseKeyValueContentToTable(contentToRender)
+    : null;
 
   useEffect(() => {
     setEditedContent(section.content || "");
-  }, [section.content, section.id]);
-
-  const hasSectionImage = Boolean(section.image_url);
+    setEditedTableData(section.table_data || null);
+  }, [section.content, section.table_data, section.id]);
 
   const handleSave = async () => {
     const contentToSave = editedContent;
 
-    if (contentToSave.trim() === "") {
+    // Table sections might have empty content string
+    if (!hasExplicitTable && contentToSave.trim() === "") {
       toast.error("Section content cannot be empty.");
       return;
     }
 
     try {
       setIsSaving(true);
-      await onSave(section.id, contentToSave);
+      await onSave(section.id, contentToSave, editedTableData);
       setIsEditing(false);
     } finally {
       setIsSaving(false);
@@ -74,6 +87,7 @@ const DynamicSectionEditorCard = ({
   const handleCancel = () => {
     setIsEditing(false);
     setEditedContent(section.content || "");
+    setEditedTableData(section.table_data || null);
   };
 
   const handleUploadClick = () => {
@@ -104,38 +118,47 @@ const DynamicSectionEditorCard = ({
     <div
       className={`bg-white border rounded-2xl p-4 md:p-6 mb-6 transition-colors ${
         isEditing
-          ? "border-blue-300 shadow-[0_0_0_1px_rgba(59,130,246,0.15)]"
+          ? "border-emerald-300 shadow-[0_0_0_1px_rgba(16,185,129,0.2)]"
           : "border-gray-200"
       }`}
     >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-3">
-        <h3 className="text-lg md:text-xl text-gray-900">{sectionTitle}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900">
+            {sectionTitle}
+          </h3>
+          {hasExplicitTable ? (
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
+              Excel Table
+            </span>
+          ) : null}
+        </div>
 
         <div className="flex items-center gap-2">
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
-              className="flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm"
+              className="flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors"
               type="button"
             >
               <FiEdit className="w-4 h-4" />
-              Edit
+              {hasExplicitTable ? "Edit Table / Section" : "Edit"}
             </button>
           ) : (
             <>
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700 disabled:opacity-60"
+                className="flex items-center gap-1 bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-60 shadow-xs"
                 type="button"
               >
                 <FiCheck className="w-4 h-4" />
-                {isSaving ? "Saving..." : "Save"}
+                {isSaving ? "Saving..." : "Save Changes"}
               </button>
               <button
                 onClick={handleCancel}
                 disabled={isSaving}
-                className="flex items-center gap-1 text-gray-600 hover:text-gray-700 text-sm disabled:opacity-60"
+                className="flex items-center gap-1 text-gray-600 hover:text-gray-700 text-sm px-2.5 py-1.5 disabled:opacity-60"
                 type="button"
               >
                 <FiX className="w-4 h-4" />
@@ -146,29 +169,64 @@ const DynamicSectionEditorCard = ({
         </div>
       </div>
 
-      {/* ====== Section Content ====== */}
-      {!isEditing ? (
-        <SectionMarkdown
-          content={contentToRender}
-          className="text-sm md:text-base text-gray-700 leading-relaxed"
-        />
-      ) : (
-        /* Plain text editing for markdown */
-        <textarea
-          value={editedContent}
-          onChange={(e) => setEditedContent(e.target.value)}
-          className="w-full min-h-[180px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base resize-y"
-          placeholder="Write section content..."
-        />
-      )}
+      {/* ====== Structured Excel Table Section ====== */}
+      {hasExplicitTable && editedTableData ? (
+        <div className="mb-4">
+          <ExcelTableView
+            tableData={editedTableData}
+            title={sectionTitle}
+            subtitle={
+              section.section_key ? `Key: ${section.section_key}` : undefined
+            }
+            editable={isEditing}
+            onTableDataChange={(newTable) => setEditedTableData(newTable)}
+          />
+        </div>
+      ) : null}
 
-      <div className="mt-6">
-        <h4 className="text-base text-gray-900 mb-3">Section Image</h4>
+      {/* ====== Pure Key-Value Spec Sheet (if not an explicit table) ====== */}
+      {!hasExplicitTable && keyValueTable && !isEditing ? (
+        <div className="mb-4">
+          <ExcelTableView
+            tableData={keyValueTable}
+            title={`${sectionTitle} (Specs)`}
+            subtitle="Property Attributes"
+          />
+        </div>
+      ) : null}
 
-        {section.image_url ? (
-          <div className="relative h-48 md:h-64 rounded-lg overflow-hidden border border-gray-200 mb-4">
+      {/* ====== Prose / Markdown Content ====== */}
+      {contentToRender && (!keyValueTable || isEditing) ? (
+        <div className="mt-3">
+          {!isEditing ? (
+            <SectionMarkdown
+              content={contentToRender}
+              className="text-sm md:text-base text-gray-700 leading-relaxed"
+            />
+          ) : (
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">
+                Text / Markdown Content
+              </label>
+              <textarea
+                value={editedContent}
+                onChange={(e) => setEditedContent(e.target.value)}
+                className="w-full min-h-[160px] px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-emerald-500 text-sm md:text-base resize-y font-mono"
+                placeholder="Write section content in markdown..."
+              />
+            </div>
+          )}
+        </div>
+      ) : null}
+
+      {/* ====== Section Image ====== */}
+      <div className="mt-6 pt-4 border-t border-slate-100">
+        <h4 className="text-sm font-medium text-gray-800 mb-3">Section Image</h4>
+
+        {sectionImage ? (
+          <div className="relative h-48 md:h-64 rounded-lg overflow-hidden border border-gray-200 mb-4 max-w-xl">
             <Image
-              src={section.image_url}
+              src={sectionImage}
               alt={`${sectionTitle} image`}
               fill
               className="object-cover"
@@ -182,8 +240,8 @@ const DynamicSectionEditorCard = ({
           disabled={isUploadingImage || hasSectionImage}
           className={`px-4 py-2 rounded-lg border text-sm flex items-center gap-2 transition-colors ${
             isUploadingImage || hasSectionImage
-              ? "border-gray-200 text-gray-400 cursor-not-allowed"
-              : "border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600"
+              ? "border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50"
+              : "border-gray-300 text-gray-700 hover:border-emerald-500 hover:text-emerald-700"
           }`}
           type="button"
         >

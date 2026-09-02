@@ -34,6 +34,27 @@ export type SectionBlock =
   | KeyValueTableBlock
   | BulletListBlock;
 
+export interface MemorandumTableData {
+  columns: string[];
+  rows: (string | number | null | undefined)[][];
+}
+
+export interface MemorandumSection {
+  id: number;
+  section_key?: string;
+  label?: string;
+  section_type: "text" | "table" | string;
+  title?: string;
+  content: string;
+  table_data?: MemorandumTableData | null;
+  is_regeneratable?: boolean;
+  blocks?: SectionBlock[];
+  image?: string | null;
+  image_url?: string | null;
+  order: number;
+  updated_at?: string;
+}
+
 //========== Memorandum Detail Page Types ===========
 
 export interface MemorandumDetailData {
