@@ -12,6 +12,10 @@ type SectionLike = {
   label?: string;
   title?: string;
   content?: string;
+  table_data?: {
+    columns?: string[];
+    rows?: (string | number | null | undefined)[][];
+  } | null;
 };
 
 export type ParsedPropertyInformation = {
@@ -95,7 +99,50 @@ export const parsePropertyInformationFromSections = (
       section.section_type === "property_information",
   );
 
-  const content = propertyInformationSection?.content || "";
+  if (!propertyInformationSection) {
+    return {};
+  }
+
+  // 1. Try extracting directly from structured table_data.rows if available
+  const tableRows = propertyInformationSection.table_data?.rows;
+  if (Array.isArray(tableRows) && tableRows.length > 0) {
+    const findRowVal = (keywords: string[]): string | undefined => {
+      const match = tableRows.find((r) => {
+        if (!r || !r[0]) return false;
+        const key = String(r[0]).trim().toLowerCase();
+        return keywords.some((kw) => key === kw || key.includes(kw));
+      });
+      return match && match[1] !== undefined && match[1] !== null
+        ? String(match[1]).trim()
+        : undefined;
+    };
+
+    const tPropertyName = findRowVal(["property name"]);
+    const tAddress = findRowVal(["address", "property address"]);
+    const tPropertyType = findRowVal(["property type", "type"]);
+    const tUnits = findRowVal([
+      "number of units",
+      "units / keys",
+      "units",
+      "keys",
+    ]);
+    const tYearBuilt = findRowVal(["year built"]);
+    const tOccupancy = findRowVal(["occupancy rate", "occupancy"]);
+
+    if (tPropertyName || tAddress || tPropertyType) {
+      return {
+        propertyName: sanitizeInlineMarkdownText(tPropertyName),
+        address: sanitizeInlineMarkdownText(tAddress),
+        propertyType: sanitizeInlineMarkdownText(tPropertyType),
+        numberOfUnits: parseNumericValue(tUnits),
+        yearBuilt: parseNumericValue(tYearBuilt),
+        occupancy: parseNumericValue(tOccupancy),
+      };
+    }
+  }
+
+  // 2. Fallback to extracting from text content
+  const content = propertyInformationSection.content || "";
   if (!content) {
     return {};
   }

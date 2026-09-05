@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { FiCheck, FiEdit, FiUpload, FiX } from "react-icons/fi";
+import { FiCheck, FiEdit, FiUpload, FiX, FiFileText } from "react-icons/fi";
+import { BsFileEarmarkSpreadsheet } from "react-icons/bs";
 import { toast } from "sonner";
 import SectionMarkdown from "./SectionMarkdown";
 import ExcelTableView from "./ExcelTableView";
@@ -37,6 +38,9 @@ const DynamicSectionEditorCard = ({
   const [editedTableData, setEditedTableData] =
     useState<MemorandumTableData | null>(section.table_data || null);
 
+  // Default view mode: "table" if table_data exists or is convertible, otherwise "document"
+  const [viewMode, setViewMode] = useState<"table" | "document">("table");
+
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,9 +65,20 @@ const DynamicSectionEditorCard = ({
     ? parseKeyValueContentToTable(contentToRender)
     : null;
 
+  const activeTable = hasExplicitTable
+    ? editedTableData
+    : keyValueTable;
+
+  const hasTableCapability = Boolean(activeTable);
+  const hasProseContent = Boolean(contentToRender && contentToRender.trim().length > 0);
+  const canToggleView = hasTableCapability && hasProseContent;
+
   useEffect(() => {
     setEditedContent(section.content || "");
     setEditedTableData(section.table_data || null);
+    if (section.table_data?.columns?.length) {
+      setViewMode("table");
+    }
   }, [section.content, section.table_data, section.id]);
 
   const handleSave = async () => {
@@ -123,14 +138,47 @@ const DynamicSectionEditorCard = ({
       }`}
     >
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <h3 className="text-lg md:text-xl font-semibold text-gray-900">
             {sectionTitle}
           </h3>
-          {hasExplicitTable ? (
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
-              Excel Table
+          {hasTableCapability ? (
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+              <BsFileEarmarkSpreadsheet size={11} />
+              Excel Table Enabled
             </span>
+          ) : null}
+
+          {/* View Mode Switcher (When both Table and Document Prose are available) */}
+          {canToggleView ? (
+            <div className="flex items-center rounded-lg bg-slate-100 p-0.5 border border-slate-200 text-xs ml-0 sm:ml-2">
+              <button
+                type="button"
+                onClick={() => setViewMode("table")}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-all ${
+                  viewMode === "table"
+                    ? "bg-white text-emerald-800 shadow-xs border border-slate-200 font-semibold"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+                title="View as Excel Spreadsheet"
+              >
+                <BsFileEarmarkSpreadsheet className="text-emerald-700" size={12} />
+                <span>Spreadsheet</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewMode("document")}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md font-medium transition-all ${
+                  viewMode === "document"
+                    ? "bg-white text-slate-900 shadow-xs border border-slate-200 font-semibold"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+                title="View as Continuous Document Narrative"
+              >
+                <FiFileText className="text-slate-600" size={12} />
+                <span>Narrative</span>
+              </button>
+            </div>
           ) : null}
         </div>
 
@@ -142,7 +190,7 @@ const DynamicSectionEditorCard = ({
               type="button"
             >
               <FiEdit className="w-4 h-4" />
-              {hasExplicitTable ? "Edit Table / Section" : "Edit"}
+              {hasTableCapability ? "Edit Table" : "Edit"}
             </button>
           ) : (
             <>
@@ -169,34 +217,23 @@ const DynamicSectionEditorCard = ({
         </div>
       </div>
 
-      {/* ====== Structured Excel Table Section ====== */}
-      {hasExplicitTable && editedTableData ? (
+      {/* ====== Primary Content: Excel Table or Document Narrative ====== */}
+      {viewMode === "table" && activeTable ? (
         <div className="mb-4">
           <ExcelTableView
-            tableData={editedTableData}
+            tableData={activeTable}
             title={sectionTitle}
             subtitle={
-              section.section_key ? `Key: ${section.section_key}` : undefined
+              section.section_key ? `Section: ${section.section_key}` : undefined
             }
             editable={isEditing}
-            onTableDataChange={(newTable) => setEditedTableData(newTable)}
+            onTableDataChange={(newTable) => {
+              setEditedTableData(newTable);
+            }}
           />
         </div>
-      ) : null}
-
-      {/* ====== Pure Key-Value Spec Sheet (if not an explicit table) ====== */}
-      {!hasExplicitTable && keyValueTable && !isEditing ? (
-        <div className="mb-4">
-          <ExcelTableView
-            tableData={keyValueTable}
-            title={`${sectionTitle} (Specs)`}
-            subtitle="Property Attributes"
-          />
-        </div>
-      ) : null}
-
-      {/* ====== Prose / Markdown Content ====== */}
-      {contentToRender && (!keyValueTable || isEditing) ? (
+      ) : (
+        /* Narrative / Document Mode */
         <div className="mt-3">
           {!isEditing ? (
             <SectionMarkdown
@@ -206,7 +243,7 @@ const DynamicSectionEditorCard = ({
           ) : (
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1.5 uppercase tracking-wide">
-                Text / Markdown Content
+                Section Narrative Content (Markdown)
               </label>
               <textarea
                 value={editedContent}
@@ -217,7 +254,7 @@ const DynamicSectionEditorCard = ({
             </div>
           )}
         </div>
-      ) : null}
+      )}
 
       {/* ====== Section Image ====== */}
       <div className="mt-6 pt-4 border-t border-slate-100">
