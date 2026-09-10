@@ -69,6 +69,8 @@ const MemorandumDetailPage = () => {
       try {
         setLoading(true);
         let response;
+
+        
         try {
           response = await api.get(`/api/v1/memorandums/${memorandumId}/`);
         } catch (err: any) {
@@ -79,6 +81,48 @@ const MemorandumDetailPage = () => {
           }
         }
         const fetchedData = response.data?.data ?? response.data;
+
+        // Enrich with property images/thumbnail if missing from memorandum detail
+        if (
+          fetchedData?.property &&
+          (!fetchedData.thumbnail_url ||
+            !Array.isArray(fetchedData.property_images) ||
+            fetchedData.property_images.length === 0)
+        ) {
+          try {
+            const propId =
+              typeof fetchedData.property === "object"
+                ? fetchedData.property.id
+                : fetchedData.property;
+            const propRes = await api
+              .get(`/api/v1/properties/${propId}/`)
+              .catch(() => api.get(`/api/properties/${propId}/`))
+              .catch(() => null);
+            const propData = propRes?.data?.data ?? propRes?.data;
+            if (propData) {
+              if (!fetchedData.thumbnail_url && propData.thumbnail_url) {
+                fetchedData.thumbnail_url = propData.thumbnail_url;
+              }
+              if (
+                (!fetchedData.property_images ||
+                  fetchedData.property_images.length === 0) &&
+                Array.isArray(propData.property_images) &&
+                propData.property_images.length > 0
+              ) {
+                fetchedData.property_images = propData.property_images;
+              } else if (
+                (!fetchedData.property_images ||
+                  fetchedData.property_images.length === 0) &&
+                propData.thumbnail_url
+              ) {
+                fetchedData.property_images = [propData.thumbnail_url];
+              }
+            }
+          } catch {
+            // Ignore error
+          }
+        }
+
         setData(fetchedData);
       } catch (error) {
         console.error("Error fetching memorandum details:", error);

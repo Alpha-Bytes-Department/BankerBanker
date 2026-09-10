@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Button from "./Button";
 import { IoLocationOutline } from "react-icons/io5";
 import {
@@ -28,6 +29,13 @@ const normalizeImageUrl = (url?: string | null) => {
     trimmed.startsWith("blob:") ||
     trimmed.startsWith("/")
   ) {
+    if (
+      typeof window !== "undefined" &&
+      window.location.protocol === "https:" &&
+      trimmed.startsWith("http://")
+    ) {
+      return trimmed.replace(/^http:\/\//, "https://");
+    }
     return trimmed;
   }
 
@@ -93,10 +101,17 @@ const sizeStyles = {
 // Pill colour per property type
 const typePillColor: Record<string, string> = {
   Multifamily: "bg-blue-100 text-blue-700",
+  multifamily: "bg-blue-100 text-blue-700",
   Retail: "bg-orange-100 text-orange-700",
+  retail: "bg-orange-100 text-orange-700",
   Industrial: "bg-yellow-100 text-yellow-700",
+  industrial: "bg-yellow-100 text-yellow-700",
   Office: "bg-purple-100 text-purple-700",
+  office: "bg-purple-100 text-purple-700",
   Mixed: "bg-teal-100 text-teal-700",
+  mixed: "bg-teal-100 text-teal-700",
+  Other: "bg-gray-100 text-gray-700",
+  other: "bg-gray-100 text-gray-700",
 };
 
 const PropertyCard = ({
@@ -118,6 +133,13 @@ const PropertyCard = ({
     data.image;
 
   const propertyImageSrc = normalizeImageUrl(rawImage);
+  const [imageError, setImageError] = useState(false);
+
+  // Reset error state if image src changes
+  useEffect(() => {
+    setImageError(false);
+  }, [propertyImageSrc]);
+
   const hasPrimaryLink = Boolean(data.link);
 
   const pillColor =
@@ -147,11 +169,12 @@ const PropertyCard = ({
       {/* ── Image ── */}
       <div className="w-full h-48 relative">
         <Image
-          src={propertyImageSrc}
+          src={imageError ? FALLBACK_IMAGE : propertyImageSrc}
           alt={data.title || "Property"}
           fill
           className="rounded-t-lg object-cover object-center"
           unoptimized
+          onError={() => setImageError(true)}
         />
         {/* Property type badge overlaid on image */}
         <span
