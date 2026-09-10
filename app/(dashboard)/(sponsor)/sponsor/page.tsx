@@ -1,20 +1,31 @@
 "use client";
+
+import { useEffect, useState, useMemo, useCallback } from "react";
+import Link from "next/link";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { FaPlus } from "react-icons/fa6";
+import { LuFileText, LuDollarSign, LuArrowUpRight } from "react-icons/lu";
+
 import PropertyCard from "@/components/PropertyCard";
 import StatusCard from "@/components/StatusCard";
-import { FaPlus } from "react-icons/fa6";
 import GMAP from "../../_components/GMAP";
-import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import ConfirmActionModal from "@/components/ConfirmActionModal";
 import api from "@/Provider/api";
+import { toast } from "sonner";
+
+import {
+  fetchSponsorDashboard,
+  fetchLoanRequests,
+  deleteLoanRequest,
+  type SponsorLoanRequestItem,
+  type SponsorDashboardData,
+} from "../_api/loan-requests-api";
+import CreateLoanRequestModal from "../_components/CreateLoanRequestModal";
+import UpdateLoanRequestModal from "../_components/UpdateLoanRequestModal";
+import SponsorLoanRequestCard from "../_components/SponsorLoanRequestCard";
+import LoanRequestQuotesModal from "../_components/LoanRequestQuotesModal";
 
 // ── Types ────────────────────────────────────────────────────────────────────
-
-interface SponsorStats {
-  total_properties: number;
-  quotes_received: number;
-  documents_count: number;
-  portfolio_value: number;
-}
 
 interface Property {
   id: number;
@@ -89,7 +100,7 @@ const pickPreferredMemorandum = (
   return candidateStamp > currentStamp ? candidate : current;
 };
 
-// ── Skeleton helpers ─────────────────────────────────────────────────────────
+// ── Skeletons ────────────────────────────────────────────────────────────────
 
 const StatsSkeleton = () => (
   <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
@@ -107,44 +118,44 @@ const PropertySkeleton = () => (
   </div>
 );
 
-// ── Page ─────────────────────────────────────────────────────────────────────
+// ── Page Component ───────────────────────────────────────────────────────────
 
 const Page = () => {
-  const [stats, setStats] = useState<SponsorStats | null>(null);
+  const queryClient = useQueryClient();
+
+  // 1. Fetch Sponsor Dashboard Data (Postman: GET /api/v1/loans/dashboard/sponsor/)
+  const { data: dashboardData, isLoading: statsLoading } =
+    useQuery<SponsorDashboardData>({
+      queryKey: ["sponsor-dashboard"],
+      queryFn: fetchSponsorDashboard,
+      staleTime: 60 * 1000,
+    });
+
+  // 2. Fetch All Loan Requests (Postman: GET /api/v1/loans/requests/)
+  const { data: loanRequests = [], isLoading: requestsLoading } =
+    useQuery<SponsorLoanRequestItem[]>({
+      queryKey: ["loan-requests"],
+      queryFn: fetchLoanRequests,
+      staleTime: 60 * 1000,
+    });
+
+  // 3. State for Properties, Markers & Modals
   const [properties, setProperties] = useState<PropertyCardData[]>([]);
   const [markers, setMarkers] = useState<Marker[]>([]);
-  const [statsLoading, setStatsLoading] = useState(true);
   const [propertiesLoading, setPropertiesLoading] = useState(true);
 
-  // Fetch sponsor dashboard stats
-  const fetchStats = useCallback(async () => {
-    setStatsLoading(true);
-    try {
-      let res;
-      try {
-        res = await api.get("/api/v1/loans/dashboard/sponsor/");
-      } catch {
-        try {
-          res = await api.get("/api/loans/dashboard/sponsor/");
-        } catch {
-          res = await api.get("/api/dashboard/sponsor/");
-        }
-      }
-
-      const raw = res.data?.data ?? res.data ?? {};
-      const headerStats = raw.header_stats || raw;
-      setStats({
-        total_properties: Number(headerStats.total_properties) || 0,
-        quotes_received: Number(headerStats.quotes_received) || 0,
-        documents_count: Number(headerStats.documents_count) || 0,
-        portfolio_value: Number(headerStats.portfolio_value) || 0,
-      });
-    } catch (err) {
-      console.error("Failed to fetch sponsor dashboard stats", err);
-    } finally {
-      setStatsLoading(false);
-    }
-  }, []);
+  // Loan Request Modals state
+  const [isCreateLoanModalOpen, setIsCreateLoanModalOpen] = useState(false);
+  const [selectedPropertyForLoan, setSelectedPropertyForLoan] = useState<
+    number | null
+  >(null);
+  const [editingLoanRequest, setEditingLoanRequest] =
+    useState<SponsorLoanRequestItem | null>(null);
+  const [deletingLoanRequest, setDeletingLoanRequest] =
+    useState<SponsorLoanRequestItem | null>(null);
+  const [selectedQuotesRequest, setSelectedQuotesRequest] =
+    useState<SponsorLoanRequestItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Fetch properties + map markers + memorandums
   const fetchProperties = useCallback(async () => {
@@ -220,7 +231,7 @@ const Page = () => {
 
       setProperties(enrichedProperties);
 
-      // Build markers: prefer data from /api/v1/properties/map/ if available, otherwise from properties
+      // Build markers
       const mapItems = mapRes?.data?.data ?? mapRes?.data ?? [];
       if (Array.isArray(mapItems) && mapItems.length > 0) {
         const derivedMapMarkers: Marker[] = mapItems
@@ -259,72 +270,224 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    fetchStats();
     fetchProperties();
-  }, [fetchStats, fetchProperties]);
+  }, [fetchProperties]);
+
+  // Execute loan request deletion (Postman: DELETE /api/v1/loans/requests/{{id}}/)
+  const confirmDeleteLoanRequest = async () => {
+    if (!deletingLoanRequest) return;
+
+    try {
+      setIsDeleting(true);
+      await deleteLoanRequest(deletingLoanRequest.id);
+
+      // Invalidate queries to refresh dashboard and requests
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["loan-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["sponsor-dashboard"] }),
+      ]);
+
+      toast.success("Loan request deleted successfully.");
+      setDeletingLoanRequest(null);
+    } catch (error) {
+      console.error("Failed to delete loan request", error);
+      toast.error("Failed to delete loan request. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const visibleProperties = properties.slice(0, 4);
   const hasMoreProperties = properties.length > 4;
 
+  const headerStats = dashboardData?.header_stats || {
+    total_properties: properties.length,
+    quotes_received: 0,
+    documents_count: 0,
+    portfolio_value: 0,
+  };
+
+  const propertyOptions = useMemo(
+    () =>
+      properties.map((p) => ({
+        id: p.id,
+        property_name: p.property_name,
+        property_address: p.property_address,
+        property_type: p.property_type,
+        thumbnail_url: p.thumbnail_url,
+      })),
+    [properties],
+  );
+
   return (
     <div>
-      <h1 className="text-xl lg:text-2xl my-2">Sponsor Dashboard</h1>
-      <p className="text-[#4A5565] my-2">
-        Manage your commercial real estate portfolio and generate professional
-        offering memorandums
-      </p>
+      {/* ── Header row with Action ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2">
+        <div>
+          <h1 className="text-xl lg:text-2xl font-bold text-gray-900">
+            Sponsor Dashboard
+          </h1>
+          <p className="text-[#4A5565] text-sm mt-1">
+            Manage your commercial real estate portfolio, request loans, and track lender quotes.
+          </p>
+        </div>
 
-      {/* ── Status Cards ── */}
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedPropertyForLoan(null);
+              setIsCreateLoanModalOpen(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors cursor-pointer"
+          >
+            <FaPlus className="text-xs" />
+            <span>Request Loan</span>
+          </button>
+          <Link
+            href="/processing"
+            className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <FaPlus className="text-xs" />
+            <span>Add Property</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* ── Status Cards (from /api/v1/loans/dashboard/sponsor/) ── */}
       {statsLoading ? (
         <StatsSkeleton />
       ) : (
-        <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-10">
+        <div className="flex flex-wrap items-center justify-center xl:justify-start gap-5 lg:gap-7 xl:gap-10 my-8">
           <StatusCard
             type="Properties"
-            data={{ value: stats?.total_properties ?? 0 }}
+            data={{ value: headerStats.total_properties ?? properties.length }}
           />
           <StatusCard
             type="quotes"
-            data={{ value: stats?.quotes_received ?? 0 }}
+            data={{ value: headerStats.quotes_received ?? 0 }}
           />
           <StatusCard
             type="documents"
-            data={{ value: stats?.documents_count ?? 0 }}
+            data={{ value: headerStats.documents_count ?? 0 }}
           />
           <StatusCard
             type="value"
-            data={{ value: stats?.portfolio_value ?? 0 }}
+            data={{ value: headerStats.portfolio_value ?? 0 }}
           />
         </div>
       )}
 
+      {/* ── Active Loan Requests Section ── */}
+      <div className="mb-10">
+        <div className="rounded-xl bg-white p-4 lg:p-6 border border-gray-200 shadow-xs">
+          <div className="flex items-center justify-between gap-2 pb-4 mb-4 border-b border-gray-100">
+            <div>
+              <div className="flex items-center gap-2.5">
+                <h2 className="text-lg font-bold text-gray-900">
+                  Active Loan Requests
+                </h2>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
+                  {loanRequests.length}
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 mt-0.5">
+                Commercial loan requests submitted to lenders for quotes
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedPropertyForLoan(null);
+                setIsCreateLoanModalOpen(true);
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-semibold border border-blue-200 transition-colors cursor-pointer"
+            >
+              <FaPlus className="text-[10px]" />
+              <span>New Request</span>
+            </button>
+          </div>
+
+          {requestsLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 py-4">
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-64 rounded-2xl bg-gray-100 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : loanRequests.length === 0 ? (
+            <div className="text-center py-12 px-4 border border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+              <div className="w-12 h-12 mx-auto rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl mb-3">
+                <LuDollarSign />
+              </div>
+              <h3 className="text-base font-bold text-gray-900 mb-1">
+                No active loan requests yet
+              </h3>
+              <p className="text-sm text-gray-500 max-w-md mx-auto mb-4">
+                Submit terms for any of your properties to receive competitive loan quotes from our lender network.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedPropertyForLoan(null);
+                  setIsCreateLoanModalOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 shadow-sm transition-colors cursor-pointer"
+              >
+                <FaPlus className="text-xs" />
+                <span>Create Loan Request</span>
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
+              {loanRequests.map((req) => (
+                <SponsorLoanRequestCard
+                  key={req.id}
+                  request={req}
+                  onEdit={(item) => setEditingLoanRequest(item)}
+                  onDelete={(item) => setDeletingLoanRequest(item)}
+                  onViewQuotes={(item) => setSelectedQuotesRequest(item)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* ── Google Map ── */}
-      <div className="my-5">
+      <div className="my-6">
         <GMAP markersList={markers} />
       </div>
 
       {/* ── Property Portfolio ── */}
-      <div className="flex flex-col-reverse xl:flex-row gap-5">
-        <div className="rounded-xl bg-white p-3 lg:p-5 border border-[#0000001A] flex-1">
-          <div className="flex items-center gap-2 lg:justify-between">
-            <div className="grow">
-              <h1 className="text-lg">Property Portfolio</h1>
-              <p className="text-[#6A7282]">Manage and track your properties</p>
+      <div className="mb-10">
+        <div className="rounded-xl bg-white p-4 lg:p-6 border border-[#0000001A]">
+          <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">
+                Property Portfolio
+              </h2>
+              <p className="text-sm text-[#6A7282]">
+                Manage, view documents, and request loans for your properties
+              </p>
             </div>
             <Link
               href="/processing"
-              className="flex gap-2 button-primary rounded-full py-2 px-2 md:px-3 min-w-24 cursor-pointer justify-center items-center"
+              className="flex gap-2 button-primary rounded-full py-2 px-3 min-w-24 cursor-pointer justify-center items-center"
             >
-              <FaPlus className="hidden md:flex" />
-              <p className="text-xs sm:text-sm lg:text-base">Add property</p>
+              <FaPlus className="hidden md:flex text-xs" />
+              <p className="text-xs sm:text-sm font-medium">Add Property</p>
             </Link>
           </div>
 
-          <div className="my-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
+          <div className="my-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5">
             {propertiesLoading ? (
               <PropertySkeleton />
             ) : properties.length === 0 ? (
-              <div className="text-center py-16 text-[#6A7282]">
+              <div className="col-span-full text-center py-16 text-[#6A7282]">
                 <p className="text-lg mb-2">No properties yet</p>
                 <p className="text-sm">
                   Add your first property to get started.
@@ -332,23 +495,141 @@ const Page = () => {
               </div>
             ) : (
               visibleProperties.map((property) => (
-                <PropertyCard key={property.id} data={property} />
+                <PropertyCard
+                  key={property.id}
+                  data={property}
+                  onRequestLoan={() => {
+                    setSelectedPropertyForLoan(property.id);
+                    setIsCreateLoanModalOpen(true);
+                  }}
+                />
               ))
             )}
           </div>
 
           {!propertiesLoading && hasMoreProperties ? (
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-2">
               <Link
                 href="/memorandum"
-                className="button-outline rounded-full px-5 py-2 text-sm font-medium"
+                className="button-outline rounded-full px-5 py-2 text-sm font-medium hover:bg-gray-50"
               >
-                Show More
+                Show More Properties
               </Link>
             </div>
           ) : null}
         </div>
       </div>
+
+      {/* ── Recent Quotes Received (from /api/v1/loans/dashboard/sponsor/ quote_card_view) ── */}
+      {dashboardData?.quote_card_view &&
+        dashboardData.quote_card_view.length > 0 && (
+          <div className="mb-10">
+            <div className="rounded-xl bg-white p-4 lg:p-6 border border-gray-200">
+              <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100">
+                <div>
+                  <h2 className="text-lg font-bold text-gray-900">
+                    Recent Lender Quotes Received
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    Review and accept quotes from competitive commercial lenders
+                  </p>
+                </div>
+                <Link
+                  href="/loan"
+                  className="flex items-center gap-1 text-sm font-semibold text-blue-600 hover:text-blue-700"
+                >
+                  <span>View All Quotes ({dashboardData.quote_card_view.length})</span>
+                  <LuArrowUpRight className="text-base" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {dashboardData.quote_card_view.slice(0, 3).map((quote: any) => (
+                  <div
+                    key={quote.id}
+                    className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-sm transition-all flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="font-bold text-gray-900 text-sm">
+                          {quote.lender_name || "Commercial Lender"}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-green-100 text-green-700">
+                          {quote.status || "Active Quote"}
+                        </span>
+                      </div>
+                      <div className="text-lg font-extrabold text-blue-600 mb-1">
+                        ${Number(quote.loan_amount || 0).toLocaleString()}
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-gray-600">
+                        <span>Rate: <b>{quote.interest_rate}%</b></span>
+                        <span>Term: <b>{quote.term} mo</b></span>
+                        <span>LTV: <b>{quote.max_as_is_ltv}%</b></span>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-3 border-t border-gray-100 flex justify-end">
+                      <Link
+                        href={`/loan/${quote.id}`}
+                        className="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"
+                      >
+                        <span>Inspect Quote</span>
+                        <LuArrowUpRight className="text-xs" />
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+      {/* ── Create Loan Request Modal ── */}
+      <CreateLoanRequestModal
+        open={isCreateLoanModalOpen}
+        onOpenChange={setIsCreateLoanModalOpen}
+        properties={propertyOptions}
+        preselectedPropertyId={selectedPropertyForLoan}
+      />
+
+      {/* ── Update Loan Request Modal ── */}
+      <UpdateLoanRequestModal
+        open={Boolean(editingLoanRequest)}
+        onOpenChange={(open) => {
+          if (!open) setEditingLoanRequest(null);
+        }}
+        loanRequest={editingLoanRequest}
+      />
+
+      {/* ── Delete Confirmation Modal ── */}
+      <ConfirmActionModal
+        open={Boolean(deletingLoanRequest)}
+        onOpenChange={(open) => {
+          if (!open && !isDeleting) setDeletingLoanRequest(null);
+        }}
+        title="Delete loan request?"
+        description={
+          deletingLoanRequest
+            ? `This will permanently delete the loan request of $${Number(
+                deletingLoanRequest.requested_amount || 0,
+              ).toLocaleString()} for "${deletingLoanRequest.property_name}".`
+            : "This will permanently remove the selected loan request."
+        }
+        confirmText="Delete Request"
+        destructive
+        isLoading={isDeleting}
+        onConfirm={confirmDeleteLoanRequest}
+      />
+
+      {/* ── Loan Request Quotes Modal ── */}
+      <LoanRequestQuotesModal
+        open={Boolean(selectedQuotesRequest)}
+        onOpenChange={(open) => {
+          if (!open) setSelectedQuotesRequest(null);
+        }}
+        loanRequestId={selectedQuotesRequest?.id ?? null}
+        loanRequest={selectedQuotesRequest}
+      />
     </div>
   );
 };

@@ -4,8 +4,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
+import { createLoanRequest } from "../../../_api/loan-requests-api";
 
 // Components
 import MemorandumHeader from "./MemorandumHeader";
@@ -45,6 +47,7 @@ type LoanRequestForm = {
 const MemorandumDetailPage = () => {
   const params = useParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const id = params.id;
   const memorandumId = Array.isArray(id) ? id[0] : id;
 
@@ -611,20 +614,28 @@ const MemorandumDetailPage = () => {
       setIsSubmittingLoan(true);
       setLoanSubmitError("");
 
-      await api.post("/api/loans/requests/", {
+      await createLoanRequest({
         property: propertyId,
         requested_amount: requestedAmountNumber.toFixed(2),
         loan_term: loanTermNumber,
         ltv: ltvNumber.toFixed(2),
       });
 
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["loan-requests"] }),
+        queryClient.invalidateQueries({ queryKey: ["sponsor-dashboard"] }),
+      ]);
+
       toast.success("Loan request created successfully.");
       setIsLoanModalOpen(false);
     } catch (error: any) {
       const apiMessage =
         error?.response?.data?.message ||
+        error?.response?.data?.error ||
         "Failed to create loan request. Please review the fields and try again.";
-      setLoanSubmitError(apiMessage);
+      setLoanSubmitError(
+        typeof apiMessage === "string" ? apiMessage : JSON.stringify(apiMessage),
+      );
     } finally {
       setIsSubmittingLoan(false);
     }

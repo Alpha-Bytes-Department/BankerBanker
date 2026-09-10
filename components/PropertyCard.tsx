@@ -91,6 +91,7 @@ type PropertyCardProps = {
   secondaryButtonText?: string;
   secondaryButtonClassName?: string;
   onSecondaryAction?: () => void;
+  onRequestLoan?: () => void;
 };
 
 const sizeStyles = {
@@ -120,6 +121,7 @@ const PropertyCard = ({
   secondaryButtonText = "View Quotes",
   secondaryButtonClassName = "button-outline",
   onSecondaryAction,
+  onRequestLoan,
 }: PropertyCardProps) => {
   const router = useRouter();
 
@@ -310,16 +312,27 @@ const PropertyCard = ({
         )}
 
         {/* ── Actions ── */}
-        <div className="flex justify-between items-center">
-          <Button
-            text={hasPrimaryLink ? "View Document" : "No Memorandum"}
-            size="medium"
-            isDisabled={!hasPrimaryLink}
-            onClick={() => {
-              if (!data.link) return;
-              router.push(data.link);
-            }}
-          />
+        <div className="flex flex-col sm:flex-row gap-2 justify-between items-stretch sm:items-center">
+          <div className="flex gap-2 items-center flex-wrap">
+            <Button
+              text={hasPrimaryLink ? "View Document" : "No Memorandum"}
+              size="medium"
+              isDisabled={!hasPrimaryLink}
+              onClick={() => {
+                if (!data.link) return;
+                router.push(data.link);
+              }}
+            />
+            {onRequestLoan && (
+              <button
+                type="button"
+                onClick={onRequestLoan}
+                className="px-3 py-2 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-semibold border border-blue-200 transition-colors whitespace-nowrap cursor-pointer"
+              >
+                Request Loan
+              </button>
+            )}
+          </div>
           <Button
             size="medium"
             text={secondaryButtonText}
