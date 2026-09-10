@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/Provider/AuthProvider";
+import QueryProvider from "@/Provider/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -22,10 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
-        <AuthProvider>
-          {children}
-          <Toaster />
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
