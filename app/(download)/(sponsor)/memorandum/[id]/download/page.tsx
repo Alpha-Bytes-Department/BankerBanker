@@ -26,6 +26,8 @@ type MemorandumData = {
   property_name: string;
   property_address?: string;
   property_image_url?: string;
+  thumbnail_url?: string;
+  property_images?: string[];
   property_type?: string;
   number_of_units?: number;
   year_built?: number;
@@ -202,7 +204,14 @@ const DownloadPage = () => {
           offeringDate={new Date(
             data.created_at || Date.now(),
           ).toLocaleDateString()}
-          heroImage={data.property_image_url || ""}
+          heroImage={
+            (Array.isArray(data.property_images) && data.property_images.length > 0
+              ? data.property_images[0]
+              : null) ||
+            data.thumbnail_url ||
+            data.property_image_url ||
+            ""
+          }
         />
 
         <PDFTableOfContents items={tableOfContents} />

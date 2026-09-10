@@ -232,9 +232,16 @@ const Page = () => {
 
     setLoading(true);
     try {
-      const response = await api.get<ApiEnvelope<LoanRequestDetail>>(
-        `/api/loans/requests/${requestId}/`,
-      );
+      let response;
+      try {
+        response = await api.get<ApiEnvelope<LoanRequestDetail>>(
+          `/api/v1/loans/requests/${requestId}/`,
+        );
+      } catch {
+        response = await api.get<ApiEnvelope<LoanRequestDetail>>(
+          `/api/loans/requests/${requestId}/`,
+        );
+      }
       const payload = response.data?.data ?? null;
       setDetail(payload);
       setImageSrc(resolveImageUrl(payload?.property_image_url));

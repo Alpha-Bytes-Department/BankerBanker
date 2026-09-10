@@ -273,9 +273,16 @@ const PropertyMap: React.FC = () => {
       if (!property.loanRequestId) return;
 
       try {
-        const response = await api.get<ApiEnvelope<LoanRequestDetailApi>>(
-          `/api/loans/requests/${property.loanRequestId}/`,
-        );
+        let response;
+        try {
+          response = await api.get<ApiEnvelope<LoanRequestDetailApi>>(
+            `/api/v1/loans/requests/${property.loanRequestId}/`,
+          );
+        } catch {
+          response = await api.get<ApiEnvelope<LoanRequestDetailApi>>(
+            `/api/loans/requests/${property.loanRequestId}/`,
+          );
+        }
 
         const detail = response.data?.data;
         if (!detail) return;

@@ -126,7 +126,10 @@ api.interceptors.response.use(
       try {
         const { refreshToken } = getTokensFromLocalStorage();
         if (!refreshToken) {
-          window.location.replace("/signin");
+          executingRoutes("");
+          if (typeof window !== "undefined" && !window.location.pathname.startsWith("/signin")) {
+            window.location.replace("/signin");
+          }
           return Promise.reject("No refresh token");
         }
 
@@ -149,7 +152,10 @@ api.interceptors.response.use(
         executingRoutes(newToken);
         return api(originalRequest);
       } catch (refreshError) {
-        window.location.replace("/signin");
+        executingRoutes("");
+        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/signin")) {
+          window.location.replace("/signin");
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

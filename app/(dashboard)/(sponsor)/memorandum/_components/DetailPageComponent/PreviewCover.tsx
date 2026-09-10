@@ -19,15 +19,19 @@ const PreviewCover: React.FC<PreviewCoverProps> = ({
   location,
   stats,
   offeringDate,
+  coverImage,
 }) => {
+  const bgImage =
+    coverImage ||
+    "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80";
+
   return (
     <div className="relative rounded-sm p-6 md:p-12 mb-6 min-h-[600px] md:min-h-[700px] flex flex-col justify-between lg:h-auto">
       {/* ====== Background Image ====== */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80")',
+          backgroundImage: `url("${bgImage}")`,
         }}
       ></div>
 

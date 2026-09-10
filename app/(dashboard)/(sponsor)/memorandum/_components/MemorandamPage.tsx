@@ -13,7 +13,9 @@ interface Memorandum {
   title: string;
   property: number;
   property_name: string;
-  property_image_url: string;
+  property_image_url?: string;
+  thumbnail_url?: string;
+  property_images?: string[];
   status: string;
   mode: string;
   created_at: string;
@@ -127,7 +129,15 @@ const MemorandamPage = () => {
         title: item.title || "Offering Memorandum",
         property_address: item.property_name || "N/A",
         property_type: item.status,
-        property_image_url: item.property_image_url,
+        thumbnail_url: item.thumbnail_url || null,
+        property_image_url:
+          item.thumbnail_url ||
+          (Array.isArray(item.property_images) && item.property_images.length > 0
+            ? item.property_images[0]
+            : null) ||
+          item.property_image_url ||
+          null,
+        property_images: item.property_images || [],
         created_at: item.created_at,
         updated_at: item.updated_at,
         status: item.status,

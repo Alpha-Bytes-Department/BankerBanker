@@ -82,13 +82,25 @@ const Page = () => {
       setRequests(data.loanRequests);
 
       try {
-        const headerResponse = await api.get<
-          ApiEnvelope<LenderDashboardHeaderStats>
-        >("/api/dashboard/lender/");
+        let headerResponse;
+        try {
+          headerResponse = await api.get("/api/v1/loans/dashboard/lender/");
+        } catch {
+          try {
+            headerResponse = await api.get("/api/loans/dashboard/lender/");
+          } catch {
+            headerResponse = await api.get("/api/dashboard/lender/");
+          }
+        }
+
+        const raw = headerResponse.data?.data ?? headerResponse.data ?? {};
+        const stats = raw.header_stats || raw;
 
         setHeaderStats({
-          ...DEFAULT_HEADER_STATS,
-          ...(headerResponse.data?.data || {}),
+          active_requests: Number(stats.active_requests) || 0,
+          quotes_provided: Number(stats.quotes_provided) || 0,
+          pending_review: Number(stats.pending_review) || 0,
+          accepted_quotes: Number(stats.accepted_quotes) || 0,
         });
       } catch (headerError) {
         console.error(

@@ -47,7 +47,12 @@ const Page = () => {
   const loadDashboardData = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get("/api/loans/dashboard/sponsor/");
+      let response;
+      try {
+        response = await api.get("/api/v1/loans/dashboard/sponsor/");
+      } catch {
+        response = await api.get("/api/loans/dashboard/sponsor/");
+      }
       const data = response.data?.data;
 
       setDashboardData({
@@ -78,7 +83,11 @@ const Page = () => {
   const executeAcceptQuote = async (quote: LoanQuote) => {
     try {
       setMutatingQuoteId(quote.id);
-      await api.post(`/api/loans/quotes/${quote.id}/accept/`);
+      try {
+        await api.post(`/api/v1/loans/quotes/${quote.id}/accept/`);
+      } catch {
+        await api.post(`/api/loans/quotes/${quote.id}/accept/`);
+      }
       toast.success("Quote accepted successfully.");
       await loadDashboardData();
     } catch (error) {
@@ -92,7 +101,11 @@ const Page = () => {
   const executeDeclineQuote = async (quote: LoanQuote) => {
     try {
       setMutatingQuoteId(quote.id);
-      await api.post(`/api/loans/quotes/${quote.id}/decline/`);
+      try {
+        await api.post(`/api/v1/loans/quotes/${quote.id}/decline/`);
+      } catch {
+        await api.post(`/api/loans/quotes/${quote.id}/decline/`);
+      }
       toast.success("Quote declined successfully.");
       await loadDashboardData();
     } catch (error) {
@@ -108,7 +121,12 @@ const Page = () => {
       return quote.loan_request;
     }
 
-    const detailResponse = await api.get(`/api/loans/quotes/${quote.id}/`);
+    let detailResponse;
+    try {
+      detailResponse = await api.get(`/api/v1/loans/quotes/${quote.id}/`);
+    } catch {
+      detailResponse = await api.get(`/api/loans/quotes/${quote.id}/`);
+    }
     const derivedRequestId = Number(detailResponse.data?.data?.loan_request);
     return Number.isFinite(derivedRequestId) ? derivedRequestId : null;
   };
@@ -123,7 +141,11 @@ const Page = () => {
         return;
       }
 
-      await api.delete(`/api/loans/requests/${loanRequestId}/`);
+      try {
+        await api.delete(`/api/v1/loans/requests/${loanRequestId}/`);
+      } catch {
+        await api.delete(`/api/loans/requests/${loanRequestId}/`);
+      }
       toast.success("Loan request deleted successfully.");
       await loadDashboardData();
     } catch (error) {

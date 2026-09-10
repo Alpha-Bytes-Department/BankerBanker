@@ -3,6 +3,7 @@
 import React from "react";
 import { MemorandumHeaderProps } from "@/types/memorandum-detail";
 import { FaDownload } from "react-icons/fa6";
+import { Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const MemorandumHeader: React.FC<MemorandumHeaderProps> = ({
@@ -17,6 +18,8 @@ const MemorandumHeader: React.FC<MemorandumHeaderProps> = ({
   isPublishing = false,
   onPublish,
   onExport,
+  onRegenerateAll,
+  isRegeneratingAll = false,
 }) => {
   const router = useRouter();
 
@@ -50,6 +53,19 @@ const MemorandumHeader: React.FC<MemorandumHeaderProps> = ({
         </div>
 
         <div className="ml-0 mt-3 flex items-center gap-2 md:ml-4 md:mt-0">
+          {activeTab === "editor" && onRegenerateAll ? (
+            <button
+              onClick={onRegenerateAll}
+              disabled={isRegeneratingAll}
+              className="px-4 py-2 cursor-pointer flex items-center gap-1.5 bg-indigo-600 text-white rounded-full duration-300 hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm font-medium shadow-xs"
+              type="button"
+              title="Regenerate all AI sections of this memorandum"
+            >
+              <Sparkles className={`w-4 h-4 ${isRegeneratingAll ? "animate-spin" : ""}`} />
+              <span>{isRegeneratingAll ? "Regenerating..." : "Regenerate All AI"}</span>
+            </button>
+          ) : null}
+
           {activeTab === "preview" && canPublish && onPublish ? (
             <button
               onClick={onPublish}

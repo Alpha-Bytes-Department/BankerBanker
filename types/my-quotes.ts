@@ -84,6 +84,8 @@ export interface LenderDashboardLoanRequest {
   occupancy?: string;
   year_built?: number;
   property_image_url?: string | null;
+  thumbnail_url?: string | null;
+  property_images?: string[];
   requested_amount: string;
   loan_term: number;
   ltv: string;
@@ -131,6 +133,8 @@ export interface LoanRequestMinimal {
   occupancy?: string;
   year_built?: number;
   property_image_url?: string | null;
+  thumbnail_url?: string | null;
+  property_images?: string[];
   requested_amount: string;
   loan_term: number;
   ltv: string;
@@ -146,5 +150,7 @@ export interface LenderPropertyMapItem {
   property_type: string;
   latitude: string;
   longitude: string;
-  property_image_url: string | null;
+  property_image_url?: string | null;
+  thumbnail_url?: string | null;
+  property_images?: string[];
 }

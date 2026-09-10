@@ -44,8 +44,9 @@ export default function Notifications() {
       setLoading(true);
       const items = await getNotifications();
       setNotifications(items);
-    } catch (err) {
-      console.error("Failed to fetch notifications", err);
+    } catch (err: any) {
+      console.warn("Failed to fetch notifications:", err?.message || err);
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
@@ -55,8 +56,9 @@ export default function Notifications() {
     try {
       const count = await getUnreadCount();
       setUnreadCount(count);
-    } catch (err) {
-      console.error("Failed to fetch unread count", err);
+    } catch (err: any) {
+      console.warn("Failed to fetch unread count:", err?.message || err);
+      setUnreadCount(0);
     }
   }, []);
 

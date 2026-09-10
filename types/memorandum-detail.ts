@@ -62,6 +62,9 @@ export interface MemorandumDetailData {
   subtitle: string;
   heroImage: string;
   galleryImages: string[];
+  property_images?: string[];
+  thumbnail_url?: string | null;
+  property_image_url?: string | null;
   executiveSummary: string;
   propertyOverview: PropertyOverviewData;
   propertyOverviewContent?: string;
@@ -158,6 +161,8 @@ export interface MemorandumHeaderProps {
   isPublishing?: boolean;
   onPublish?: () => void;
   onExport?: () => void;
+  onRegenerateAll?: () => void;
+  isRegeneratingAll?: boolean;
 }
 
 export interface HeroSectionProps {
@@ -393,6 +398,7 @@ export interface PreviewCoverProps {
   location: string;
   stats: PropertyStats;
   offeringDate: string;
+  coverImage?: string;
 }
 
 export interface TableOfContentsProps {

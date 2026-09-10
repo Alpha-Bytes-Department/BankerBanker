@@ -23,7 +23,9 @@ interface Property {
   property_type: string;
   latitude: string;
   longitude: string;
-  property_image_url: string | null;
+  property_image_url?: string | null;
+  thumbnail_url?: string | null;
+  property_images?: string[];
   created_at: string;
   updated_at: string;
 }
@@ -118,35 +120,67 @@ const Page = () => {
   const fetchStats = useCallback(async () => {
     setStatsLoading(true);
     try {
-      const res = await api.get("/api/dashboard/sponsor/");
-      setStats(res.data?.data ?? null);
+      let res;
+      try {
+        res = await api.get("/api/v1/loans/dashboard/sponsor/");
+      } catch {
+        try {
+          res = await api.get("/api/loans/dashboard/sponsor/");
+        } catch {
+          res = await api.get("/api/dashboard/sponsor/");
+        }
+      }
+
+      const raw = res.data?.data ?? res.data ?? {};
+      const headerStats = raw.header_stats || raw;
+      setStats({
+        total_properties: Number(headerStats.total_properties) || 0,
+        quotes_received: Number(headerStats.quotes_received) || 0,
+        documents_count: Number(headerStats.documents_count) || 0,
+        portfolio_value: Number(headerStats.portfolio_value) || 0,
+      });
     } catch (err) {
-      console.error("Failed to fetch dashboard stats", err);
+      console.error("Failed to fetch sponsor dashboard stats", err);
     } finally {
       setStatsLoading(false);
     }
   }, []);
 
-  // Fetch properties + derive map markers from them
+  // Fetch properties + map markers + memorandums
   const fetchProperties = useCallback(async () => {
     setPropertiesLoading(true);
     try {
-      const [propertyRes, memorandumRes] = await Promise.all([
-        api.get("/api/properties/"),
+      const [propertyRes, mapRes, memorandumRes] = await Promise.all([
+        api
+          .get("/api/v1/properties/")
+          .catch(() => api.get("/api/properties/")),
+        api
+          .get("/api/v1/properties/map/")
+          .catch(() => api.get("/api/properties/map/"))
+          .catch(() => null),
         api
           .get("/api/v1/memorandums/")
-          .catch(() => api.get("/api/memorandums/")),
+          .catch(() => api.get("/api/memorandums/"))
+          .catch(() => null),
       ]);
 
-      const propertyData: Property[] = propertyRes.data?.data ?? [];
+      const propRaw = propertyRes?.data?.data ?? propertyRes?.data;
+      const propertyData: Property[] = Array.isArray(propRaw)
+        ? propRaw
+        : Array.isArray(propRaw?.results)
+          ? propRaw.results
+          : [];
+
       const rawMemorandums =
-        memorandumRes.data?.data ??
-        memorandumRes.data?.results ??
-        memorandumRes.data ??
+        memorandumRes?.data?.data ??
+        memorandumRes?.data?.results ??
+        memorandumRes?.data ??
         [];
       const memorandumData: MemorandumSummary[] = Array.isArray(rawMemorandums)
         ? rawMemorandums
-        : [];
+        : Array.isArray((rawMemorandums as any)?.results)
+          ? (rawMemorandums as any).results
+          : [];
 
       const memorandumByProperty = new Map<number, MemorandumSummary>();
       for (const memorandum of memorandumData) {
@@ -168,6 +202,15 @@ const Page = () => {
             title: property.property_name,
             location: property.property_address,
             status: property.property_type,
+            thumbnail_url: property.thumbnail_url || null,
+            property_image_url:
+              property.thumbnail_url ||
+              (Array.isArray(property.property_images)
+                ? property.property_images[0]
+                : null) ||
+              property.property_image_url ||
+              null,
+            property_images: property.property_images || [],
             link: matchedMemorandum
               ? `/memorandum/${matchedMemorandum.id}`
               : undefined,
@@ -177,20 +220,37 @@ const Page = () => {
 
       setProperties(enrichedProperties);
 
-      // Build markers from property coordinates
-      const derived: Marker[] = enrichedProperties
-        .filter((p) => p.latitude && p.longitude)
-        .map((p) => ({
-          id: p.id,
-          position: {
-            lat: parseFloat(p.latitude),
-            lng: parseFloat(p.longitude),
-          },
-          title: p.property_name,
-          icon: MARKER_ICON,
-          color: "red",
-        }));
-      setMarkers(derived);
+      // Build markers: prefer data from /api/v1/properties/map/ if available, otherwise from properties
+      const mapItems = mapRes?.data?.data ?? mapRes?.data ?? [];
+      if (Array.isArray(mapItems) && mapItems.length > 0) {
+        const derivedMapMarkers: Marker[] = mapItems
+          .filter((p: any) => p.latitude && p.longitude)
+          .map((p: any) => ({
+            id: p.id,
+            position: {
+              lat: parseFloat(p.latitude),
+              lng: parseFloat(p.longitude),
+            },
+            title: p.property_name,
+            icon: MARKER_ICON,
+            color: "red",
+          }));
+        setMarkers(derivedMapMarkers);
+      } else {
+        const derived: Marker[] = enrichedProperties
+          .filter((p) => p.latitude && p.longitude)
+          .map((p) => ({
+            id: p.id,
+            position: {
+              lat: parseFloat(p.latitude),
+              lng: parseFloat(p.longitude),
+            },
+            title: p.property_name,
+            icon: MARKER_ICON,
+            color: "red",
+          }));
+        setMarkers(derived);
+      }
     } catch (err) {
       console.error("Failed to fetch properties", err);
     } finally {

@@ -1,8 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import Image from "next/image";
 import { PropertyMapData } from "@/types/loan-request";
 import { FiMapPin } from "react-icons/fi";
+
+const FALLBACK_PROPERTY_IMAGE = "/images/SponsorDashboard.png";
 
 //========== Property List Component ===========
 
@@ -53,7 +56,7 @@ const PropertyList: React.FC<PropertyListProps> = ({
     <div className="bg-white h-full flex flex-col overflow-hidden">
       {/* ====== List Header ====== */}
       <div className="px-3 md:px-4 py-2 md:py-3 border-b border-gray-200">
-        <h3 className="text-sm md:text-base text-gray-900">
+        <h3 className="text-sm md:text-base text-gray-900 font-semibold">
           All Properties ({properties.length})
         </h3>
       </div>
@@ -67,24 +70,33 @@ const PropertyList: React.FC<PropertyListProps> = ({
             <div
               key={property.id}
               onClick={() => onPropertySelect(property)}
-              className={`px-3 md:px-4 py-2 md:py-3 cursor-pointer transition-colors hover:bg-gray-50 min-w-0 ${
-                isSelected ? "bg-blue-50" : ""
+              className={`px-3 md:px-4 py-3 cursor-pointer transition-all hover:bg-gray-50 min-w-0 ${
+                isSelected ? "bg-blue-50/80 ring-1 ring-blue-500/20" : ""
               }`}
             >
-              <div className="flex items-start gap-2 md:gap-3 min-w-0">
-                {/* ====== Urgency Indicator ====== */}
-                <div className="flex items-center justify-center pt-1">
+              <div className="flex items-start gap-3 min-w-0">
+                {/* ====== Property Thumbnail ====== */}
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border border-gray-200 shrink-0 bg-gray-100 shadow-2xs">
+                  <Image
+                    src={property.propertyImage || FALLBACK_PROPERTY_IMAGE}
+                    alt={property.propertyName}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                  {/* Urgency Indicator Badge */}
                   <div
-                    className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${getMarkerColor(
-                      property.urgencyLevel
+                    className={`absolute top-1 left-1 w-2.5 h-2.5 rounded-full ring-2 ring-white ${getMarkerColor(
+                      property.urgencyLevel,
                     )}`}
+                    title={`Urgency: ${property.urgencyLevel}`}
                   ></div>
                 </div>
 
                 {/* ====== Property Info ====== */}
                 <div className="flex-1 min-w-0">
                   {/* ====== Property Name ====== */}
-                  <h4 className="text-xs md:text-sm text-gray-900 mb-1 truncate">
+                  <h4 className="text-xs md:text-sm font-medium text-gray-900 mb-0.5 truncate">
                     {property.propertyName}
                   </h4>
 

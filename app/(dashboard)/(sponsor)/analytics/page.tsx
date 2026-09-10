@@ -54,8 +54,19 @@ const Page = () => {
       setError(null);
 
       try {
-        const propertyRes = await api.get("/api/properties/");
-        const properties: DocviewProperty[] = propertyRes.data?.data || [];
+        let propertyRes;
+        try {
+          propertyRes = await api.get("/api/v1/properties/");
+        } catch {
+          propertyRes = await api.get("/api/properties/");
+        }
+
+        const rawProps =
+          propertyRes.data?.data ??
+          (Array.isArray(propertyRes.data) ? propertyRes.data : []);
+        const properties: DocviewProperty[] = Array.isArray(rawProps)
+          ? rawProps
+          : [];
 
         if (properties.length === 0) {
           setPropertyGroups([]);
@@ -67,10 +78,54 @@ const Page = () => {
         const fetchedGroups = await Promise.all(
           properties.map(async (property) => {
             try {
-              const docsRes = await api.get(
-                `/api/properties/${property.id}/documents/`,
+              let docsRes;
+              try {
+                docsRes = await api.get(
+                  `/api/v1/properties/${property.id}/files/`,
+                );
+              } catch {
+                try {
+                  docsRes = await api.get(
+                    `/api/properties/${property.id}/files/`,
+                  );
+                } catch {
+                  docsRes = await api.get(
+                    `/api/properties/${property.id}/documents/`,
+                  );
+                }
+              }
+
+              const rawDocs =
+                docsRes?.data?.data ??
+                (Array.isArray(docsRes?.data) ? docsRes.data : []) ??
+                (Array.isArray((property as any).files)
+                  ? (property as any).files
+                  : []);
+
+              const list = Array.isArray(rawDocs)
+                ? rawDocs
+                : Array.isArray((rawDocs as any)?.files)
+                  ? (rawDocs as any).files
+                  : [];
+
+              const documents: DocviewDocument[] = list.map(
+                (item: any, index: number) => ({
+                  id: item.id || index + 1,
+                  file_url:
+                    item.file_url ||
+                    item.file ||
+                    item.url ||
+                    item.document_url ||
+                    item.src ||
+                    "",
+                  uploaded_at:
+                    item.uploaded_at ||
+                    item.created_at ||
+                    new Date().toISOString(),
+                  name: item.name || item.file_name || item.title || undefined,
+                }),
               );
-              const documents: DocviewDocument[] = docsRes.data?.data || [];
+
               return { property, documents };
             } catch (groupError) {
               console.error(

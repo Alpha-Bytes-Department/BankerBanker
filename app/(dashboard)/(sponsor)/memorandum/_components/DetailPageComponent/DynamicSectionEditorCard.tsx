@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { FiCheck, FiEdit, FiUpload, FiX, FiFileText } from "react-icons/fi";
 import { BsFileEarmarkSpreadsheet } from "react-icons/bs";
+import { Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import SectionMarkdown from "./SectionMarkdown";
 import ExcelTableView from "./ExcelTableView";
@@ -26,12 +27,14 @@ type DynamicSectionEditorCardProps = {
     tableData?: MemorandumTableData | null,
   ) => Promise<void>;
   onImageUpload: (sectionId: number, file: File) => Promise<string | void>;
+  onRegenerate?: (sectionId: number, sectionKey?: string) => Promise<void>;
 };
 
 const DynamicSectionEditorCard = ({
   section,
   onSave,
   onImageUpload,
+  onRegenerate,
 }: DynamicSectionEditorCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(section.content || "");
@@ -43,6 +46,7 @@ const DynamicSectionEditorCard = ({
 
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isRegeneratingSection, setIsRegeneratingSection] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const sectionTitle =
@@ -103,6 +107,16 @@ const DynamicSectionEditorCard = ({
     setIsEditing(false);
     setEditedContent(section.content || "");
     setEditedTableData(section.table_data || null);
+  };
+
+  const handleRegenerate = async () => {
+    if (!onRegenerate) return;
+    try {
+      setIsRegeneratingSection(true);
+      await onRegenerate(section.id, section.section_key);
+    } finally {
+      setIsRegeneratingSection(false);
+    }
   };
 
   const handleUploadClick = () => {
@@ -182,11 +196,38 @@ const DynamicSectionEditorCard = ({
           ) : null}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-end">
+          {/* AI Regenerate button if section is regeneratable */}
+          {Boolean(section.is_regeneratable) && onRegenerate ? (
+            <button
+              onClick={handleRegenerate}
+              disabled={isRegeneratingSection || isSaving}
+              className="flex items-center gap-1.5 text-indigo-700 hover:text-indigo-800 text-xs sm:text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-lg hover:bg-indigo-50 border border-indigo-200 transition-colors disabled:opacity-60 shadow-2xs cursor-pointer"
+              type="button"
+              title="Regenerate this section with AI"
+            >
+              <Sparkles
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-indigo-600 ${
+                  isRegeneratingSection ? "animate-spin" : ""
+                }`}
+              />
+              <span>
+                {isRegeneratingSection ? "Regenerating..." : "Regenerate AI"}
+              </span>
+            </button>
+          ) : section.is_regeneratable === false ? (
+            <span
+              className="px-2 py-1 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 border border-slate-200"
+              title="This section is non-regeneratable (fixed/manual)"
+            >
+              Fixed Section
+            </span>
+          ) : null}
+
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
-              className="flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors"
+              className="flex items-center gap-1.5 text-emerald-700 hover:text-emerald-800 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors cursor-pointer"
               type="button"
             >
               <FiEdit className="w-4 h-4" />
@@ -197,7 +238,7 @@ const DynamicSectionEditorCard = ({
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-1 bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-60 shadow-xs"
+                className="flex items-center gap-1 bg-emerald-600 text-white px-3.5 py-1.5 rounded-lg text-sm font-medium hover:bg-emerald-700 disabled:opacity-60 shadow-xs cursor-pointer"
                 type="button"
               >
                 <FiCheck className="w-4 h-4" />
@@ -206,7 +247,7 @@ const DynamicSectionEditorCard = ({
               <button
                 onClick={handleCancel}
                 disabled={isSaving}
-                className="flex items-center gap-1 text-gray-600 hover:text-gray-700 text-sm px-2.5 py-1.5 disabled:opacity-60"
+                className="flex items-center gap-1 text-gray-600 hover:text-gray-700 text-sm px-2.5 py-1.5 disabled:opacity-60 cursor-pointer"
                 type="button"
               >
                 <FiX className="w-4 h-4" />

@@ -2,6 +2,9 @@ export interface DocviewDocument {
   id: number;
   file_url: string;
   uploaded_at: string;
+  name?: string;
+  file_name?: string;
+  file?: string;
 }
 
 export interface DocviewProperty {

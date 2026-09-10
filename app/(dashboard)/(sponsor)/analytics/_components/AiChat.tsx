@@ -61,7 +61,12 @@ const AiChat = ({ propertyId }: AiChatProps) => {
         const loadSessions = async () => {
             setLoading(true);
             try {
-                const res = await api.get(`/api/properties/${propertyId}/chat/sessions/`);
+                let res;
+                try {
+                    res = await api.get(`/api/v1/properties/${propertyId}/chat/sessions/`);
+                } catch {
+                    res = await api.get(`/api/properties/${propertyId}/chat/sessions/`);
+                }
                 setSessions(res.data?.data || []);
             } catch (error) {
                 console.error("Failed to fetch chat sessions", error);
@@ -76,7 +81,12 @@ const AiChat = ({ propertyId }: AiChatProps) => {
     const fetchSessions = useCallback(async () => {
         if (!propertyId) return;
         try {
-            const res = await api.get(`/api/properties/${propertyId}/chat/sessions/`);
+            let res;
+            try {
+                res = await api.get(`/api/v1/properties/${propertyId}/chat/sessions/`);
+            } catch {
+                res = await api.get(`/api/properties/${propertyId}/chat/sessions/`);
+            }
             setSessions(res.data?.data || []);
         } catch (error) {
             console.error("Failed to fetch chat sessions", error);
@@ -89,9 +99,16 @@ const AiChat = ({ propertyId }: AiChatProps) => {
         setActiveSessionId(sessionId);
         setView("chat");
         try {
-            const res = await api.get(
-                `/api/properties/${propertyId}/chat/sessions/${sessionId}/`
-            );
+            let res;
+            try {
+                res = await api.get(
+                    `/api/v1/properties/${propertyId}/chat/sessions/${sessionId}/`
+                );
+            } catch {
+                res = await api.get(
+                    `/api/properties/${propertyId}/chat/sessions/${sessionId}/`
+                );
+            }
             const loadedMessages: Message[] = (res.data?.data || []).map(
                 (msg: ApiSessionMessage) => ({
                     id: msg.id,
@@ -135,9 +152,15 @@ const AiChat = ({ propertyId }: AiChatProps) => {
         event.stopPropagation();
         if (!propertyId) return;
         try {
-            await api.delete(
-                `/api/properties/${propertyId}/chat/sessions/${sessionId}/`
-            );
+            try {
+                await api.delete(
+                    `/api/v1/properties/${propertyId}/chat/sessions/${sessionId}/`
+                );
+            } catch {
+                await api.delete(
+                    `/api/properties/${propertyId}/chat/sessions/${sessionId}/`
+                );
+            }
             setSessions((prev) => prev.filter((s) => s.id !== sessionId));
 
             if (activeSessionId === sessionId) {
@@ -172,10 +195,18 @@ const AiChat = ({ propertyId }: AiChatProps) => {
                 body.session_id = activeSessionId;
             }
 
-            const res = await api.post(
-                `/api/properties/${propertyId}/chat/`,
-                body
-            );
+            let res;
+            try {
+                res = await api.post(
+                    `/api/v1/properties/${propertyId}/chat/`,
+                    body
+                );
+            } catch {
+                res = await api.post(
+                    `/api/properties/${propertyId}/chat/`,
+                    body
+                );
+            }
             const data = res.data?.data;
 
             // Persist the session id returned by the server (new or existing)

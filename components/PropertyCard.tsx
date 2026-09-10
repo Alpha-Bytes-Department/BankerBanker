@@ -57,7 +57,11 @@ export interface PropertyDetail {
   year_renovated?: number | null;
   occupancy?: string;
   parking_spaces?: number;
-  property_image_url: string | null;
+  property_image_url?: string | null;
+  thumbnail_url?: string | null;
+  property_images?: string[];
+  image_url?: string | null;
+  image?: string | null;
   sponsor?: string;
   created_at?: string;
   updated_at?: string;
@@ -103,7 +107,17 @@ const PropertyCard = ({
   onSecondaryAction,
 }: PropertyCardProps) => {
   const router = useRouter();
-  const propertyImageSrc = normalizeImageUrl(data.property_image_url);
+
+  const rawImage =
+    data.thumbnail_url ||
+    data.property_image_url ||
+    (Array.isArray(data.property_images) && data.property_images.length > 0
+      ? data.property_images[0]
+      : null) ||
+    data.image_url ||
+    data.image;
+
+  const propertyImageSrc = normalizeImageUrl(rawImage);
   const hasPrimaryLink = Boolean(data.link);
 
   const pillColor =
@@ -134,7 +148,7 @@ const PropertyCard = ({
       <div className="w-full h-48 relative">
         <Image
           src={propertyImageSrc}
-          alt={"image"}
+          alt={data.title || "Property"}
           fill
           className="rounded-t-lg object-cover object-center"
           unoptimized

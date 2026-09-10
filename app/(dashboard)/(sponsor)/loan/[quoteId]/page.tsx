@@ -97,16 +97,28 @@ const Page = () => {
 
     setLoading(true);
     try {
-      const quoteResponse = await api.get(`/api/loans/quotes/${quoteId}/`);
+      let quoteResponse;
+      try {
+        quoteResponse = await api.get(`/api/v1/loans/quotes/${quoteId}/`);
+      } catch {
+        quoteResponse = await api.get(`/api/loans/quotes/${quoteId}/`);
+      }
       const quoteData: LoanQuoteDetail | null =
         quoteResponse.data?.data ?? null;
       setQuote(quoteData);
 
       const loanRequestId = Number(quoteData?.loan_request);
       if (Number.isFinite(loanRequestId) && loanRequestId > 0) {
-        const requestResponse = await api.get(
-          `/api/loans/requests/${loanRequestId}/`,
-        );
+        let requestResponse;
+        try {
+          requestResponse = await api.get(
+            `/api/v1/loans/requests/${loanRequestId}/`,
+          );
+        } catch {
+          requestResponse = await api.get(
+            `/api/loans/requests/${loanRequestId}/`,
+          );
+        }
         setRequestDetail(requestResponse.data?.data ?? null);
       } else {
         setRequestDetail(null);
@@ -189,7 +201,11 @@ const Page = () => {
     if (!quote) return;
     try {
       setActionLoading("accept");
-      await api.post(`/api/loans/quotes/${quote.id}/accept/`);
+      try {
+        await api.post(`/api/v1/loans/quotes/${quote.id}/accept/`);
+      } catch {
+        await api.post(`/api/loans/quotes/${quote.id}/accept/`);
+      }
       toast.success("Quote accepted successfully.");
       await fetchDetails();
     } catch (error) {
@@ -204,7 +220,11 @@ const Page = () => {
     if (!quote) return;
     try {
       setActionLoading("decline");
-      await api.post(`/api/loans/quotes/${quote.id}/decline/`);
+      try {
+        await api.post(`/api/v1/loans/quotes/${quote.id}/decline/`);
+      } catch {
+        await api.post(`/api/loans/quotes/${quote.id}/decline/`);
+      }
       toast.success("Quote declined successfully.");
       await fetchDetails();
     } catch (error) {
@@ -224,7 +244,11 @@ const Page = () => {
 
     try {
       setActionLoading("delete");
-      await api.delete(`/api/loans/requests/${loanRequestId}/`);
+      try {
+        await api.delete(`/api/v1/loans/requests/${loanRequestId}/`);
+      } catch {
+        await api.delete(`/api/loans/requests/${loanRequestId}/`);
+      }
       toast.success("Loan request deleted successfully.");
       router.push("/loan");
     } catch (error) {

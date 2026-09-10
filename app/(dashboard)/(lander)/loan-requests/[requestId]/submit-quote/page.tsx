@@ -120,9 +120,16 @@ const Page = () => {
       const statePrefill = readLoanQuotePrefillState(numericRequestId);
 
       try {
-        const response = await api.get<ApiEnvelope<LoanRequestDetail>>(
-          `/api/loans/requests/${numericRequestId}/`,
-        );
+        let response;
+        try {
+          response = await api.get<ApiEnvelope<LoanRequestDetail>>(
+            `/api/v1/loans/requests/${numericRequestId}/`,
+          );
+        } catch {
+          response = await api.get<ApiEnvelope<LoanRequestDetail>>(
+            `/api/loans/requests/${numericRequestId}/`,
+          );
+        }
         const payload = response.data?.data ?? null;
         setDetail(payload);
 
@@ -185,32 +192,42 @@ const Page = () => {
 
     setSubmitting(true);
 
+    const payload = {
+      lender_name: form.lender_name.trim(),
+      guarantor: form.guarantor.trim(),
+      expires_at: new Date(form.expires_at).toISOString(),
+      loan_amount: form.loan_amount,
+      initial_funding: form.initial_funding,
+      future_funding: form.future_funding,
+      sponsor_equity: form.sponsor_equity,
+      max_as_is_ltv: form.max_as_is_ltv,
+      max_ltc: form.max_ltc,
+      max_as_stabilized_ltv: form.max_as_stabilized_ltv,
+      min_as_is_dy: form.min_as_is_dy,
+      min_stabilized_dy: form.min_stabilized_dy,
+      term: Number(form.term),
+      interest_rate: form.interest_rate,
+      amortization: form.amortization.trim(),
+      prepayment: form.prepayment.trim(),
+      origination_fee: form.origination_fee,
+      capex_reserve: form.capex_reserve,
+      ff_and_e_reserve: form.ff_and_e_reserve,
+      interest_carry_reserve: form.interest_carry_reserve,
+      extension_conditions: form.extension_conditions.trim(),
+      collateral: form.collateral.trim(),
+      recourse: form.recourse.trim(),
+    };
+
     try {
-      await api.post(`/api/loans/requests/${numericRequestId}/quotes/`, {
-        lender_name: form.lender_name.trim(),
-        guarantor: form.guarantor.trim(),
-        expires_at: new Date(form.expires_at).toISOString(),
-        loan_amount: form.loan_amount,
-        initial_funding: form.initial_funding,
-        future_funding: form.future_funding,
-        sponsor_equity: form.sponsor_equity,
-        max_as_is_ltv: form.max_as_is_ltv,
-        max_ltc: form.max_ltc,
-        max_as_stabilized_ltv: form.max_as_stabilized_ltv,
-        min_as_is_dy: form.min_as_is_dy,
-        min_stabilized_dy: form.min_stabilized_dy,
-        term: Number(form.term),
-        interest_rate: form.interest_rate,
-        amortization: form.amortization.trim(),
-        prepayment: form.prepayment.trim(),
-        origination_fee: form.origination_fee,
-        capex_reserve: form.capex_reserve,
-        ff_and_e_reserve: form.ff_and_e_reserve,
-        interest_carry_reserve: form.interest_carry_reserve,
-        extension_conditions: form.extension_conditions.trim(),
-        collateral: form.collateral.trim(),
-        recourse: form.recourse.trim(),
-      });
+      try {
+        await api.post(`/api/v1/loans/requests/${numericRequestId}/quotes/`, payload);
+      } catch (postErr: any) {
+        if (postErr?.response?.status === 404) {
+          await api.post(`/api/loans/requests/${numericRequestId}/quotes/`, payload);
+        } else {
+          throw postErr;
+        }
+      }
 
       toast.success("Quote submitted successfully.");
       router.push(`/loan-requests/${numericRequestId}`);

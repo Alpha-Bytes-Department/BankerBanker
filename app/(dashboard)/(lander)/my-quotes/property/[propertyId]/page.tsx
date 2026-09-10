@@ -63,12 +63,35 @@ const Page = () => {
     setLoading(true);
 
     try {
-      const response = await api.get<ApiEnvelope<LenderPropertyMapItem[]>>(
-        "/api/properties/map/",
-      );
-      const properties = response.data?.data || [];
-      const found =
-        properties.find((item) => item.id === numericPropertyId) || null;
+      let found: LenderPropertyMapItem | null = null;
+
+      try {
+        const singleRes = await api.get(`/api/v1/properties/${numericPropertyId}/`);
+        const p = singleRes.data?.data ?? singleRes.data;
+        if (p && p.id) {
+          found = {
+            id: p.id,
+            property_name: p.property_name || p.name || `Property #${p.id}`,
+            property_address: p.property_address || p.address || "",
+            property_type: p.property_type || "Commercial",
+            latitude: String(p.latitude ?? p.lat ?? ""),
+            longitude: String(p.longitude ?? p.lng ?? ""),
+            property_image_url: p.property_image_url || p.image_url || (Array.isArray(p.photos) ? p.photos[0] : null) || null,
+          };
+        }
+      } catch {
+        // Fallback to map array
+      }
+
+      if (!found) {
+        const response = await api
+          .get<ApiEnvelope<LenderPropertyMapItem[]>>("/api/v1/properties/map/")
+          .catch(() =>
+            api.get<ApiEnvelope<LenderPropertyMapItem[]>>("/api/properties/map/"),
+          );
+        const properties = response.data?.data || [];
+        found = properties.find((item) => item.id === numericPropertyId) || null;
+      }
 
       setProperty(found);
       setImageSrc(resolveImageUrl(found?.property_image_url));

@@ -1,5 +1,7 @@
 "use client";
+
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { IoIosArrowRoundBack } from "react-icons/io";
@@ -55,6 +57,7 @@ const MemorandumDetailPage = () => {
   const [isSubmittingLoan, setIsSubmittingLoan] = useState(false);
   const [loanSubmitError, setLoanSubmitError] = useState("");
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [isRegeneratingAll, setIsRegeneratingAll] = useState(false);
   const [loanForm, setLoanForm] = useState<LoanRequestForm>({
     requestedAmount: "5000000.00",
     loanTerm: "24",
@@ -148,6 +151,51 @@ const MemorandumDetailPage = () => {
       ? Number(data?.occupancy)
       : Number(parsedPropertyInformation.occupancy) || 0;
   const isPublished = String(data?.status || "").toLowerCase() === "published";
+
+  const propertyImages = useMemo(() => {
+    if (!data) return [];
+    const images: string[] = [];
+
+    // 1. Check array fields
+    if (Array.isArray(data.property_images) && data.property_images.length > 0) {
+      images.push(...data.property_images);
+    }
+    if (Array.isArray(data.images) && data.images.length > 0) {
+      images.push(...data.images);
+    }
+    if (Array.isArray(data.property_image_url) && data.property_image_url.length > 0) {
+      images.push(...data.property_image_url);
+    }
+
+    // 2. Check string fields
+    if (typeof data.thumbnail_url === "string" && data.thumbnail_url) {
+      images.push(data.thumbnail_url);
+    }
+    if (typeof data.property_image_url === "string" && data.property_image_url) {
+      images.push(data.property_image_url);
+    }
+    if (typeof data.image_url === "string" && data.image_url) {
+      images.push(data.image_url);
+    }
+    if (typeof data.heroImage === "string" && data.heroImage) {
+      images.push(data.heroImage);
+    }
+
+    // Filter valid strings and remove duplicates
+    return Array.from(
+      new Set(
+        images.filter(
+          (img): img is string => typeof img === "string" && img.trim().length > 0,
+        ),
+      ),
+    );
+  }, [data]);
+
+  const resolvedHeroImage =
+    propertyImages[0] ||
+    data?.thumbnail_url ||
+    (typeof data?.property_image_url === "string" ? data?.property_image_url : "") ||
+    "";
 
   const updateSectionContent = async (
     sectionId: number,
@@ -265,6 +313,155 @@ const MemorandumDetailPage = () => {
       console.error("Failed to upload section image:", error);
       toast.error("Failed to upload section image. Please try again.");
       return;
+    }
+  };
+
+  const handleRegenerateSection = async (
+    sectionId: number,
+    sectionKey?: string,
+  ) => {
+    if (!memorandumId || !sectionId) {
+      toast.error("Unable to regenerate this section right now.");
+      return;
+    }
+
+    const toastId = toast.loading("Regenerating section with AI...");
+
+    try {
+      let response;
+      try {
+        response = await api.post(
+          `/api/v1/memorandums/${memorandumId}/sections/${sectionId}/regenerate/`,
+          { section_key: sectionKey },
+        );
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          try {
+            response = await api.post(
+              `/api/memorandums/${memorandumId}/sections/${sectionId}/regenerate/`,
+              { section_key: sectionKey },
+            );
+          } catch {
+            response = await api.post(
+              `/api/v1/memorandums/${memorandumId}/regenerate/`,
+              { section_id: sectionId, section_key: sectionKey },
+            );
+          }
+        } else {
+          throw err;
+        }
+      }
+
+      const resData = response?.data?.data ?? response?.data;
+
+      if (resData?.sections && Array.isArray(resData.sections)) {
+        setData(resData);
+      } else if (
+        resData?.id === sectionId ||
+        resData?.content !== undefined ||
+        resData?.table_data !== undefined
+      ) {
+        setData((prev: any) => {
+          if (!prev?.sections) return prev;
+          return {
+            ...prev,
+            sections: prev.sections.map((item: MemorandumSection) =>
+              item.id === sectionId
+                ? {
+                    ...item,
+                    content: resData.content ?? item.content,
+                    table_data:
+                      resData.table_data !== undefined
+                        ? resData.table_data
+                        : item.table_data,
+                    is_regeneratable:
+                      resData.is_regeneratable !== undefined
+                        ? resData.is_regeneratable
+                        : item.is_regeneratable,
+                    blocks: resData.blocks ?? item.blocks,
+                    updated_at: resData.updated_at ?? new Date().toISOString(),
+                  }
+                : item,
+            ),
+          };
+        });
+      } else {
+        try {
+          let refetchRes;
+          try {
+            refetchRes = await api.get(`/api/v1/memorandums/${memorandumId}/`);
+          } catch {
+            refetchRes = await api.get(`/api/memorandums/${memorandumId}/`);
+          }
+          const freshData = refetchRes?.data?.data ?? refetchRes?.data;
+          if (freshData) {
+            setData(freshData);
+          }
+        } catch {
+          // ignore refetch err
+        }
+      }
+
+      toast.success("Section regenerated successfully!", { id: toastId });
+    } catch (error: any) {
+      console.error("Failed to regenerate section:", error);
+      const apiMsg =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Failed to regenerate section with AI. Please try again.";
+      toast.error(apiMsg, { id: toastId });
+    }
+  };
+
+  const handleRegenerateAll = async () => {
+    if (!memorandumId) {
+      toast.error("Unable to regenerate memorandum right now.");
+      return;
+    }
+
+    const toastId = toast.loading("Regenerating all AI sections...");
+    setIsRegeneratingAll(true);
+
+    try {
+      let response;
+      try {
+        response = await api.post(
+          `/api/v1/memorandums/${memorandumId}/regenerate/`,
+        );
+      } catch (err: any) {
+        if (err?.response?.status === 404) {
+          response = await api.post(
+            `/api/memorandums/${memorandumId}/regenerate/`,
+          );
+        } else {
+          throw err;
+        }
+      }
+
+      const resData = response?.data?.data ?? response?.data;
+      if (resData?.sections && Array.isArray(resData.sections)) {
+        setData(resData);
+      } else {
+        let refetchRes;
+        try {
+          refetchRes = await api.get(`/api/v1/memorandums/${memorandumId}/`);
+        } catch {
+          refetchRes = await api.get(`/api/memorandums/${memorandumId}/`);
+        }
+        const freshData = refetchRes?.data?.data ?? refetchRes?.data;
+        if (freshData) setData(freshData);
+      }
+
+      toast.success("Memorandum regenerated successfully!", { id: toastId });
+    } catch (error: any) {
+      console.error("Failed to regenerate memorandum:", error);
+      const apiMsg =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Failed to regenerate memorandum. Please try again.";
+      toast.error(apiMsg, { id: toastId });
+    } finally {
+      setIsRegeneratingAll(false);
     }
   };
 
@@ -431,14 +628,16 @@ const MemorandumDetailPage = () => {
         isPublishing={isPublishing}
         onPublish={() => setIsPublishModalOpen(true)}
         onExport={handleExport}
+        onRegenerateAll={handleRegenerateAll}
+        isRegeneratingAll={isRegeneratingAll}
       />
 
       {activeTab === "editor" && (
         <div>
           <HeroSection
-            heroImage={data?.property_image_url || ""}
-            galleryImages={[data?.property_image_url || ""]}
-            title={data?.property_name || "Property"}
+            heroImage={resolvedHeroImage}
+            galleryImages={propertyImages}
+            title={data?.property_name || resolvedPropertyName}
           />
 
           {sections.map((section: MemorandumSection) => (
@@ -447,6 +646,7 @@ const MemorandumDetailPage = () => {
               section={section}
               onSave={updateSectionContent}
               onImageUpload={uploadSectionImage}
+              onRegenerate={handleRegenerateSection}
             />
           ))}
         </div>
@@ -484,7 +684,38 @@ const MemorandumDetailPage = () => {
             offeringDate={new Date(
               data?.created_at || Date.now(),
             ).toLocaleDateString()}
+            coverImage={resolvedHeroImage}
           />
+
+          {propertyImages.length > 1 && (
+            <div className="mb-8 bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-2xs">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                  Property Photos & Assets ({propertyImages.length})
+                </h3>
+                <span className="text-xs text-slate-500">
+                  Included in offering package
+                </span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                {propertyImages.map((img, idx) => (
+                  <div
+                    key={idx}
+                    className="relative h-28 sm:h-36 rounded-lg overflow-hidden border border-slate-200 shadow-2xs group"
+                  >
+                    <Image
+                      src={img}
+                      alt={`${resolvedPropertyName} photo ${idx + 1}`}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      unoptimized
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <TableOfContents items={tableItems} />
           <DynamicPreviewSections sections={sections} />

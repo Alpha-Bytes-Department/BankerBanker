@@ -65,13 +65,18 @@ export function normalizeNotification(item: Record<string, unknown>): Notificati
  * Retrieves all notifications for the authenticated user.
  */
 export async function getNotifications(): Promise<NotificationItem[]> {
-  const response = await api.get("/api/v1/notifications/");
-  const rawData = response.data?.data ?? response.data?.results ?? response.data;
+  try {
+    const response = await api.get("/api/v1/notifications/");
+    const rawData = response.data?.data ?? response.data?.results ?? response.data;
 
-  if (Array.isArray(rawData)) {
-    return rawData.map((item) => normalizeNotification(item as Record<string, unknown>));
+    if (Array.isArray(rawData)) {
+      return rawData.map((item) => normalizeNotification(item as Record<string, unknown>));
+    }
+    return [];
+  } catch (error) {
+    console.warn("Unable to load notifications:", (error as any)?.message || error);
+    return [];
   }
-  return [];
 }
 
 /**
@@ -79,25 +84,30 @@ export async function getNotifications(): Promise<NotificationItem[]> {
  * Retrieves the count of unread notifications.
  */
 export async function getUnreadCount(): Promise<number> {
-  const response = await api.get("/api/v1/notifications/unread-count/");
-  const payload = response.data;
+  try {
+    const response = await api.get("/api/v1/notifications/unread-count/");
+    const payload = response.data;
 
-  if (typeof payload?.data?.unread_count === "number") {
-    return payload.data.unread_count;
+    if (typeof payload?.data?.unread_count === "number") {
+      return payload.data.unread_count;
+    }
+    if (typeof payload?.unread_count === "number") {
+      return payload.unread_count;
+    }
+    if (typeof payload?.count === "number") {
+      return payload.count;
+    }
+    if (typeof payload?.data?.count === "number") {
+      return payload.data.count;
+    }
+    if (typeof payload?.data === "number") {
+      return payload.data;
+    }
+    return 0;
+  } catch (error) {
+    console.warn("Unable to load unread count:", (error as any)?.message || error);
+    return 0;
   }
-  if (typeof payload?.unread_count === "number") {
-    return payload.unread_count;
-  }
-  if (typeof payload?.count === "number") {
-    return payload.count;
-  }
-  if (typeof payload?.data?.count === "number") {
-    return payload.data.count;
-  }
-  if (typeof payload?.data === "number") {
-    return payload.data;
-  }
-  return 0;
 }
 
 /**
@@ -105,7 +115,11 @@ export async function getUnreadCount(): Promise<number> {
  * Marks all notifications as read.
  */
 export async function markAllNotificationsAsRead(): Promise<void> {
-  await api.patch("/api/v1/notifications/read-all/");
+  try {
+    await api.patch("/api/v1/notifications/read-all/");
+  } catch (error) {
+    console.warn("Unable to mark all notifications as read:", (error as any)?.message || error);
+  }
 }
 
 /**
@@ -113,7 +127,11 @@ export async function markAllNotificationsAsRead(): Promise<void> {
  * Deletes all notifications for the user.
  */
 export async function clearAllNotifications(): Promise<void> {
-  await api.delete("/api/v1/notifications/clear-all/");
+  try {
+    await api.delete("/api/v1/notifications/clear-all/");
+  } catch (error) {
+    console.warn("Unable to clear all notifications:", (error as any)?.message || error);
+  }
 }
 
 /**
@@ -121,7 +139,13 @@ export async function clearAllNotifications(): Promise<void> {
  * Marks a single notification as read.
  */
 export async function markNotificationAsRead(id: string | number): Promise<void> {
-  await api.patch(`/api/v1/notifications/${id}/`);
+  try {
+    await api.patch(`/api/v1/notifications/${id}/read/`).catch(() =>
+      api.patch(`/api/v1/notifications/${id}/`),
+    );
+  } catch (error) {
+    console.warn(`Unable to mark notification ${id} as read:`, (error as any)?.message || error);
+  }
 }
 
 /**
@@ -129,7 +153,11 @@ export async function markNotificationAsRead(id: string | number): Promise<void>
  * Deletes a single notification.
  */
 export async function deleteNotification(id: string | number): Promise<void> {
-  await api.delete(`/api/v1/notifications/${id}/`);
+  try {
+    await api.delete(`/api/v1/notifications/${id}/`);
+  } catch (error) {
+    console.warn(`Unable to delete notification ${id}:`, (error as any)?.message || error);
+  }
 }
 
 /**
@@ -137,13 +165,21 @@ export async function deleteNotification(id: string | number): Promise<void> {
  * Retrieves the user's notification preferences.
  */
 export async function getNotificationPreferences(): Promise<NotificationPreferences> {
-  const response = await api.get("/api/v1/notifications/preferences/");
-  const data = response.data?.data ?? response.data ?? {};
+  try {
+    const response = await api.get("/api/v1/notifications/preferences/");
+    const data = response.data?.data ?? response.data ?? {};
 
-  return {
-    quote_emails_enabled: Boolean(data.quote_emails_enabled ?? true),
-    marketing_emails_enabled: Boolean(data.marketing_emails_enabled ?? true),
-  };
+    return {
+      quote_emails_enabled: Boolean(data.quote_emails_enabled ?? true),
+      marketing_emails_enabled: Boolean(data.marketing_emails_enabled ?? true),
+    };
+  } catch (error) {
+    console.warn("Unable to get notification preferences:", (error as any)?.message || error);
+    return {
+      quote_emails_enabled: true,
+      marketing_emails_enabled: true,
+    };
+  }
 }
 
 /**
@@ -153,11 +189,19 @@ export async function getNotificationPreferences(): Promise<NotificationPreferen
 export async function updateNotificationPreferences(
   preferences: Partial<NotificationPreferences>,
 ): Promise<NotificationPreferences> {
-  const response = await api.patch("/api/v1/notifications/preferences/", preferences);
-  const data = response.data?.data ?? response.data ?? {};
+  try {
+    const response = await api.patch("/api/v1/notifications/preferences/", preferences);
+    const data = response.data?.data ?? response.data ?? {};
 
-  return {
-    quote_emails_enabled: Boolean(data.quote_emails_enabled ?? preferences.quote_emails_enabled ?? true),
-    marketing_emails_enabled: Boolean(data.marketing_emails_enabled ?? preferences.marketing_emails_enabled ?? true),
-  };
+    return {
+      quote_emails_enabled: Boolean(data.quote_emails_enabled ?? preferences.quote_emails_enabled ?? true),
+      marketing_emails_enabled: Boolean(data.marketing_emails_enabled ?? preferences.marketing_emails_enabled ?? true),
+    };
+  } catch (error) {
+    console.warn("Unable to update notification preferences:", (error as any)?.message || error);
+    return {
+      quote_emails_enabled: Boolean(preferences.quote_emails_enabled ?? true),
+      marketing_emails_enabled: Boolean(preferences.marketing_emails_enabled ?? true),
+    };
+  }
 }

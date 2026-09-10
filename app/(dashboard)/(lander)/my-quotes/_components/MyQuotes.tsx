@@ -160,20 +160,64 @@ const MyQuotes: React.FC = () => {
         quotesResponse,
         propertiesResponse,
       ] = await Promise.all([
-        api.get<ApiEnvelope<LenderDashboardApiData>>(
-          "/api/loans/dashboard/lender/",
-        ),
-        api.get<ApiEnvelope<LenderQuoteStatsData>>(
-          "/api/dashboard/lender/quote-stats/",
-        ),
-        api.get<ApiEnvelope<LenderQuoteApiItem[]>>("/api/loans/quotes/"),
-        api.get<ApiEnvelope<LenderPropertyMapItem[]>>("/api/properties/map/"),
+        api
+          .get<ApiEnvelope<LenderDashboardApiData>>(
+            "/api/v1/loans/dashboard/lender/",
+          )
+          .catch(() =>
+            api.get<ApiEnvelope<LenderDashboardApiData>>(
+              "/api/loans/dashboard/lender/",
+            ),
+          )
+          .catch(() => null),
+        api
+          .get<ApiEnvelope<LenderQuoteStatsData>>(
+            "/api/v1/dashboard/lender/quote-stats/",
+          )
+          .catch(() =>
+            api.get<ApiEnvelope<LenderQuoteStatsData>>(
+              "/api/dashboard/lender/quote-stats/",
+            ),
+          )
+          .catch(() => null),
+        api
+          .get<ApiEnvelope<LenderQuoteApiItem[]>>("/api/v1/loans/quotes/")
+          .catch(() =>
+            api.get<ApiEnvelope<LenderQuoteApiItem[]>>("/api/loans/quotes/"),
+          )
+          .catch(() => null),
+        api
+          .get<ApiEnvelope<LenderPropertyMapItem[]>>("/api/v1/properties/map/")
+          .catch(() =>
+            api.get<ApiEnvelope<LenderPropertyMapItem[]>>("/api/properties/map/"),
+          )
+          .catch(() => null),
       ]);
 
-      const dashboard = dashboardResponse.data?.data;
-      const quoteStats = quoteStatsResponse.data?.data;
-      const quoteItems = quotesResponse.data?.data || [];
-      const propertyItems = propertiesResponse.data?.data || [];
+      const dashboard: LenderDashboardApiData | undefined =
+        dashboardResponse?.data?.data ??
+        ((dashboardResponse?.data as any)?.available_loan_requests
+          ? (dashboardResponse?.data as any)
+          : undefined);
+      const quoteStats: LenderQuoteStatsData | undefined =
+        quoteStatsResponse?.data?.data ??
+        ((quoteStatsResponse?.data as any)?.total_quotes !== undefined
+          ? (quoteStatsResponse?.data as any)
+          : undefined);
+      const rawQuotes =
+        quotesResponse?.data?.data ??
+        (Array.isArray(quotesResponse?.data) ? quotesResponse.data : []);
+      const quoteItems: LenderQuoteApiItem[] = Array.isArray(rawQuotes)
+        ? rawQuotes
+        : [];
+      const rawProperties =
+        propertiesResponse?.data?.data ??
+        (Array.isArray(propertiesResponse?.data)
+          ? propertiesResponse.data
+          : []);
+      const propertyItems: LenderPropertyMapItem[] = Array.isArray(rawProperties)
+        ? rawProperties
+        : [];
       const dashboardLoanRequests = dashboard?.available_loan_requests || [];
 
       const statsCards: QuoteStat[] = [

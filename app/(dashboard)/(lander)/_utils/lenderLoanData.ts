@@ -17,7 +17,10 @@ type PropertyMapApiItem = {
   property_type: string;
   latitude: string;
   longitude: string;
-  property_image_url: string | null;
+  property_image_url?: string | null;
+  thumbnail_url?: string | null;
+  thumbnail?: string | null;
+  property_images?: string[];
 };
 
 type LoanRequestApiItem = {
@@ -29,6 +32,9 @@ type LoanRequestApiItem = {
   occupancy?: string;
   year_built?: number;
   property_image_url?: string | null;
+  thumbnail_url?: string | null;
+  thumbnail?: string | null;
+  property_images?: string[];
   requested_amount: string;
   loan_term: number;
   ltv: string;
@@ -164,12 +170,33 @@ export type LenderCombinedData = {
 export const fetchLenderCombinedData =
   async (): Promise<LenderCombinedData> => {
     const [propertiesResponse, loanRequestsResponse] = await Promise.all([
-      api.get<ApiEnvelope<PropertyMapApiItem[]>>("/api/properties/map/"),
-      api.get<ApiEnvelope<LoanRequestApiItem[]>>("/api/loans/requests/"),
+      api
+        .get<ApiEnvelope<PropertyMapApiItem[]> | PropertyMapApiItem[]>(
+          "/api/v1/properties/map/",
+        )
+        .catch(() =>
+          api.get<ApiEnvelope<PropertyMapApiItem[]> | PropertyMapApiItem[]>(
+            "/api/properties/map/",
+          ),
+        )
+        .catch(() => null),
+      api
+        .get<ApiEnvelope<LoanRequestApiItem[]> | LoanRequestApiItem[]>(
+          "/api/v1/loans/requests/",
+        )
+        .catch(() =>
+          api.get<ApiEnvelope<LoanRequestApiItem[]> | LoanRequestApiItem[]>(
+            "/api/loans/requests/",
+          ),
+        )
+        .catch(() => null),
     ]);
 
-    const propertiesRaw = propertiesResponse.data?.data || [];
-    const loanRequestsRaw = loanRequestsResponse.data?.data || [];
+    const propsData = (propertiesResponse?.data as any)?.data ?? propertiesResponse?.data ?? [];
+    const propertiesRaw: PropertyMapApiItem[] = Array.isArray(propsData) ? propsData : [];
+
+    const loansData = (loanRequestsResponse?.data as any)?.data ?? loanRequestsResponse?.data ?? [];
+    const loanRequestsRaw: LoanRequestApiItem[] = Array.isArray(loansData) ? loansData : [];
 
     const propertyById = new Map<number, PropertyMapApiItem>(
       propertiesRaw.map((property) => [property.id, property]),
@@ -206,8 +233,14 @@ export const fetchLenderCombinedData =
         targetLtv: ltv,
         sponsor: "N/A",
         propertyImage: resolveImageUrl(
+          property.thumbnail_url,
+          property.thumbnail,
           property.property_image_url,
+          (property.property_images && property.property_images[0]) || null,
+          request?.thumbnail_url,
+          request?.thumbnail,
           request?.property_image_url,
+          (request?.property_images && request.property_images[0]) || null,
         ),
       };
     });
@@ -246,8 +279,14 @@ export const fetchLenderCombinedData =
         ltv: toNumber(request.ltv) ?? 0,
         sponsor: "N/A",
         propertyImage: resolveImageUrl(
+          property?.thumbnail_url,
+          property?.thumbnail,
           property?.property_image_url,
+          (property?.property_images && property.property_images[0]) || null,
+          request.thumbnail_url,
+          request.thumbnail,
           request.property_image_url,
+          (request.property_images && request.property_images[0]) || null,
         ),
       };
     });
